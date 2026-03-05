@@ -49,6 +49,6 @@ jobs:
         run: |
           DATETIME=$(date -u +%Y%m%d-%H%M%S)
           SHORT_SHA=$(git rev-parse --short HEAD)
-          TAG="${DATETIME}-${SHORT_SHA}-builder-${{ github.run_number }}"
+          TAG="${DATETIME}-${SHORT_SHA}-${{ github.run_number }}"
           git tag "$TAG"
           git push origin "$TAG"
