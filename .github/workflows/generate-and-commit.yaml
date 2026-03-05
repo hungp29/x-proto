@@ -20,6 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Buf
@@ -47,8 +48,8 @@ jobs:
       - name: Create and push tag
         if: steps.commit-push.outputs.pushed == 'true'
         run: |
-          DATETIME=$(date -u +%Y%m%d-%H%M%S)
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          TAG="${DATETIME}-${SHORT_SHA}-${{ github.run_number }}"
+          git pull origin main
+
+          TAG="v0.1.${{ github.run_number }}"
           git tag "$TAG"
           git push origin "$TAG"
