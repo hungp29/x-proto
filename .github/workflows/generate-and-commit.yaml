@@ -1,4 +1,4 @@
-# Push proto → CI generates pb.go → auto-commit generated Go back to repo.
+# Push proto → CI generates pb.go → auto-commit → create tag.
 name: Generate and commit Go from proto
 
 on:
@@ -31,11 +31,24 @@ jobs:
         run: buf generate
 
       - name: Commit and push if generated files changed
+        id: commit-push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add gen/
-          git diff --staged --quiet || {
+          if git diff --staged --quiet; then
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+          else
             git commit -m "chore(gen): regenerate Go from proto [skip ci]"
             git push
-          }
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create and push tag
+        if: steps.commit-push.outputs.pushed == 'true'
+        run: |
+          DATETIME=$(date -u +%Y%m%d-%H%M%S)
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          TAG="${DATETIME}-${SHORT_SHA}-builder-${{ github.run_number }}"
+          git tag "$TAG"
+          git push origin "$TAG"
