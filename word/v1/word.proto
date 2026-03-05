@@ -10,10 +10,6 @@ message Meaning {
   repeated string examples = 2;
 }
 
-message Test {
-  
-}
-
 // Word holds dictionary entry data for one term.
 message Word {
   string text = 1;
