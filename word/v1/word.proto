@@ -47,24 +47,8 @@ message GetWordsResponse {
   repeated Word words = 1;
 }
 
-message PingRequest {}
-
-message PingResponse {
-  string service = 1;
-  string message = 2;
-  string time = 3;
-}
-
-message HealthRequest {}
-
-message HealthResponse {
-  string status = 1;
-}
-
 // WordService provides dictionary lookups (Cambridge).
 service WordService {
   rpc GetWord(GetWordRequest) returns (GetWordResponse);
   rpc GetWords(GetWordsRequest) returns (GetWordsResponse);
-  rpc Ping(PingRequest) returns (PingResponse);
-  rpc Health(HealthRequest) returns (HealthResponse);
 }
