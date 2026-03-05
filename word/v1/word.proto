@@ -21,6 +21,9 @@ message Word {
   repeated string part_of_speech = 7;
   repeated Meaning meanings = 8;
 }
+message Test{
+  string text = 1;
+}
 
 // Dictionary identifies which Cambridge dictionary variant to use.
 enum Dictionary {
