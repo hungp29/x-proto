@@ -21,8 +21,6 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	WordService_GetWord_FullMethodName  = "/word.v1.WordService/GetWord"
 	WordService_GetWords_FullMethodName = "/word.v1.WordService/GetWords"
-	WordService_Ping_FullMethodName     = "/word.v1.WordService/Ping"
-	WordService_Health_FullMethodName   = "/word.v1.WordService/Health"
 )
 
 // WordServiceClient is the client API for WordService service.
@@ -33,8 +31,6 @@ const (
 type WordServiceClient interface {
 	GetWord(ctx context.Context, in *GetWordRequest, opts ...grpc.CallOption) (*GetWordResponse, error)
 	GetWords(ctx context.Context, in *GetWordsRequest, opts ...grpc.CallOption) (*GetWordsResponse, error)
-	Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error)
-	Health(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthResponse, error)
 }
 
 type wordServiceClient struct {
@@ -65,26 +61,6 @@ func (c *wordServiceClient) GetWords(ctx context.Context, in *GetWordsRequest, o
 	return out, nil
 }
 
-func (c *wordServiceClient) Ping(ctx context.Context, in *PingRequest, opts ...grpc.CallOption) (*PingResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PingResponse)
-	err := c.cc.Invoke(ctx, WordService_Ping_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *wordServiceClient) Health(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(HealthResponse)
-	err := c.cc.Invoke(ctx, WordService_Health_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // WordServiceServer is the server API for WordService service.
 // All implementations must embed UnimplementedWordServiceServer
 // for forward compatibility.
@@ -93,8 +69,6 @@ func (c *wordServiceClient) Health(ctx context.Context, in *HealthRequest, opts 
 type WordServiceServer interface {
 	GetWord(context.Context, *GetWordRequest) (*GetWordResponse, error)
 	GetWords(context.Context, *GetWordsRequest) (*GetWordsResponse, error)
-	Ping(context.Context, *PingRequest) (*PingResponse, error)
-	Health(context.Context, *HealthRequest) (*HealthResponse, error)
 	mustEmbedUnimplementedWordServiceServer()
 }
 
@@ -110,12 +84,6 @@ func (UnimplementedWordServiceServer) GetWord(context.Context, *GetWordRequest) 
 }
 func (UnimplementedWordServiceServer) GetWords(context.Context, *GetWordsRequest) (*GetWordsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetWords not implemented")
-}
-func (UnimplementedWordServiceServer) Ping(context.Context, *PingRequest) (*PingResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method Ping not implemented")
-}
-func (UnimplementedWordServiceServer) Health(context.Context, *HealthRequest) (*HealthResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method Health not implemented")
 }
 func (UnimplementedWordServiceServer) mustEmbedUnimplementedWordServiceServer() {}
 func (UnimplementedWordServiceServer) testEmbeddedByValue()                     {}
@@ -174,42 +142,6 @@ func _WordService_GetWords_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _WordService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PingRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(WordServiceServer).Ping(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: WordService_Ping_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WordServiceServer).Ping(ctx, req.(*PingRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _WordService_Health_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HealthRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(WordServiceServer).Health(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: WordService_Health_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WordServiceServer).Health(ctx, req.(*HealthRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // WordService_ServiceDesc is the grpc.ServiceDesc for WordService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -224,14 +156,6 @@ var WordService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetWords",
 			Handler:    _WordService_GetWords_Handler,
-		},
-		{
-			MethodName: "Ping",
-			Handler:    _WordService_Ping_Handler,
-		},
-		{
-			MethodName: "Health",
-			Handler:    _WordService_Health_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
