@@ -1,0 +1,41 @@
+# Push proto → CI generates pb.go → auto-commit generated Go back to repo.
+name: Generate and commit Go from proto
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "**.proto"
+      - "buf.yaml"
+      - "buf.gen.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Buf
+        uses: bufbuild/buf-setup-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate Go code
+        run: buf generate
+
+      - name: Commit and push if generated files changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add gen/
+          git diff --staged --quiet || {
+            git commit -m "chore(gen): regenerate Go from proto [skip ci]"
+            git push
+          }

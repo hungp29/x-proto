@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package word.v1;
+
+option go_package = "github.com/hungp29/x-word/internal/genpb/word/v1;wordv1";
+
+// Meaning is a single sense/definition with optional examples.
+message Meaning {
+  string definition = 1;
+  repeated string examples = 2;
+}
+
+// Word holds dictionary entry data for one term.
+message Word {
+  string text = 1;
+  string phonetic = 2;
+  string phonetic_uk = 3;
+  string phonetic_us = 4;
+  string audio_uk = 5;
+  string audio_us = 6;
+  repeated string part_of_speech = 7;
+  repeated Meaning meanings = 8;
+}
+
+// Dictionary identifies which Cambridge dictionary variant to use.
+enum Dictionary {
+  DICTIONARY_UNSPECIFIED = 0;
+  DICTIONARY_ENGLISH = 1;
+  DICTIONARY_ENGLISH_VIETNAMESE = 2;
+}
+
+message GetWordRequest {
+  string word = 1;
+  Dictionary dict = 2;
+}
+
+message GetWordResponse {
+  Word word = 1;
+}
+
+message GetWordsRequest {
+  repeated string words = 1;
+  Dictionary dict = 2;
+}
+
+message GetWordsResponse {
+  repeated Word words = 1;
+}
+
+message PingRequest {}
+
+message PingResponse {
+  string service = 1;
+  string message = 2;
+  string time = 3;
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  string status = 1;
+}
+
+// WordService provides dictionary lookups (Cambridge).
+service WordService {
+  rpc GetWord(GetWordRequest) returns (GetWordResponse);
+  rpc GetWords(GetWordsRequest) returns (GetWordsResponse);
+  rpc Ping(PingRequest) returns (PingResponse);
+  rpc Health(HealthRequest) returns (HealthResponse);
+}
