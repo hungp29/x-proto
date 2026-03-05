@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+package identity.v1;
+
+option go_package = "github.com/hungp29/x-identity/internal/genpb/identity/v1;identityv1";
+
+// ── Shared types ──────────────────────────────────────────────────────────────
+
+message User {
+  string id             = 1;
+  string email          = 2;
+  string name           = 3;
+  bool   email_verified = 4;
+  bool   locked         = 5;
+}
+
+message TokenPair {
+  string access_token            = 1;
+  string refresh_token           = 2;
+  int64  access_token_expires_in = 3; // seconds until expiry
+}
+
+message Permission {
+  string id          = 1;
+  string resource    = 2;
+  string action      = 3;
+  string description = 4;
+}
+
+message Role {
+  string id          = 1;
+  string name        = 2;
+  string description = 3;
+}
+
+// ── AuthService messages ──────────────────────────────────────────────────────
+
+message RegisterRequest {
+  string email    = 1;
+  string name     = 2;
+  string password = 3;
+}
+
+message RegisterResponse {
+  User user = 1;
+}
+
+message LoginRequest {
+  string email      = 1;
+  string password   = 2;
+  string ip_address = 3;
+  string user_agent = 4;
+}
+
+message LoginResponse {
+  User      user   = 1;
+  TokenPair tokens = 2;
+}
+
+message LogoutRequest {
+  string refresh_token = 1;
+}
+
+message LogoutResponse {}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+  string ip_address    = 2;
+  string user_agent    = 3;
+}
+
+message RefreshTokenResponse {
+  TokenPair tokens = 1;
+}
+
+message ValidateTokenRequest {
+  string access_token = 1;
+}
+
+message ValidateTokenResponse {
+  string          user_id = 1;
+  string          email   = 2;
+  repeated string roles   = 3;
+}
+
+// ── AuthzService messages ─────────────────────────────────────────────────────
+
+message CheckPermissionRequest {
+  string user_id  = 1;
+  string resource = 2;
+  string action   = 3;
+}
+
+message CheckPermissionResponse {
+  bool allowed = 1;
+}
+
+message GetUserPermissionsRequest {
+  string user_id = 1;
+}
+
+message GetUserPermissionsResponse {
+  repeated Permission permissions = 1;
+}
+
+message AssignRoleRequest {
+  string user_id    = 1;
+  string role_name  = 2;
+  int64  expires_at = 3; // unix seconds; 0 = permanent
+  string granted_by = 4; // user_id of granter; empty = system
+}
+
+message AssignRoleResponse {}
+
+message RevokeRoleRequest {
+  string user_id   = 1;
+  string role_name = 2;
+}
+
+message RevokeRoleResponse {}
+
+// ── Services ──────────────────────────────────────────────────────────────────
+
+// AuthService handles authentication: registration, login, token management.
+service AuthService {
+  rpc Register     (RegisterRequest)      returns (RegisterResponse);
+  rpc Login        (LoginRequest)         returns (LoginResponse);
+  rpc Logout       (LogoutRequest)        returns (LogoutResponse);
+  rpc RefreshToken (RefreshTokenRequest)  returns (RefreshTokenResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+// AuthzService handles authorization: permission checks and role management.
+service AuthzService {
+  rpc CheckPermission    (CheckPermissionRequest)    returns (CheckPermissionResponse);
+  rpc GetUserPermissions (GetUserPermissionsRequest) returns (GetUserPermissionsResponse);
+  rpc AssignRole         (AssignRoleRequest)         returns (AssignRoleResponse);
+  rpc RevokeRole         (RevokeRoleRequest)         returns (RevokeRoleResponse);
+}
