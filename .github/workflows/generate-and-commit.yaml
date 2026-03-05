@@ -8,6 +8,7 @@ on:
       - "**.proto"
       - "buf.yaml"
       - "buf.gen.yaml"
+      - "go.mod"
   workflow_dispatch:
 
 permissions:
