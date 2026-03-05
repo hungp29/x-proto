@@ -225,6 +225,50 @@ func (x *Word) GetMeanings() []*Meaning {
 	return nil
 }
 
+type Test struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Test) Reset() {
+	*x = Test{}
+	mi := &file_word_v1_word_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Test) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Test) ProtoMessage() {}
+
+func (x *Test) ProtoReflect() protoreflect.Message {
+	mi := &file_word_v1_word_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Test.ProtoReflect.Descriptor instead.
+func (*Test) Descriptor() ([]byte, []int) {
+	return file_word_v1_word_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Test) GetText() string {
+	if x != nil {
+		return x.Text
+	}
+	return ""
+}
+
 type GetWordRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Word          string                 `protobuf:"bytes,1,opt,name=word,proto3" json:"word,omitempty"`
@@ -235,7 +279,7 @@ type GetWordRequest struct {
 
 func (x *GetWordRequest) Reset() {
 	*x = GetWordRequest{}
-	mi := &file_word_v1_word_proto_msgTypes[2]
+	mi := &file_word_v1_word_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -247,7 +291,7 @@ func (x *GetWordRequest) String() string {
 func (*GetWordRequest) ProtoMessage() {}
 
 func (x *GetWordRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[2]
+	mi := &file_word_v1_word_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -260,7 +304,7 @@ func (x *GetWordRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWordRequest.ProtoReflect.Descriptor instead.
 func (*GetWordRequest) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{2}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetWordRequest) GetWord() string {
@@ -286,7 +330,7 @@ type GetWordResponse struct {
 
 func (x *GetWordResponse) Reset() {
 	*x = GetWordResponse{}
-	mi := &file_word_v1_word_proto_msgTypes[3]
+	mi := &file_word_v1_word_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -298,7 +342,7 @@ func (x *GetWordResponse) String() string {
 func (*GetWordResponse) ProtoMessage() {}
 
 func (x *GetWordResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[3]
+	mi := &file_word_v1_word_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -311,7 +355,7 @@ func (x *GetWordResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWordResponse.ProtoReflect.Descriptor instead.
 func (*GetWordResponse) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{3}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetWordResponse) GetWord() *Word {
@@ -331,7 +375,7 @@ type GetWordsRequest struct {
 
 func (x *GetWordsRequest) Reset() {
 	*x = GetWordsRequest{}
-	mi := &file_word_v1_word_proto_msgTypes[4]
+	mi := &file_word_v1_word_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -343,7 +387,7 @@ func (x *GetWordsRequest) String() string {
 func (*GetWordsRequest) ProtoMessage() {}
 
 func (x *GetWordsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[4]
+	mi := &file_word_v1_word_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -356,7 +400,7 @@ func (x *GetWordsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWordsRequest.ProtoReflect.Descriptor instead.
 func (*GetWordsRequest) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{4}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *GetWordsRequest) GetWords() []string {
@@ -382,7 +426,7 @@ type GetWordsResponse struct {
 
 func (x *GetWordsResponse) Reset() {
 	*x = GetWordsResponse{}
-	mi := &file_word_v1_word_proto_msgTypes[5]
+	mi := &file_word_v1_word_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -394,7 +438,7 @@ func (x *GetWordsResponse) String() string {
 func (*GetWordsResponse) ProtoMessage() {}
 
 func (x *GetWordsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[5]
+	mi := &file_word_v1_word_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -407,7 +451,7 @@ func (x *GetWordsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWordsResponse.ProtoReflect.Descriptor instead.
 func (*GetWordsResponse) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{5}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetWordsResponse) GetWords() []*Word {
@@ -425,7 +469,7 @@ type PingRequest struct {
 
 func (x *PingRequest) Reset() {
 	*x = PingRequest{}
-	mi := &file_word_v1_word_proto_msgTypes[6]
+	mi := &file_word_v1_word_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -437,7 +481,7 @@ func (x *PingRequest) String() string {
 func (*PingRequest) ProtoMessage() {}
 
 func (x *PingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[6]
+	mi := &file_word_v1_word_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -450,7 +494,7 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
 func (*PingRequest) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{6}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{7}
 }
 
 type PingResponse struct {
@@ -464,7 +508,7 @@ type PingResponse struct {
 
 func (x *PingResponse) Reset() {
 	*x = PingResponse{}
-	mi := &file_word_v1_word_proto_msgTypes[7]
+	mi := &file_word_v1_word_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -476,7 +520,7 @@ func (x *PingResponse) String() string {
 func (*PingResponse) ProtoMessage() {}
 
 func (x *PingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[7]
+	mi := &file_word_v1_word_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -489,7 +533,7 @@ func (x *PingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
 func (*PingResponse) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{7}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *PingResponse) GetService() string {
@@ -521,7 +565,7 @@ type HealthRequest struct {
 
 func (x *HealthRequest) Reset() {
 	*x = HealthRequest{}
-	mi := &file_word_v1_word_proto_msgTypes[8]
+	mi := &file_word_v1_word_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -533,7 +577,7 @@ func (x *HealthRequest) String() string {
 func (*HealthRequest) ProtoMessage() {}
 
 func (x *HealthRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[8]
+	mi := &file_word_v1_word_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -546,7 +590,7 @@ func (x *HealthRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthRequest.ProtoReflect.Descriptor instead.
 func (*HealthRequest) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{8}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{9}
 }
 
 type HealthResponse struct {
@@ -558,7 +602,7 @@ type HealthResponse struct {
 
 func (x *HealthResponse) Reset() {
 	*x = HealthResponse{}
-	mi := &file_word_v1_word_proto_msgTypes[9]
+	mi := &file_word_v1_word_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -570,7 +614,7 @@ func (x *HealthResponse) String() string {
 func (*HealthResponse) ProtoMessage() {}
 
 func (x *HealthResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_word_v1_word_proto_msgTypes[9]
+	mi := &file_word_v1_word_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -583,7 +627,7 @@ func (x *HealthResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use HealthResponse.ProtoReflect.Descriptor instead.
 func (*HealthResponse) Descriptor() ([]byte, []int) {
-	return file_word_v1_word_proto_rawDescGZIP(), []int{9}
+	return file_word_v1_word_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *HealthResponse) GetStatus() string {
@@ -613,7 +657,9 @@ const file_word_v1_word_proto_rawDesc = "" +
 	"\baudio_uk\x18\x05 \x01(\tR\aaudioUk\x12\x19\n" +
 	"\baudio_us\x18\x06 \x01(\tR\aaudioUs\x12$\n" +
 	"\x0epart_of_speech\x18\a \x03(\tR\fpartOfSpeech\x12,\n" +
-	"\bmeanings\x18\b \x03(\v2\x10.word.v1.MeaningR\bmeanings\"M\n" +
+	"\bmeanings\x18\b \x03(\v2\x10.word.v1.MeaningR\bmeanings\"\x1a\n" +
+	"\x04Test\x12\x12\n" +
+	"\x04text\x18\x01 \x01(\tR\x04text\"M\n" +
 	"\x0eGetWordRequest\x12\x12\n" +
 	"\x04word\x18\x01 \x01(\tR\x04word\x12'\n" +
 	"\x04dict\x18\x02 \x01(\x0e2\x13.word.v1.DictionaryR\x04dict\"4\n" +
@@ -657,19 +703,20 @@ func file_word_v1_word_proto_rawDescGZIP() []byte {
 }
 
 var file_word_v1_word_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_word_v1_word_proto_msgTypes = make([]protoimpl.MessageInfo, 10)
+var file_word_v1_word_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_word_v1_word_proto_goTypes = []any{
 	(Dictionary)(0),          // 0: word.v1.Dictionary
 	(*Meaning)(nil),          // 1: word.v1.Meaning
 	(*Word)(nil),             // 2: word.v1.Word
-	(*GetWordRequest)(nil),   // 3: word.v1.GetWordRequest
-	(*GetWordResponse)(nil),  // 4: word.v1.GetWordResponse
-	(*GetWordsRequest)(nil),  // 5: word.v1.GetWordsRequest
-	(*GetWordsResponse)(nil), // 6: word.v1.GetWordsResponse
-	(*PingRequest)(nil),      // 7: word.v1.PingRequest
-	(*PingResponse)(nil),     // 8: word.v1.PingResponse
-	(*HealthRequest)(nil),    // 9: word.v1.HealthRequest
-	(*HealthResponse)(nil),   // 10: word.v1.HealthResponse
+	(*Test)(nil),             // 3: word.v1.Test
+	(*GetWordRequest)(nil),   // 4: word.v1.GetWordRequest
+	(*GetWordResponse)(nil),  // 5: word.v1.GetWordResponse
+	(*GetWordsRequest)(nil),  // 6: word.v1.GetWordsRequest
+	(*GetWordsResponse)(nil), // 7: word.v1.GetWordsResponse
+	(*PingRequest)(nil),      // 8: word.v1.PingRequest
+	(*PingResponse)(nil),     // 9: word.v1.PingResponse
+	(*HealthRequest)(nil),    // 10: word.v1.HealthRequest
+	(*HealthResponse)(nil),   // 11: word.v1.HealthResponse
 }
 var file_word_v1_word_proto_depIdxs = []int32{
 	1,  // 0: word.v1.Word.meanings:type_name -> word.v1.Meaning
@@ -677,14 +724,14 @@ var file_word_v1_word_proto_depIdxs = []int32{
 	2,  // 2: word.v1.GetWordResponse.word:type_name -> word.v1.Word
 	0,  // 3: word.v1.GetWordsRequest.dict:type_name -> word.v1.Dictionary
 	2,  // 4: word.v1.GetWordsResponse.words:type_name -> word.v1.Word
-	3,  // 5: word.v1.WordService.GetWord:input_type -> word.v1.GetWordRequest
-	5,  // 6: word.v1.WordService.GetWords:input_type -> word.v1.GetWordsRequest
-	7,  // 7: word.v1.WordService.Ping:input_type -> word.v1.PingRequest
-	9,  // 8: word.v1.WordService.Health:input_type -> word.v1.HealthRequest
-	4,  // 9: word.v1.WordService.GetWord:output_type -> word.v1.GetWordResponse
-	6,  // 10: word.v1.WordService.GetWords:output_type -> word.v1.GetWordsResponse
-	8,  // 11: word.v1.WordService.Ping:output_type -> word.v1.PingResponse
-	10, // 12: word.v1.WordService.Health:output_type -> word.v1.HealthResponse
+	4,  // 5: word.v1.WordService.GetWord:input_type -> word.v1.GetWordRequest
+	6,  // 6: word.v1.WordService.GetWords:input_type -> word.v1.GetWordsRequest
+	8,  // 7: word.v1.WordService.Ping:input_type -> word.v1.PingRequest
+	10, // 8: word.v1.WordService.Health:input_type -> word.v1.HealthRequest
+	5,  // 9: word.v1.WordService.GetWord:output_type -> word.v1.GetWordResponse
+	7,  // 10: word.v1.WordService.GetWords:output_type -> word.v1.GetWordsResponse
+	9,  // 11: word.v1.WordService.Ping:output_type -> word.v1.PingResponse
+	11, // 12: word.v1.WordService.Health:output_type -> word.v1.HealthResponse
 	9,  // [9:13] is the sub-list for method output_type
 	5,  // [5:9] is the sub-list for method input_type
 	5,  // [5:5] is the sub-list for extension type_name
@@ -703,7 +750,7 @@ func file_word_v1_word_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_word_v1_word_proto_rawDesc), len(file_word_v1_word_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   10,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
