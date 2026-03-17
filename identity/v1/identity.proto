@@ -173,6 +173,14 @@ message SearchRolesByNameResponse {
   repeated Role roles = 1;
 }
 
+message GetRolesByUserIdRequest {
+  string user_id = 10;
+}
+
+message GetRolesByUserIdResponse {
+  repeated Role roles = 1;
+}
+
 // ── Services ──────────────────────────────────────────────────────────────────
 
 // AuthService handles authentication: registration, login, token management.
@@ -203,5 +211,6 @@ service UserService {
 service RoleService {
   rpc GetRoleById       (GetRoleByIdRequest)       returns (GetRoleByIdResponse);
   rpc GetRoleByName     (GetRoleByNameRequest)     returns (GetRoleByNameResponse);
+  rpc GetRolesByUserId  (GetRolesByUserIdRequest)  returns (GetRolesByUserIdResponse);
   rpc SearchRolesByName (SearchRolesByNameRequest) returns (SearchRolesByNameResponse);
 }
