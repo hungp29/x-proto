@@ -137,6 +137,15 @@ message GetUserByEmailResponse {
   User user = 1;
 }
 
+message SearchUsersByEmailRequest {
+  string query = 10; // prefix to search
+  int32 limit = 20;
+}
+
+message SearchUsersByEmailResponse {
+  repeated User users = 1;
+}
+
 // ── RoleService message ───────────────────────────────────────────────────────
 
 message GetRoleByIdRequest {
@@ -153,6 +162,15 @@ message GetRoleByNameRequest {
 
 message GetRoleByNameResponse {
   Role role = 1;
+}
+
+message SearchRolesByNameRequest {
+  string query = 10; // prefix to search
+  int32 limit = 20;
+}
+
+message SearchRolesByNameResponse {
+  repeated Role roles = 1;
 }
 
 // ── Services ──────────────────────────────────────────────────────────────────
@@ -176,12 +194,14 @@ service AuthzService {
 
 // UserService: get user information
 service UserService {
-  rpc GetUserById    (GetUserByIdRequest)    returns (GetUserByIdResponse);
-  rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
+  rpc GetUserById        (GetUserByIdRequest)        returns (GetUserByIdResponse);
+  rpc GetUserByEmail     (GetUserByEmailRequest)     returns (GetUserByEmailResponse);
+  rpc SearchUsersByEmail (SearchUsersByEmailRequest) returns (SearchUsersByEmailResponse);
 }
 
 // RoleService: get role
 service RoleService {
-  rpc GetRoleById   (GetRoleByIdRequest)   returns (GetRoleByIdResponse);
-  rpc GetRoleByName (GetRoleByNameRequest) returns (GetRoleByNameResponse);
+  rpc GetRoleById       (GetRoleByIdRequest)       returns (GetRoleByIdResponse);
+  rpc GetRoleByName     (GetRoleByNameRequest)     returns (GetRoleByNameResponse);
+  rpc SearchRolesByName (SearchRolesByNameRequest) return (SearchRolesByNameResponse);
 }
