@@ -176,12 +176,12 @@ service AuthzService {
 
 // UserService: get user information
 service UserService {
-  rpc GetUserById    (GetUserByIdRequest)    returns (GetUserByIdResponse)
-  rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse)
+  rpc GetUserById    (GetUserByIdRequest)    returns (GetUserByIdResponse);
+  rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse);
 }
 
 // RoleService: get role
 service RoleService {
-  rpc GetRoleById   (GetRoleByIdRequest)   returns (GetRoleByIdResponse)
-  rpc GetRoleByName (GetRoleByNameRequest) returns (GetRoleByNameResponse) 
+  rpc GetRoleById   (GetRoleByIdRequest)   returns (GetRoleByIdResponse);
+  rpc GetRoleByName (GetRoleByNameRequest) returns (GetRoleByNameResponse);
 }
