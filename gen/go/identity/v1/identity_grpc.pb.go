@@ -497,8 +497,9 @@ var AuthzService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	UserService_GetUserById_FullMethodName    = "/identity.v1.UserService/GetUserById"
-	UserService_GetUserByEmail_FullMethodName = "/identity.v1.UserService/GetUserByEmail"
+	UserService_GetUserById_FullMethodName        = "/identity.v1.UserService/GetUserById"
+	UserService_GetUserByEmail_FullMethodName     = "/identity.v1.UserService/GetUserByEmail"
+	UserService_SearchUsersByEmail_FullMethodName = "/identity.v1.UserService/SearchUsersByEmail"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -509,6 +510,7 @@ const (
 type UserServiceClient interface {
 	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserByEmailResponse, error)
+	SearchUsersByEmail(ctx context.Context, in *SearchUsersByEmailRequest, opts ...grpc.CallOption) (*SearchUsersByEmailResponse, error)
 }
 
 type userServiceClient struct {
@@ -539,6 +541,16 @@ func (c *userServiceClient) GetUserByEmail(ctx context.Context, in *GetUserByEma
 	return out, nil
 }
 
+func (c *userServiceClient) SearchUsersByEmail(ctx context.Context, in *SearchUsersByEmailRequest, opts ...grpc.CallOption) (*SearchUsersByEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchUsersByEmailResponse)
+	err := c.cc.Invoke(ctx, UserService_SearchUsersByEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
@@ -547,6 +559,7 @@ func (c *userServiceClient) GetUserByEmail(ctx context.Context, in *GetUserByEma
 type UserServiceServer interface {
 	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error)
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error)
+	SearchUsersByEmail(context.Context, *SearchUsersByEmailRequest) (*SearchUsersByEmailResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -562,6 +575,9 @@ func (UnimplementedUserServiceServer) GetUserById(context.Context, *GetUserByIdR
 }
 func (UnimplementedUserServiceServer) GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserByEmail not implemented")
+}
+func (UnimplementedUserServiceServer) SearchUsersByEmail(context.Context, *SearchUsersByEmailRequest) (*SearchUsersByEmailResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchUsersByEmail not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -620,6 +636,24 @@ func _UserService_GetUserByEmail_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_SearchUsersByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchUsersByEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).SearchUsersByEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_SearchUsersByEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).SearchUsersByEmail(ctx, req.(*SearchUsersByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -635,14 +669,19 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "GetUserByEmail",
 			Handler:    _UserService_GetUserByEmail_Handler,
 		},
+		{
+			MethodName: "SearchUsersByEmail",
+			Handler:    _UserService_SearchUsersByEmail_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "identity/v1/identity.proto",
 }
 
 const (
-	RoleService_GetRoleById_FullMethodName   = "/identity.v1.RoleService/GetRoleById"
-	RoleService_GetRoleByName_FullMethodName = "/identity.v1.RoleService/GetRoleByName"
+	RoleService_GetRoleById_FullMethodName       = "/identity.v1.RoleService/GetRoleById"
+	RoleService_GetRoleByName_FullMethodName     = "/identity.v1.RoleService/GetRoleByName"
+	RoleService_SearchRolesByName_FullMethodName = "/identity.v1.RoleService/SearchRolesByName"
 )
 
 // RoleServiceClient is the client API for RoleService service.
@@ -653,6 +692,7 @@ const (
 type RoleServiceClient interface {
 	GetRoleById(ctx context.Context, in *GetRoleByIdRequest, opts ...grpc.CallOption) (*GetRoleByIdResponse, error)
 	GetRoleByName(ctx context.Context, in *GetRoleByNameRequest, opts ...grpc.CallOption) (*GetRoleByNameResponse, error)
+	SearchRolesByName(ctx context.Context, in *SearchRolesByNameRequest, opts ...grpc.CallOption) (*SearchRolesByNameResponse, error)
 }
 
 type roleServiceClient struct {
@@ -683,6 +723,16 @@ func (c *roleServiceClient) GetRoleByName(ctx context.Context, in *GetRoleByName
 	return out, nil
 }
 
+func (c *roleServiceClient) SearchRolesByName(ctx context.Context, in *SearchRolesByNameRequest, opts ...grpc.CallOption) (*SearchRolesByNameResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchRolesByNameResponse)
+	err := c.cc.Invoke(ctx, RoleService_SearchRolesByName_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RoleServiceServer is the server API for RoleService service.
 // All implementations must embed UnimplementedRoleServiceServer
 // for forward compatibility.
@@ -691,6 +741,7 @@ func (c *roleServiceClient) GetRoleByName(ctx context.Context, in *GetRoleByName
 type RoleServiceServer interface {
 	GetRoleById(context.Context, *GetRoleByIdRequest) (*GetRoleByIdResponse, error)
 	GetRoleByName(context.Context, *GetRoleByNameRequest) (*GetRoleByNameResponse, error)
+	SearchRolesByName(context.Context, *SearchRolesByNameRequest) (*SearchRolesByNameResponse, error)
 	mustEmbedUnimplementedRoleServiceServer()
 }
 
@@ -706,6 +757,9 @@ func (UnimplementedRoleServiceServer) GetRoleById(context.Context, *GetRoleByIdR
 }
 func (UnimplementedRoleServiceServer) GetRoleByName(context.Context, *GetRoleByNameRequest) (*GetRoleByNameResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRoleByName not implemented")
+}
+func (UnimplementedRoleServiceServer) SearchRolesByName(context.Context, *SearchRolesByNameRequest) (*SearchRolesByNameResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchRolesByName not implemented")
 }
 func (UnimplementedRoleServiceServer) mustEmbedUnimplementedRoleServiceServer() {}
 func (UnimplementedRoleServiceServer) testEmbeddedByValue()                     {}
@@ -764,6 +818,24 @@ func _RoleService_GetRoleByName_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RoleService_SearchRolesByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRolesByNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).SearchRolesByName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_SearchRolesByName_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).SearchRolesByName(ctx, req.(*SearchRolesByNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RoleService_ServiceDesc is the grpc.ServiceDesc for RoleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -778,6 +850,10 @@ var RoleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRoleByName",
 			Handler:    _RoleService_GetRoleByName_Handler,
+		},
+		{
+			MethodName: "SearchRolesByName",
+			Handler:    _RoleService_SearchRolesByName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
