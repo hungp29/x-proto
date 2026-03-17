@@ -119,6 +119,42 @@ message RevokeRoleRequest {
 
 message RevokeRoleResponse {}
 
+// ── UserService messages ──────────────────────────────────────────────────────
+
+message GetUserById {
+  string user_id = 10;
+}
+
+message GetUserByIdResponse {
+  User user = 1;
+}
+
+message GetUserByEmailRequest {
+  string email = 10;
+}
+
+message GetUserByEmailResponse {
+  User user = 1;
+}
+
+// ── RoleService message ───────────────────────────────────────────────────────
+
+message GetRoleByIdRequest {
+  string role_id = 10;
+}
+
+message GetRoleByIdResponse {
+  Role role = 1;
+}
+
+message GetRoleByNameRequest {
+  string name = 10;
+}
+
+message GetRoleByNameResponse {
+  Role role = 1;
+}
+
 // ── Services ──────────────────────────────────────────────────────────────────
 
 // AuthService handles authentication: registration, login, token management.
@@ -136,4 +172,16 @@ service AuthzService {
   rpc GetUserPermissions (GetUserPermissionsRequest) returns (GetUserPermissionsResponse);
   rpc AssignRole         (AssignRoleRequest)         returns (AssignRoleResponse);
   rpc RevokeRole         (RevokeRoleRequest)         returns (RevokeRoleResponse);
+}
+
+// UserService: get user information
+service UserService {
+  rpc GetUserById    (GetUserByIdRequest)    returns (GetUserByIdResponse)
+  rpc GetUserByEmail (GetUserByEmailRequest) returns (GetUserByEmailResponse)
+}
+
+// RoleService: get role
+service RoleService {
+  rpc GetRoleById   (GetRoleByIdRequest)   returns (GetRoleByIdResponse)
+  rpc GetRoleByName (GetRoleByNameRequest) returns (GetRoleByNameResponse) 
 }
