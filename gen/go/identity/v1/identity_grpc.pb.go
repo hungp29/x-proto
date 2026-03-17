@@ -681,6 +681,7 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 const (
 	RoleService_GetRoleById_FullMethodName       = "/identity.v1.RoleService/GetRoleById"
 	RoleService_GetRoleByName_FullMethodName     = "/identity.v1.RoleService/GetRoleByName"
+	RoleService_GetRolesByUserId_FullMethodName  = "/identity.v1.RoleService/GetRolesByUserId"
 	RoleService_SearchRolesByName_FullMethodName = "/identity.v1.RoleService/SearchRolesByName"
 )
 
@@ -692,6 +693,7 @@ const (
 type RoleServiceClient interface {
 	GetRoleById(ctx context.Context, in *GetRoleByIdRequest, opts ...grpc.CallOption) (*GetRoleByIdResponse, error)
 	GetRoleByName(ctx context.Context, in *GetRoleByNameRequest, opts ...grpc.CallOption) (*GetRoleByNameResponse, error)
+	GetRolesByUserId(ctx context.Context, in *GetRolesByUserIdRequest, opts ...grpc.CallOption) (*GetRolesByUserIdResponse, error)
 	SearchRolesByName(ctx context.Context, in *SearchRolesByNameRequest, opts ...grpc.CallOption) (*SearchRolesByNameResponse, error)
 }
 
@@ -723,6 +725,16 @@ func (c *roleServiceClient) GetRoleByName(ctx context.Context, in *GetRoleByName
 	return out, nil
 }
 
+func (c *roleServiceClient) GetRolesByUserId(ctx context.Context, in *GetRolesByUserIdRequest, opts ...grpc.CallOption) (*GetRolesByUserIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRolesByUserIdResponse)
+	err := c.cc.Invoke(ctx, RoleService_GetRolesByUserId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *roleServiceClient) SearchRolesByName(ctx context.Context, in *SearchRolesByNameRequest, opts ...grpc.CallOption) (*SearchRolesByNameResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SearchRolesByNameResponse)
@@ -741,6 +753,7 @@ func (c *roleServiceClient) SearchRolesByName(ctx context.Context, in *SearchRol
 type RoleServiceServer interface {
 	GetRoleById(context.Context, *GetRoleByIdRequest) (*GetRoleByIdResponse, error)
 	GetRoleByName(context.Context, *GetRoleByNameRequest) (*GetRoleByNameResponse, error)
+	GetRolesByUserId(context.Context, *GetRolesByUserIdRequest) (*GetRolesByUserIdResponse, error)
 	SearchRolesByName(context.Context, *SearchRolesByNameRequest) (*SearchRolesByNameResponse, error)
 	mustEmbedUnimplementedRoleServiceServer()
 }
@@ -757,6 +770,9 @@ func (UnimplementedRoleServiceServer) GetRoleById(context.Context, *GetRoleByIdR
 }
 func (UnimplementedRoleServiceServer) GetRoleByName(context.Context, *GetRoleByNameRequest) (*GetRoleByNameResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetRoleByName not implemented")
+}
+func (UnimplementedRoleServiceServer) GetRolesByUserId(context.Context, *GetRolesByUserIdRequest) (*GetRolesByUserIdResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRolesByUserId not implemented")
 }
 func (UnimplementedRoleServiceServer) SearchRolesByName(context.Context, *SearchRolesByNameRequest) (*SearchRolesByNameResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SearchRolesByName not implemented")
@@ -818,6 +834,24 @@ func _RoleService_GetRoleByName_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RoleService_GetRolesByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRolesByUserIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).GetRolesByUserId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_GetRolesByUserId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).GetRolesByUserId(ctx, req.(*GetRolesByUserIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RoleService_SearchRolesByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SearchRolesByNameRequest)
 	if err := dec(in); err != nil {
@@ -850,6 +884,10 @@ var RoleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRoleByName",
 			Handler:    _RoleService_GetRoleByName_Handler,
+		},
+		{
+			MethodName: "GetRolesByUserId",
+			Handler:    _RoleService_GetRolesByUserId_Handler,
 		},
 		{
 			MethodName: "SearchRolesByName",
