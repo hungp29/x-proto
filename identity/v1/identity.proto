@@ -203,5 +203,5 @@ service UserService {
 service RoleService {
   rpc GetRoleById       (GetRoleByIdRequest)       returns (GetRoleByIdResponse);
   rpc GetRoleByName     (GetRoleByNameRequest)     returns (GetRoleByNameResponse);
-  rpc SearchRolesByName (SearchRolesByNameRequest) return (SearchRolesByNameResponse);
+  rpc SearchRolesByName (SearchRolesByNameRequest) returns (SearchRolesByNameResponse);
 }
