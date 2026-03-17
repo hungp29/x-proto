@@ -121,7 +121,7 @@ message RevokeRoleResponse {}
 
 // ── UserService messages ──────────────────────────────────────────────────────
 
-message GetUserById {
+message GetUserByIdRequest {
   string user_id = 10;
 }
 
