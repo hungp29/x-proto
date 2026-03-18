@@ -1165,6 +1165,7 @@ var RoleService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	PermissionService_ListPermissions_FullMethodName          = "/identity.v1.PermissionService/ListPermissions"
 	PermissionService_CreatePermission_FullMethodName         = "/identity.v1.PermissionService/CreatePermission"
 	PermissionService_GetPermissionsByResource_FullMethodName = "/identity.v1.PermissionService/GetPermissionsByResource"
 	PermissionService_GetPermissionsByRoleId_FullMethodName   = "/identity.v1.PermissionService/GetPermissionsByRoleId"
@@ -1178,6 +1179,7 @@ const (
 //
 // PermissionService: create, get permission
 type PermissionServiceClient interface {
+	ListPermissions(ctx context.Context, in *ListPermissionsRequest, opts ...grpc.CallOption) (*ListPermissionsResponse, error)
 	CreatePermission(ctx context.Context, in *CreatePermissionRequest, opts ...grpc.CallOption) (*CreatePermissionResponse, error)
 	GetPermissionsByResource(ctx context.Context, in *GetPermissionsByResourceRequest, opts ...grpc.CallOption) (*GetPermissionsByResourceResponse, error)
 	GetPermissionsByRoleId(ctx context.Context, in *GetPermissionsByRoleIdRequest, opts ...grpc.CallOption) (*GetPermissionsByRoleIdResponse, error)
@@ -1191,6 +1193,16 @@ type permissionServiceClient struct {
 
 func NewPermissionServiceClient(cc grpc.ClientConnInterface) PermissionServiceClient {
 	return &permissionServiceClient{cc}
+}
+
+func (c *permissionServiceClient) ListPermissions(ctx context.Context, in *ListPermissionsRequest, opts ...grpc.CallOption) (*ListPermissionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListPermissionsResponse)
+	err := c.cc.Invoke(ctx, PermissionService_ListPermissions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *permissionServiceClient) CreatePermission(ctx context.Context, in *CreatePermissionRequest, opts ...grpc.CallOption) (*CreatePermissionResponse, error) {
@@ -1249,6 +1261,7 @@ func (c *permissionServiceClient) DeletePermissionById(ctx context.Context, in *
 //
 // PermissionService: create, get permission
 type PermissionServiceServer interface {
+	ListPermissions(context.Context, *ListPermissionsRequest) (*ListPermissionsResponse, error)
 	CreatePermission(context.Context, *CreatePermissionRequest) (*CreatePermissionResponse, error)
 	GetPermissionsByResource(context.Context, *GetPermissionsByResourceRequest) (*GetPermissionsByResourceResponse, error)
 	GetPermissionsByRoleId(context.Context, *GetPermissionsByRoleIdRequest) (*GetPermissionsByRoleIdResponse, error)
@@ -1264,6 +1277,9 @@ type PermissionServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPermissionServiceServer struct{}
 
+func (UnimplementedPermissionServiceServer) ListPermissions(context.Context, *ListPermissionsRequest) (*ListPermissionsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListPermissions not implemented")
+}
 func (UnimplementedPermissionServiceServer) CreatePermission(context.Context, *CreatePermissionRequest) (*CreatePermissionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreatePermission not implemented")
 }
@@ -1298,6 +1314,24 @@ func RegisterPermissionServiceServer(s grpc.ServiceRegistrar, srv PermissionServ
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&PermissionService_ServiceDesc, srv)
+}
+
+func _PermissionService_ListPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListPermissionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PermissionServiceServer).ListPermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PermissionService_ListPermissions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PermissionServiceServer).ListPermissions(ctx, req.(*ListPermissionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _PermissionService_CreatePermission_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1397,6 +1431,10 @@ var PermissionService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "identity.v1.PermissionService",
 	HandlerType: (*PermissionServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListPermissions",
+			Handler:    _PermissionService_ListPermissions_Handler,
+		},
 		{
 			MethodName: "CreatePermission",
 			Handler:    _PermissionService_CreatePermission_Handler,
