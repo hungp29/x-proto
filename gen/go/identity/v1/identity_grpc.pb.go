@@ -497,6 +497,7 @@ var AuthzService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	UserService_ListUsers_FullMethodName          = "/identity.v1.UserService/ListUsers"
 	UserService_GetUserById_FullMethodName        = "/identity.v1.UserService/GetUserById"
 	UserService_GetUserByEmail_FullMethodName     = "/identity.v1.UserService/GetUserByEmail"
 	UserService_SearchUsersByEmail_FullMethodName = "/identity.v1.UserService/SearchUsersByEmail"
@@ -508,8 +509,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// UserService: get, search, update, delete user
+// UserService: list, get, search, update, delete user
 type UserServiceClient interface {
+	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserByEmailResponse, error)
 	SearchUsersByEmail(ctx context.Context, in *SearchUsersByEmailRequest, opts ...grpc.CallOption) (*SearchUsersByEmailResponse, error)
@@ -523,6 +525,16 @@ type userServiceClient struct {
 
 func NewUserServiceClient(cc grpc.ClientConnInterface) UserServiceClient {
 	return &userServiceClient{cc}
+}
+
+func (c *userServiceClient) ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListUsersResponse)
+	err := c.cc.Invoke(ctx, UserService_ListUsers_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *userServiceClient) GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error) {
@@ -579,8 +591,9 @@ func (c *userServiceClient) DeleteUserById(ctx context.Context, in *DeleteUserBy
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
 //
-// UserService: get, search, update, delete user
+// UserService: list, get, search, update, delete user
 type UserServiceServer interface {
+	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error)
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error)
 	SearchUsersByEmail(context.Context, *SearchUsersByEmailRequest) (*SearchUsersByEmailResponse, error)
@@ -596,6 +609,9 @@ type UserServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedUserServiceServer struct{}
 
+func (UnimplementedUserServiceServer) ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListUsers not implemented")
+}
 func (UnimplementedUserServiceServer) GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserById not implemented")
 }
@@ -630,6 +646,24 @@ func RegisterUserServiceServer(s grpc.ServiceRegistrar, srv UserServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&UserService_ServiceDesc, srv)
+}
+
+func _UserService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUsersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ListUsers(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_ListUsers_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ListUsers(ctx, req.(*ListUsersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _UserService_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -730,6 +764,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*UserServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "ListUsers",
+			Handler:    _UserService_ListUsers_Handler,
+		},
+		{
 			MethodName: "GetUserById",
 			Handler:    _UserService_GetUserById_Handler,
 		},
@@ -755,6 +793,7 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	RoleService_ListRoles_FullMethodName         = "/identity.v1.RoleService/ListRoles"
 	RoleService_CreateRole_FullMethodName        = "/identity.v1.RoleService/CreateRole"
 	RoleService_GetRoleById_FullMethodName       = "/identity.v1.RoleService/GetRoleById"
 	RoleService_GetRoleByName_FullMethodName     = "/identity.v1.RoleService/GetRoleByName"
@@ -768,8 +807,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// RoleService: create, get, search, update, delete role
+// RoleService: list, create, get, search, update, delete role
 type RoleServiceClient interface {
+	ListRoles(ctx context.Context, in *ListRolesRequest, opts ...grpc.CallOption) (*ListRolesResponse, error)
 	CreateRole(ctx context.Context, in *CreateRoleRequest, opts ...grpc.CallOption) (*CreateRoleResponse, error)
 	GetRoleById(ctx context.Context, in *GetRoleByIdRequest, opts ...grpc.CallOption) (*GetRoleByIdResponse, error)
 	GetRoleByName(ctx context.Context, in *GetRoleByNameRequest, opts ...grpc.CallOption) (*GetRoleByNameResponse, error)
@@ -785,6 +825,16 @@ type roleServiceClient struct {
 
 func NewRoleServiceClient(cc grpc.ClientConnInterface) RoleServiceClient {
 	return &roleServiceClient{cc}
+}
+
+func (c *roleServiceClient) ListRoles(ctx context.Context, in *ListRolesRequest, opts ...grpc.CallOption) (*ListRolesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListRolesResponse)
+	err := c.cc.Invoke(ctx, RoleService_ListRoles_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *roleServiceClient) CreateRole(ctx context.Context, in *CreateRoleRequest, opts ...grpc.CallOption) (*CreateRoleResponse, error) {
@@ -861,8 +911,9 @@ func (c *roleServiceClient) DeleteRoleById(ctx context.Context, in *DeleteRoleBy
 // All implementations must embed UnimplementedRoleServiceServer
 // for forward compatibility.
 //
-// RoleService: create, get, search, update, delete role
+// RoleService: list, create, get, search, update, delete role
 type RoleServiceServer interface {
+	ListRoles(context.Context, *ListRolesRequest) (*ListRolesResponse, error)
 	CreateRole(context.Context, *CreateRoleRequest) (*CreateRoleResponse, error)
 	GetRoleById(context.Context, *GetRoleByIdRequest) (*GetRoleByIdResponse, error)
 	GetRoleByName(context.Context, *GetRoleByNameRequest) (*GetRoleByNameResponse, error)
@@ -880,6 +931,9 @@ type RoleServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedRoleServiceServer struct{}
 
+func (UnimplementedRoleServiceServer) ListRoles(context.Context, *ListRolesRequest) (*ListRolesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListRoles not implemented")
+}
 func (UnimplementedRoleServiceServer) CreateRole(context.Context, *CreateRoleRequest) (*CreateRoleResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateRole not implemented")
 }
@@ -920,6 +974,24 @@ func RegisterRoleServiceServer(s grpc.ServiceRegistrar, srv RoleServiceServer) {
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&RoleService_ServiceDesc, srv)
+}
+
+func _RoleService_ListRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRolesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).ListRoles(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_ListRoles_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).ListRoles(ctx, req.(*ListRolesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _RoleService_CreateRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1055,6 +1127,10 @@ var RoleService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "identity.v1.RoleService",
 	HandlerType: (*RoleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListRoles",
+			Handler:    _RoleService_ListRoles_Handler,
+		},
 		{
 			MethodName: "CreateRole",
 			Handler:    _RoleService_CreateRole_Handler,
