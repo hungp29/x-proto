@@ -2,36 +2,9 @@ syntax = "proto3";
 
 package identity.v1;
 
+import "common/v1/common.proto";
+
 option go_package = "github.com/hungp29/x-proto/gen/go/identity/v1;identityv1";
-
-// ── Shared types ──────────────────────────────────────────────────────────────
-
-message User {
-  string id             = 1;
-  string email          = 2;
-  string name           = 3;
-  bool   email_verified = 4;
-  bool   locked         = 5;
-}
-
-message TokenPair {
-  string access_token            = 1;
-  string refresh_token           = 2;
-  int64  access_token_expires_in = 3; // seconds until expiry
-}
-
-message Permission {
-  string id          = 1;
-  string resource    = 2;
-  string action      = 3;
-  string description = 4;
-}
-
-message Role {
-  string id          = 1;
-  string name        = 2;
-  string description = 3;
-}
 
 // ── AuthService messages ──────────────────────────────────────────────────────
 
@@ -42,7 +15,7 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  User user = 1;
+  common.v1.User user = 1;
 }
 
 message LoginRequest {
@@ -53,8 +26,8 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  User      user   = 1;
-  TokenPair tokens = 2;
+  common.v1.User      user   = 1;
+  common.v1.TokenPair tokens = 2;
 }
 
 message LogoutRequest {
@@ -70,7 +43,7 @@ message RefreshTokenRequest {
 }
 
 message RefreshTokenResponse {
-  TokenPair tokens = 1;
+  common.v1.TokenPair tokens = 1;
 }
 
 message ValidateTokenRequest {
@@ -100,7 +73,7 @@ message GetUserPermissionsRequest {
 }
 
 message GetUserPermissionsResponse {
-  repeated Permission permissions = 1;
+  repeated common.v1.Permission permissions = 1;
 }
 
 message AssignRoleRequest {
@@ -121,12 +94,27 @@ message RevokeRoleResponse {}
 
 // ── UserService messages ──────────────────────────────────────────────────────
 
+message ListUsersRequest {
+  common.v1.Pagination pagination = 1;
+
+  // filters — empty/unset fields are ignored
+  optional string email  = 10; // partial match on email
+  optional string name   = 20; // partial match on name
+  optional bool   locked = 30; // filter by lock status
+}
+
+message ListUsersResponse {
+  repeated common.v1.User users          = 1;
+  string                  next_page_token = 2; // empty when no more pages
+  int32                   total_count    = 3;
+}
+
 message GetUserByIdRequest {
   string user_id = 10;
 }
 
 message GetUserByIdResponse {
-  User user = 1;
+  common.v1.User user = 1;
 }
 
 message GetUserByEmailRequest {
@@ -134,7 +122,7 @@ message GetUserByEmailRequest {
 }
 
 message GetUserByEmailResponse {
-  User user = 1;
+  common.v1.User user = 1;
 }
 
 message SearchUsersByEmailRequest {
@@ -143,7 +131,7 @@ message SearchUsersByEmailRequest {
 }
 
 message SearchUsersByEmailResponse {
-  repeated User users = 1;
+  repeated common.v1.User users = 1;
 }
 
 message UpdateUserRequest {
@@ -155,7 +143,7 @@ message UpdateUserRequest {
 }
 
 message UpdateUserResponse {
-  User user = 1;
+  common.v1.User user = 1;
 }
 
 message DeleteUserByIdRequest {
@@ -168,13 +156,27 @@ message DeleteUserByIdResponse {
 
 // ── RoleService message ───────────────────────────────────────────────────────
 
+message ListRolesRequest {
+  common.v1.Pagination pagination = 1;
+
+  // filters — empty/unset fields are ignored
+  optional string name        = 10; // partial match on role name
+  optional string description = 20; // partial match on description
+}
+
+message ListRolesResponse {
+  repeated common.v1.Role roles          = 1;
+  string                  next_page_token = 2; // empty when no more pages
+  int32                   total_count    = 3;
+}
+
 message CreateRoleRequest {
   string name        = 10;
   string description = 20;
 }
 
 message CreateRoleResponse {
-  Role role = 1;
+  common.v1.Role role = 1;
 }
 
 message GetRoleByIdRequest {
@@ -182,7 +184,7 @@ message GetRoleByIdRequest {
 }
 
 message GetRoleByIdResponse {
-  Role role = 1;
+  common.v1.Role role = 1;
 }
 
 message GetRoleByNameRequest {
@@ -190,7 +192,7 @@ message GetRoleByNameRequest {
 }
 
 message GetRoleByNameResponse {
-  Role role = 1;
+  common.v1.Role role = 1;
 }
 
 message SearchRolesByNameRequest {
@@ -199,7 +201,7 @@ message SearchRolesByNameRequest {
 }
 
 message SearchRolesByNameResponse {
-  repeated Role roles = 1;
+  repeated common.v1.Role roles = 1;
 }
 
 message GetRolesByUserIdRequest {
@@ -207,7 +209,7 @@ message GetRolesByUserIdRequest {
 }
 
 message GetRolesByUserIdResponse {
-  repeated Role roles = 1;
+  repeated common.v1.Role roles = 1;
 }
 
 message UpdateRoleRequest {
@@ -219,7 +221,7 @@ message UpdateRoleRequest {
 }
 
 message UpdateRoleResponse {
-  Role role = 1;
+  common.v1.Role role = 1;
 }
 
 message DeleteRoleByIdRequest {
@@ -251,8 +253,9 @@ service AuthzService {
   rpc RevokeRole         (RevokeRoleRequest)         returns (RevokeRoleResponse);
 }
 
-// UserService: get, search, update, delete user
+// UserService: list, get, search, update, delete user
 service UserService {
+  rpc ListUsers          (ListUsersRequest)          returns (ListUsersResponse);
   rpc GetUserById        (GetUserByIdRequest)        returns (GetUserByIdResponse);
   rpc GetUserByEmail     (GetUserByEmailRequest)     returns (GetUserByEmailResponse);
   rpc SearchUsersByEmail (SearchUsersByEmailRequest) returns (SearchUsersByEmailResponse);
@@ -260,8 +263,9 @@ service UserService {
   rpc DeleteUserById     (DeleteUserByIdRequest)     returns (DeleteUserByIdResponse);
 }
 
-// RoleService: create, get, search, update, delete role
+// RoleService: list, create, get, search, update, delete role
 service RoleService {
+  rpc ListRoles         (ListRolesRequest)         returns (ListRolesResponse);
   rpc CreateRole        (CreateRoleRequest)        returns (CreateRoleResponse);
   rpc GetRoleById       (GetRoleByIdRequest)       returns (GetRoleByIdResponse);
   rpc GetRoleByName     (GetRoleByNameRequest)     returns (GetRoleByNameResponse);
@@ -287,7 +291,7 @@ message CreatePermissionRequest {
 }
 
 message CreatePermissionResponse {
-  Permission permission = 1;
+  common.v1.Permission permission = 1;
 }
 
 message GetPermissionsByResourceRequest {
@@ -295,7 +299,7 @@ message GetPermissionsByResourceRequest {
 }
 
 message GetPermissionsByResourceResponse {
-  repeated Permission permissions = 1;
+  repeated common.v1.Permission permissions = 1;
 }
 
 message GetPermissionsByRoleIdRequest {
@@ -303,7 +307,7 @@ message GetPermissionsByRoleIdRequest {
 }
 
 message GetPermissionsByRoleIdResponse {
-  repeated Permission permissions = 1;
+  repeated common.v1.Permission permissions = 1;
 }
 
 message UpdatePermissionRequest {
@@ -316,7 +320,7 @@ message UpdatePermissionRequest {
 }
 
 message UpdatePermissionResponse {
-  Permission permission = 1;
+  common.v1.Permission permission = 1;
 }
 
 message DeletePermissionByIdRequest {

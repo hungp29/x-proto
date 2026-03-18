@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/hungp29/x-proto/gen/go/common/v1;commonv1";
+
+// ── Shared domain types ────────────────────────────────────────────────────────
+
+message User {
+  string id             = 1;
+  string email          = 2;
+  string name           = 3;
+  bool   email_verified = 4;
+  bool   locked         = 5;
+}
+
+message TokenPair {
+  string access_token            = 1;
+  string refresh_token           = 2;
+  int64  access_token_expires_in = 3; // seconds until expiry
+}
+
+message Permission {
+  string id          = 1;
+  string resource    = 2;
+  string action      = 3;
+  string description = 4;
+}
+
+message Role {
+  string id          = 1;
+  string name        = 2;
+  string description = 3;
+}
+
+// ── Shared pagination ──────────────────────────────────────────────────────────
+
+message Pagination {
+  int32  page_size  = 1; // max items per page; server may cap
+  string page_token = 2; // opaque token from previous response; empty for first page
+}
