@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package identity.v1;
 
-option go_package = "github.com/hungp29/x-identity/internal/genpb/identity/v1;identityv1";
+option go_package = "github.com/hungp29/x-proto/gen/go/identity/v1;identityv1";
 
 // ── Shared types ──────────────────────────────────────────────────────────────
 
@@ -146,7 +146,36 @@ message SearchUsersByEmailResponse {
   repeated User users = 1;
 }
 
+message UpdateUserRequest {
+  string user_id = 10;
+
+  // update fields
+  optional string email = 20;
+  optional string name  = 30;
+}
+
+message UpdateUserResponse {
+  User user = 1;
+}
+
+message DeleteUserByIdRequest {
+  string user_id = 10;
+}
+
+message DeleteUserByIdResponse {
+  bool success = 1;
+}
+
 // ── RoleService message ───────────────────────────────────────────────────────
+
+message CreateRoleRequest {
+  string name        = 10;
+  string description = 20;
+}
+
+message CreateRoleResponse {
+  Role role = 1;
+}
 
 message GetRoleByIdRequest {
   string role_id = 10;
@@ -181,6 +210,28 @@ message GetRolesByUserIdResponse {
   repeated Role roles = 1;
 }
 
+message UpdateRoleRequest {
+  string role_id = 10;
+
+  // update fields
+  optional string name        = 20;
+  optional string description = 30;
+}
+
+message UpdateRoleResponse {
+  Role role = 1;
+}
+
+message DeleteRoleById {
+  string role_id = 10;
+}
+
+message DeleteRoleByIdResponse {
+  bool success = 1;
+}
+
+// ── PermissionService message ─────────────────────────────────────────────────
+
 // ── Services ──────────────────────────────────────────────────────────────────
 
 // AuthService handles authentication: registration, login, token management.
@@ -200,17 +251,78 @@ service AuthzService {
   rpc RevokeRole         (RevokeRoleRequest)         returns (RevokeRoleResponse);
 }
 
-// UserService: get user information
+// UserService: get, search, update, delete user
 service UserService {
   rpc GetUserById        (GetUserByIdRequest)        returns (GetUserByIdResponse);
   rpc GetUserByEmail     (GetUserByEmailRequest)     returns (GetUserByEmailResponse);
   rpc SearchUsersByEmail (SearchUsersByEmailRequest) returns (SearchUsersByEmailResponse);
+  rpc UpdateUser         (UpdateUserRequest)         returns (UpdateUserResponse);
+  rpc DeleteUserById     (DeleteUserByIdRequest)     returns (DeleteUserByIdResponse);
 }
 
-// RoleService: get role
+// RoleService: create, get, search, update, delete role
 service RoleService {
+  rpc CreateRole        (CreateRoleRequest)        returns (CreateRoleResponse);
   rpc GetRoleById       (GetRoleByIdRequest)       returns (GetRoleByIdResponse);
   rpc GetRoleByName     (GetRoleByNameRequest)     returns (GetRoleByNameResponse);
   rpc GetRolesByUserId  (GetRolesByUserIdRequest)  returns (GetRolesByUserIdResponse);
   rpc SearchRolesByName (SearchRolesByNameRequest) returns (SearchRolesByNameResponse);
+  rpc UpdateRole        (UpdateRoleRequest)        returns (UpdateRoleResponse);
+  rpc DeleteRoleById    (DeleteRoleByIdRequest)    returns (DeleteRoleByIdResponse);
+}
+
+// PermissionService: create, get permission
+PermissionService {
+  rpc CreatePermission         (CreatePermissionRequest)         returns (CreatePermissionResponse);
+  rpc GetPermissionsByResource (GetPermissionsByResourceRequest) returns (GetPermissionsByResourceResponse);
+  rpc GetPermissionsByRoleId   (GetPermissionsByRoleIdRequest)   returns (GetPermissionsByRoleIdResponse);
+  rpc UpdatePermission         (UpdatePermissionRequest)         returns (UpdatePermissionResponse);
+  rpc DeletePermissionById     (DeletePermissionByIdRequest)     returns (DeletePermissionByIdResponse);
+}
+
+message CreatePermissionRequest {
+  string resource    = 10;
+  string action      = 20;
+  string description = 30;
+}
+
+message CreatePermissionResponse {
+  Permission permission = 1;
+}
+
+message GetPermissionsByResourceRequest {
+  string resource = 10;
+}
+
+message GetPermissionsByResourceResponse {
+  repeated Permission permissions = 1;
+}
+
+message GetPermissionsByRoleIdRequest {
+  string role_id = 10;
+}
+
+message GetPermissionsByRoleIdResponse {
+  repeated Permission permissions = 1;
+}
+
+message UpdatePermissionRequest {
+  string permission_id = 10;
+
+  // update fields
+  optional string resource    = 20;
+  optional string action      = 30;
+  optional string description = 40;
+}
+
+message UpdatePermissionResponse {
+  Permission permission = 1;
+}
+
+message DeletePermissionByIdRequest {
+  string permission_id = 10;
+}
+
+message DeletePermissionByIdResponse {
+  bool success = 1;
 }

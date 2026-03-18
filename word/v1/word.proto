@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package word.v1;
 
-option go_package = "github.com/hungp29/x-word/internal/genpb/word/v1;wordv1";
+option go_package = "github.com/hungp29/x-proto/gen/go/word/v1;wordv1";
 
 // Meaning is a single sense/definition with optional examples.
 message Meaning {
