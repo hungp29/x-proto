@@ -222,7 +222,7 @@ message UpdateRoleResponse {
   Role role = 1;
 }
 
-message DeleteRoleById {
+message DeleteRoleByIdRequest {
   string role_id = 10;
 }
 
