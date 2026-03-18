@@ -272,7 +272,7 @@ service RoleService {
 }
 
 // PermissionService: create, get permission
-PermissionService {
+service PermissionService {
   rpc CreatePermission         (CreatePermissionRequest)         returns (CreatePermissionResponse);
   rpc GetPermissionsByResource (GetPermissionsByResourceRequest) returns (GetPermissionsByResourceResponse);
   rpc GetPermissionsByRoleId   (GetPermissionsByRoleIdRequest)   returns (GetPermissionsByRoleIdResponse);
