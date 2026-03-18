@@ -104,9 +104,9 @@ message ListUsersRequest {
 }
 
 message ListUsersResponse {
-  repeated common.v1.User users          = 1;
+  repeated common.v1.User users           = 1;
   string                  next_page_token = 2; // empty when no more pages
-  int32                   total_count    = 3;
+  int32                   total_count     = 3;
 }
 
 message GetUserByIdRequest {
@@ -165,9 +165,9 @@ message ListRolesRequest {
 }
 
 message ListRolesResponse {
-  repeated common.v1.Role roles          = 1;
+  repeated common.v1.Role roles           = 1;
   string                  next_page_token = 2; // empty when no more pages
-  int32                   total_count    = 3;
+  int32                   total_count     = 3;
 }
 
 message CreateRoleRequest {
@@ -234,56 +234,6 @@ message DeleteRoleByIdResponse {
 
 // ── PermissionService message ─────────────────────────────────────────────────
 
-// ── Services ──────────────────────────────────────────────────────────────────
-
-// AuthService handles authentication: registration, login, token management.
-service AuthService {
-  rpc Register     (RegisterRequest)      returns (RegisterResponse);
-  rpc Login        (LoginRequest)         returns (LoginResponse);
-  rpc Logout       (LogoutRequest)        returns (LogoutResponse);
-  rpc RefreshToken (RefreshTokenRequest)  returns (RefreshTokenResponse);
-  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
-}
-
-// AuthzService handles authorization: permission checks and role management.
-service AuthzService {
-  rpc CheckPermission    (CheckPermissionRequest)    returns (CheckPermissionResponse);
-  rpc GetUserPermissions (GetUserPermissionsRequest) returns (GetUserPermissionsResponse);
-  rpc AssignRole         (AssignRoleRequest)         returns (AssignRoleResponse);
-  rpc RevokeRole         (RevokeRoleRequest)         returns (RevokeRoleResponse);
-}
-
-// UserService: list, get, search, update, delete user
-service UserService {
-  rpc ListUsers          (ListUsersRequest)          returns (ListUsersResponse);
-  rpc GetUserById        (GetUserByIdRequest)        returns (GetUserByIdResponse);
-  rpc GetUserByEmail     (GetUserByEmailRequest)     returns (GetUserByEmailResponse);
-  rpc SearchUsersByEmail (SearchUsersByEmailRequest) returns (SearchUsersByEmailResponse);
-  rpc UpdateUser         (UpdateUserRequest)         returns (UpdateUserResponse);
-  rpc DeleteUserById     (DeleteUserByIdRequest)     returns (DeleteUserByIdResponse);
-}
-
-// RoleService: list, create, get, search, update, delete role
-service RoleService {
-  rpc ListRoles         (ListRolesRequest)         returns (ListRolesResponse);
-  rpc CreateRole        (CreateRoleRequest)        returns (CreateRoleResponse);
-  rpc GetRoleById       (GetRoleByIdRequest)       returns (GetRoleByIdResponse);
-  rpc GetRoleByName     (GetRoleByNameRequest)     returns (GetRoleByNameResponse);
-  rpc GetRolesByUserId  (GetRolesByUserIdRequest)  returns (GetRolesByUserIdResponse);
-  rpc SearchRolesByName (SearchRolesByNameRequest) returns (SearchRolesByNameResponse);
-  rpc UpdateRole        (UpdateRoleRequest)        returns (UpdateRoleResponse);
-  rpc DeleteRoleById    (DeleteRoleByIdRequest)    returns (DeleteRoleByIdResponse);
-}
-
-// PermissionService: create, get permission
-service PermissionService {
-  rpc CreatePermission         (CreatePermissionRequest)         returns (CreatePermissionResponse);
-  rpc GetPermissionsByResource (GetPermissionsByResourceRequest) returns (GetPermissionsByResourceResponse);
-  rpc GetPermissionsByRoleId   (GetPermissionsByRoleIdRequest)   returns (GetPermissionsByRoleIdResponse);
-  rpc UpdatePermission         (UpdatePermissionRequest)         returns (UpdatePermissionResponse);
-  rpc DeletePermissionById     (DeletePermissionByIdRequest)     returns (DeletePermissionByIdResponse);
-}
-
 message CreatePermissionRequest {
   string resource    = 10;
   string action      = 20;
@@ -329,4 +279,70 @@ message DeletePermissionByIdRequest {
 
 message DeletePermissionByIdResponse {
   bool success = 1;
+}
+
+message ListPermissionsRequest {
+  common.v1.Pagination pagination = 1;
+
+  // filters — empty/unset fields are ignored
+  optional string resource    = 10;
+  optional string action      = 20;
+  optional string description = 30;
+}
+
+message ListPermissionsResponse {
+  repeated common.v1.Permission permissions = 1;
+  string                  next_page_token   = 2; // empty when no more pages
+  int32                   total_count       = 3;
+}
+
+// ── Services ──────────────────────────────────────────────────────────────────
+
+// AuthService handles authentication: registration, login, token management.
+service AuthService {
+  rpc Register     (RegisterRequest)      returns (RegisterResponse);
+  rpc Login        (LoginRequest)         returns (LoginResponse);
+  rpc Logout       (LogoutRequest)        returns (LogoutResponse);
+  rpc RefreshToken (RefreshTokenRequest)  returns (RefreshTokenResponse);
+  rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+}
+
+// AuthzService handles authorization: permission checks and role management.
+service AuthzService {
+  rpc CheckPermission    (CheckPermissionRequest)    returns (CheckPermissionResponse);
+  rpc GetUserPermissions (GetUserPermissionsRequest) returns (GetUserPermissionsResponse);
+  rpc AssignRole         (AssignRoleRequest)         returns (AssignRoleResponse);
+  rpc RevokeRole         (RevokeRoleRequest)         returns (RevokeRoleResponse);
+}
+
+// UserService: list, get, search, update, delete user
+service UserService {
+  rpc ListUsers          (ListUsersRequest)          returns (ListUsersResponse);
+  rpc GetUserById        (GetUserByIdRequest)        returns (GetUserByIdResponse);
+  rpc GetUserByEmail     (GetUserByEmailRequest)     returns (GetUserByEmailResponse);
+  rpc SearchUsersByEmail (SearchUsersByEmailRequest) returns (SearchUsersByEmailResponse);
+  rpc UpdateUser         (UpdateUserRequest)         returns (UpdateUserResponse);
+  rpc DeleteUserById     (DeleteUserByIdRequest)     returns (DeleteUserByIdResponse);
+}
+
+// RoleService: list, create, get, search, update, delete role
+service RoleService {
+  rpc ListRoles         (ListRolesRequest)         returns (ListRolesResponse);
+  rpc CreateRole        (CreateRoleRequest)        returns (CreateRoleResponse);
+  rpc GetRoleById       (GetRoleByIdRequest)       returns (GetRoleByIdResponse);
+  rpc GetRoleByName     (GetRoleByNameRequest)     returns (GetRoleByNameResponse);
+  rpc GetRolesByUserId  (GetRolesByUserIdRequest)  returns (GetRolesByUserIdResponse);
+  rpc SearchRolesByName (SearchRolesByNameRequest) returns (SearchRolesByNameResponse);
+  rpc UpdateRole        (UpdateRoleRequest)        returns (UpdateRoleResponse);
+  rpc DeleteRoleById    (DeleteRoleByIdRequest)    returns (DeleteRoleByIdResponse);
+}
+
+// PermissionService: create, get permission
+service PermissionService {
+  rpc ListPermissions          (ListPermissionsRequest)          returns (ListPermissionsResponse);
+  rpc CreatePermission         (CreatePermissionRequest)         returns (CreatePermissionResponse);
+  rpc GetPermissionsByResource (GetPermissionsByResourceRequest) returns (GetPermissionsByResourceResponse);
+  rpc GetPermissionsByRoleId   (GetPermissionsByRoleIdRequest)   returns (GetPermissionsByRoleIdResponse);
+  rpc UpdatePermission         (UpdatePermissionRequest)         returns (UpdatePermissionResponse);
+  rpc DeletePermissionById     (DeletePermissionByIdRequest)     returns (DeletePermissionByIdResponse);
 }
