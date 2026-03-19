@@ -1,0 +1,134 @@
+syntax = "proto3";
+
+package app.v1;
+
+import "common/v1/common.proto";
+
+option go_package = "github.com/hungp29/x-proto/gen/go/app/v1;appv1";
+
+// ── AppService messages ────────────────────────────────────────────────────────
+
+message ListAppsRequest {
+  common.v1.Pagination pagination = 1;
+
+  // filters — empty/unset fields are ignored
+  optional string key       = 10; // partial match on key
+  optional string name      = 20; // partial match on name
+  optional bool   is_public = 30; // filter by visibility
+}
+
+message ListAppsResponse {
+  repeated common.v1.App apps            = 1;
+  string                 next_page_token = 2; // empty when no more pages
+  int32                  total_count     = 3;
+}
+
+message CreateAppRequest {
+  string key         = 10;
+  string name        = 20;
+  string description = 30;
+  bool   is_public   = 40;
+}
+
+message CreateAppResponse {
+  common.v1.App app = 1;
+}
+
+message GetAppByIdRequest {
+  string app_id = 10;
+}
+
+message GetAppByIdResponse {
+  common.v1.App app = 1;
+}
+
+message GetAppByKeyRequest {
+  string key = 10;
+}
+
+message GetAppByKeyResponse {
+  common.v1.App app = 1;
+}
+
+message UpdateAppRequest {
+  string app_id = 10;
+
+  // update fields
+  optional string name        = 20;
+  optional string description = 30;
+  optional bool   is_public   = 40;
+}
+
+message UpdateAppResponse {
+  common.v1.App app = 1;
+}
+
+message DeleteAppByIdRequest {
+  string app_id = 10;
+}
+
+message DeleteAppByIdResponse {
+  bool success = 1;
+}
+
+// ── UserAppService messages ────────────────────────────────────────────────────
+
+message GrantUserAppAccessRequest {
+  string user_id    = 10;
+  string app_id     = 20;
+  string granted_by = 30; // user_id of granter; empty = system
+}
+
+message GrantUserAppAccessResponse {}
+
+message RevokeUserAppAccessRequest {
+  string user_id = 10;
+  string app_id  = 20;
+}
+
+message RevokeUserAppAccessResponse {}
+
+message ListAppsByUserIdRequest {
+  string               user_id    = 10;
+  common.v1.Pagination pagination = 20;
+
+  // filters — empty/unset fields are ignored
+  optional bool is_public = 30; // filter by visibility
+}
+
+message ListAppsByUserIdResponse {
+  repeated common.v1.App apps            = 1;
+  string                 next_page_token = 2;
+  int32                  total_count     = 3;
+}
+
+message ListUsersByAppIdRequest {
+  string               app_id     = 10;
+  common.v1.Pagination pagination = 20;
+}
+
+message ListUsersByAppIdResponse {
+  repeated common.v1.User users           = 1;
+  string                  next_page_token = 2;
+  int32                   total_count     = 3;
+}
+
+// ── Services ──────────────────────────────────────────────────────────────────
+
+// AppService: list, create, get, update, delete app.
+service AppService {
+  rpc ListApps    (ListAppsRequest)    returns (ListAppsResponse);
+  rpc CreateApp   (CreateAppRequest)   returns (CreateAppResponse);
+  rpc GetAppById  (GetAppByIdRequest)  returns (GetAppByIdResponse);
+  rpc GetAppByKey (GetAppByKeyRequest) returns (GetAppByKeyResponse);
+  rpc UpdateApp   (UpdateAppRequest)   returns (UpdateAppResponse);
+  rpc DeleteAppById (DeleteAppByIdRequest) returns (DeleteAppByIdResponse);
+}
+
+// UserAppService: manage user ↔ app access grants.
+service UserAppService {
+  rpc GrantUserAppAccess  (GrantUserAppAccessRequest)  returns (GrantUserAppAccessResponse);
+  rpc RevokeUserAppAccess (RevokeUserAppAccessRequest) returns (RevokeUserAppAccessResponse);
+  rpc ListAppsByUserId    (ListAppsByUserIdRequest)    returns (ListAppsByUserIdResponse);
+  rpc ListUsersByAppId    (ListUsersByAppIdRequest)    returns (ListUsersByAppIdResponse);
+}

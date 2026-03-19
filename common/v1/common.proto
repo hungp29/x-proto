@@ -34,6 +34,14 @@ message Role {
   bool   is_system   = 4;
 }
 
+message App {
+  string id          = 1;
+  string key         = 2;
+  string name        = 3;
+  string description = 4;
+  bool   is_public   = 5;
+}
+
 // ── Shared pagination ──────────────────────────────────────────────────────────
 
 message Pagination {
