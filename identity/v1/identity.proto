@@ -232,6 +232,33 @@ message DeleteRoleByIdResponse {
   bool success = 1;
 }
 
+message AddPermissionsToRoleRequest {
+  string role_id                 = 10;
+  repeated string permission_ids = 20;
+}
+
+message AddPermissionsToRoleResponse {
+  bool success = 1;
+}
+
+message RemovePermissionsFromRoleRequest {
+  string role_id                 = 10;
+  repeated string permission_ids = 20;
+}
+
+message RemovePermissionsFromRoleResponse {
+  bool success = 1;
+}
+
+message SetPermissionsForRoleRequest {
+  string role_id                 = 10;
+  repeated string permission_ids = 20;
+}
+
+message SetPermissionsForRoleResponse {
+  bool success = 1;
+}
+
 // ── PermissionService message ─────────────────────────────────────────────────
 
 message CreatePermissionRequest {
@@ -335,6 +362,11 @@ service RoleService {
   rpc SearchRolesByName (SearchRolesByNameRequest) returns (SearchRolesByNameResponse);
   rpc UpdateRole        (UpdateRoleRequest)        returns (UpdateRoleResponse);
   rpc DeleteRoleById    (DeleteRoleByIdRequest)    returns (DeleteRoleByIdResponse);
+
+  // role - permission
+  rpc AddPermissionsToRole      (AddPermissionsToRoleRequest)      returns (AddPermissionsToRoleResponse);
+  rpc RemovePermissionsFromRole (RemovePermissionsFromRoleRequest) returns (RemovePermissionsFromRoleResponse);
+  rpc SetPermissionsForRole     (SetPermissionsForRoleRequest)     returns (SetPermissionsForRoleResponse);
 }
 
 // PermissionService: create, get permission
