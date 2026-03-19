@@ -824,30 +824,27 @@ func (*RevokeUserAppAccessResponse) Descriptor() ([]byte, []int) {
 	return file_app_v1_app_proto_rawDescGZIP(), []int{15}
 }
 
-type ListAppsByUserIdRequest struct {
-	state      protoimpl.MessageState `protogen:"open.v1"`
-	UserId     string                 `protobuf:"bytes,10,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Pagination *v1.Pagination         `protobuf:"bytes,20,opt,name=pagination,proto3" json:"pagination,omitempty"`
-	// filters — empty/unset fields are ignored
-	IsPublic      *bool `protobuf:"varint,30,opt,name=is_public,json=isPublic,proto3,oneof" json:"is_public,omitempty"` // filter by visibility
+type GetAppsByUserIdRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,10,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ListAppsByUserIdRequest) Reset() {
-	*x = ListAppsByUserIdRequest{}
+func (x *GetAppsByUserIdRequest) Reset() {
+	*x = GetAppsByUserIdRequest{}
 	mi := &file_app_v1_app_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListAppsByUserIdRequest) String() string {
+func (x *GetAppsByUserIdRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListAppsByUserIdRequest) ProtoMessage() {}
+func (*GetAppsByUserIdRequest) ProtoMessage() {}
 
-func (x *ListAppsByUserIdRequest) ProtoReflect() protoreflect.Message {
+func (x *GetAppsByUserIdRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_app_v1_app_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -859,55 +856,39 @@ func (x *ListAppsByUserIdRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListAppsByUserIdRequest.ProtoReflect.Descriptor instead.
-func (*ListAppsByUserIdRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAppsByUserIdRequest.ProtoReflect.Descriptor instead.
+func (*GetAppsByUserIdRequest) Descriptor() ([]byte, []int) {
 	return file_app_v1_app_proto_rawDescGZIP(), []int{16}
 }
 
-func (x *ListAppsByUserIdRequest) GetUserId() string {
+func (x *GetAppsByUserIdRequest) GetUserId() string {
 	if x != nil {
 		return x.UserId
 	}
 	return ""
 }
 
-func (x *ListAppsByUserIdRequest) GetPagination() *v1.Pagination {
-	if x != nil {
-		return x.Pagination
-	}
-	return nil
-}
-
-func (x *ListAppsByUserIdRequest) GetIsPublic() bool {
-	if x != nil && x.IsPublic != nil {
-		return *x.IsPublic
-	}
-	return false
-}
-
-type ListAppsByUserIdResponse struct {
+type GetAppsByUserIdResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Apps          []*v1.App              `protobuf:"bytes,1,rep,name=apps,proto3" json:"apps,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
-	TotalCount    int32                  `protobuf:"varint,3,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ListAppsByUserIdResponse) Reset() {
-	*x = ListAppsByUserIdResponse{}
+func (x *GetAppsByUserIdResponse) Reset() {
+	*x = GetAppsByUserIdResponse{}
 	mi := &file_app_v1_app_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ListAppsByUserIdResponse) String() string {
+func (x *GetAppsByUserIdResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ListAppsByUserIdResponse) ProtoMessage() {}
+func (*GetAppsByUserIdResponse) ProtoMessage() {}
 
-func (x *ListAppsByUserIdResponse) ProtoReflect() protoreflect.Message {
+func (x *GetAppsByUserIdResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_app_v1_app_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -919,30 +900,16 @@ func (x *ListAppsByUserIdResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ListAppsByUserIdResponse.ProtoReflect.Descriptor instead.
-func (*ListAppsByUserIdResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAppsByUserIdResponse.ProtoReflect.Descriptor instead.
+func (*GetAppsByUserIdResponse) Descriptor() ([]byte, []int) {
 	return file_app_v1_app_proto_rawDescGZIP(), []int{17}
 }
 
-func (x *ListAppsByUserIdResponse) GetApps() []*v1.App {
+func (x *GetAppsByUserIdResponse) GetApps() []*v1.App {
 	if x != nil {
 		return x.Apps
 	}
 	return nil
-}
-
-func (x *ListAppsByUserIdResponse) GetNextPageToken() string {
-	if x != nil {
-		return x.NextPageToken
-	}
-	return ""
-}
-
-func (x *ListAppsByUserIdResponse) GetTotalCount() int32 {
-	if x != nil {
-		return x.TotalCount
-	}
-	return 0
 }
 
 type ListUsersByAppIdRequest struct {
@@ -1125,21 +1092,12 @@ const file_app_v1_app_proto_rawDesc = "" +
 	"\auser_id\x18\n" +
 	" \x01(\tR\x06userId\x12\x15\n" +
 	"\x06app_id\x18\x14 \x01(\tR\x05appId\"\x1d\n" +
-	"\x1bRevokeUserAppAccessResponse\"\x99\x01\n" +
-	"\x17ListAppsByUserIdRequest\x12\x17\n" +
+	"\x1bRevokeUserAppAccessResponse\"1\n" +
+	"\x16GetAppsByUserIdRequest\x12\x17\n" +
 	"\auser_id\x18\n" +
-	" \x01(\tR\x06userId\x125\n" +
-	"\n" +
-	"pagination\x18\x14 \x01(\v2\x15.common.v1.PaginationR\n" +
-	"pagination\x12 \n" +
-	"\tis_public\x18\x1e \x01(\bH\x00R\bisPublic\x88\x01\x01B\f\n" +
-	"\n" +
-	"_is_public\"\x87\x01\n" +
-	"\x18ListAppsByUserIdResponse\x12\"\n" +
-	"\x04apps\x18\x01 \x03(\v2\x0e.common.v1.AppR\x04apps\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1f\n" +
-	"\vtotal_count\x18\x03 \x01(\x05R\n" +
-	"totalCount\"g\n" +
+	" \x01(\tR\x06userId\"=\n" +
+	"\x17GetAppsByUserIdResponse\x12\"\n" +
+	"\x04apps\x18\x01 \x03(\v2\x0e.common.v1.AppR\x04apps\"g\n" +
 	"\x17ListUsersByAppIdRequest\x12\x15\n" +
 	"\x06app_id\x18\n" +
 	" \x01(\tR\x05appId\x125\n" +
@@ -1159,11 +1117,11 @@ const file_app_v1_app_proto_rawDesc = "" +
 	"GetAppById\x12\x19.app.v1.GetAppByIdRequest\x1a\x1a.app.v1.GetAppByIdResponse\x12F\n" +
 	"\vGetAppByKey\x12\x1a.app.v1.GetAppByKeyRequest\x1a\x1b.app.v1.GetAppByKeyResponse\x12@\n" +
 	"\tUpdateApp\x12\x18.app.v1.UpdateAppRequest\x1a\x19.app.v1.UpdateAppResponse\x12L\n" +
-	"\rDeleteAppById\x12\x1c.app.v1.DeleteAppByIdRequest\x1a\x1d.app.v1.DeleteAppByIdResponse2\xfb\x02\n" +
+	"\rDeleteAppById\x12\x1c.app.v1.DeleteAppByIdRequest\x1a\x1d.app.v1.DeleteAppByIdResponse2\xf8\x02\n" +
 	"\x0eUserAppService\x12[\n" +
 	"\x12GrantUserAppAccess\x12!.app.v1.GrantUserAppAccessRequest\x1a\".app.v1.GrantUserAppAccessResponse\x12^\n" +
-	"\x13RevokeUserAppAccess\x12\".app.v1.RevokeUserAppAccessRequest\x1a#.app.v1.RevokeUserAppAccessResponse\x12U\n" +
-	"\x10ListAppsByUserId\x12\x1f.app.v1.ListAppsByUserIdRequest\x1a .app.v1.ListAppsByUserIdResponse\x12U\n" +
+	"\x13RevokeUserAppAccess\x12\".app.v1.RevokeUserAppAccessRequest\x1a#.app.v1.RevokeUserAppAccessResponse\x12R\n" +
+	"\x0fGetAppsByUserId\x12\x1e.app.v1.GetAppsByUserIdRequest\x1a\x1f.app.v1.GetAppsByUserIdResponse\x12U\n" +
 	"\x10ListUsersByAppId\x12\x1f.app.v1.ListUsersByAppIdRequest\x1a .app.v1.ListUsersByAppIdResponseB\x7f\n" +
 	"\n" +
 	"com.app.v1B\bAppProtoP\x01Z.github.com/hungp29/x-proto/gen/go/app/v1;appv1\xa2\x02\x03AXX\xaa\x02\x06App.V1\xca\x02\x06App\\V1\xe2\x02\x12App\\V1\\GPBMetadata\xea\x02\aApp::V1b\x06proto3"
@@ -1198,8 +1156,8 @@ var file_app_v1_app_proto_goTypes = []any{
 	(*GrantUserAppAccessResponse)(nil),  // 13: app.v1.GrantUserAppAccessResponse
 	(*RevokeUserAppAccessRequest)(nil),  // 14: app.v1.RevokeUserAppAccessRequest
 	(*RevokeUserAppAccessResponse)(nil), // 15: app.v1.RevokeUserAppAccessResponse
-	(*ListAppsByUserIdRequest)(nil),     // 16: app.v1.ListAppsByUserIdRequest
-	(*ListAppsByUserIdResponse)(nil),    // 17: app.v1.ListAppsByUserIdResponse
+	(*GetAppsByUserIdRequest)(nil),      // 16: app.v1.GetAppsByUserIdRequest
+	(*GetAppsByUserIdResponse)(nil),     // 17: app.v1.GetAppsByUserIdResponse
 	(*ListUsersByAppIdRequest)(nil),     // 18: app.v1.ListUsersByAppIdRequest
 	(*ListUsersByAppIdResponse)(nil),    // 19: app.v1.ListUsersByAppIdResponse
 	(*v1.Pagination)(nil),               // 20: common.v1.Pagination
@@ -1213,35 +1171,34 @@ var file_app_v1_app_proto_depIdxs = []int32{
 	21, // 3: app.v1.GetAppByIdResponse.app:type_name -> common.v1.App
 	21, // 4: app.v1.GetAppByKeyResponse.app:type_name -> common.v1.App
 	21, // 5: app.v1.UpdateAppResponse.app:type_name -> common.v1.App
-	20, // 6: app.v1.ListAppsByUserIdRequest.pagination:type_name -> common.v1.Pagination
-	21, // 7: app.v1.ListAppsByUserIdResponse.apps:type_name -> common.v1.App
-	20, // 8: app.v1.ListUsersByAppIdRequest.pagination:type_name -> common.v1.Pagination
-	22, // 9: app.v1.ListUsersByAppIdResponse.users:type_name -> common.v1.User
-	0,  // 10: app.v1.AppService.ListApps:input_type -> app.v1.ListAppsRequest
-	2,  // 11: app.v1.AppService.CreateApp:input_type -> app.v1.CreateAppRequest
-	4,  // 12: app.v1.AppService.GetAppById:input_type -> app.v1.GetAppByIdRequest
-	6,  // 13: app.v1.AppService.GetAppByKey:input_type -> app.v1.GetAppByKeyRequest
-	8,  // 14: app.v1.AppService.UpdateApp:input_type -> app.v1.UpdateAppRequest
-	10, // 15: app.v1.AppService.DeleteAppById:input_type -> app.v1.DeleteAppByIdRequest
-	12, // 16: app.v1.UserAppService.GrantUserAppAccess:input_type -> app.v1.GrantUserAppAccessRequest
-	14, // 17: app.v1.UserAppService.RevokeUserAppAccess:input_type -> app.v1.RevokeUserAppAccessRequest
-	16, // 18: app.v1.UserAppService.ListAppsByUserId:input_type -> app.v1.ListAppsByUserIdRequest
-	18, // 19: app.v1.UserAppService.ListUsersByAppId:input_type -> app.v1.ListUsersByAppIdRequest
-	1,  // 20: app.v1.AppService.ListApps:output_type -> app.v1.ListAppsResponse
-	3,  // 21: app.v1.AppService.CreateApp:output_type -> app.v1.CreateAppResponse
-	5,  // 22: app.v1.AppService.GetAppById:output_type -> app.v1.GetAppByIdResponse
-	7,  // 23: app.v1.AppService.GetAppByKey:output_type -> app.v1.GetAppByKeyResponse
-	9,  // 24: app.v1.AppService.UpdateApp:output_type -> app.v1.UpdateAppResponse
-	11, // 25: app.v1.AppService.DeleteAppById:output_type -> app.v1.DeleteAppByIdResponse
-	13, // 26: app.v1.UserAppService.GrantUserAppAccess:output_type -> app.v1.GrantUserAppAccessResponse
-	15, // 27: app.v1.UserAppService.RevokeUserAppAccess:output_type -> app.v1.RevokeUserAppAccessResponse
-	17, // 28: app.v1.UserAppService.ListAppsByUserId:output_type -> app.v1.ListAppsByUserIdResponse
-	19, // 29: app.v1.UserAppService.ListUsersByAppId:output_type -> app.v1.ListUsersByAppIdResponse
-	20, // [20:30] is the sub-list for method output_type
-	10, // [10:20] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	21, // 6: app.v1.GetAppsByUserIdResponse.apps:type_name -> common.v1.App
+	20, // 7: app.v1.ListUsersByAppIdRequest.pagination:type_name -> common.v1.Pagination
+	22, // 8: app.v1.ListUsersByAppIdResponse.users:type_name -> common.v1.User
+	0,  // 9: app.v1.AppService.ListApps:input_type -> app.v1.ListAppsRequest
+	2,  // 10: app.v1.AppService.CreateApp:input_type -> app.v1.CreateAppRequest
+	4,  // 11: app.v1.AppService.GetAppById:input_type -> app.v1.GetAppByIdRequest
+	6,  // 12: app.v1.AppService.GetAppByKey:input_type -> app.v1.GetAppByKeyRequest
+	8,  // 13: app.v1.AppService.UpdateApp:input_type -> app.v1.UpdateAppRequest
+	10, // 14: app.v1.AppService.DeleteAppById:input_type -> app.v1.DeleteAppByIdRequest
+	12, // 15: app.v1.UserAppService.GrantUserAppAccess:input_type -> app.v1.GrantUserAppAccessRequest
+	14, // 16: app.v1.UserAppService.RevokeUserAppAccess:input_type -> app.v1.RevokeUserAppAccessRequest
+	16, // 17: app.v1.UserAppService.GetAppsByUserId:input_type -> app.v1.GetAppsByUserIdRequest
+	18, // 18: app.v1.UserAppService.ListUsersByAppId:input_type -> app.v1.ListUsersByAppIdRequest
+	1,  // 19: app.v1.AppService.ListApps:output_type -> app.v1.ListAppsResponse
+	3,  // 20: app.v1.AppService.CreateApp:output_type -> app.v1.CreateAppResponse
+	5,  // 21: app.v1.AppService.GetAppById:output_type -> app.v1.GetAppByIdResponse
+	7,  // 22: app.v1.AppService.GetAppByKey:output_type -> app.v1.GetAppByKeyResponse
+	9,  // 23: app.v1.AppService.UpdateApp:output_type -> app.v1.UpdateAppResponse
+	11, // 24: app.v1.AppService.DeleteAppById:output_type -> app.v1.DeleteAppByIdResponse
+	13, // 25: app.v1.UserAppService.GrantUserAppAccess:output_type -> app.v1.GrantUserAppAccessResponse
+	15, // 26: app.v1.UserAppService.RevokeUserAppAccess:output_type -> app.v1.RevokeUserAppAccessResponse
+	17, // 27: app.v1.UserAppService.GetAppsByUserId:output_type -> app.v1.GetAppsByUserIdResponse
+	19, // 28: app.v1.UserAppService.ListUsersByAppId:output_type -> app.v1.ListUsersByAppIdResponse
+	19, // [19:29] is the sub-list for method output_type
+	9,  // [9:19] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_app_v1_app_proto_init() }
@@ -1251,7 +1208,6 @@ func file_app_v1_app_proto_init() {
 	}
 	file_app_v1_app_proto_msgTypes[0].OneofWrappers = []any{}
 	file_app_v1_app_proto_msgTypes[8].OneofWrappers = []any{}
-	file_app_v1_app_proto_msgTypes[16].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
