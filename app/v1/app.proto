@@ -119,7 +119,7 @@ service AppService {
   rpc DeleteAppById (DeleteAppByIdRequest) returns (DeleteAppByIdResponse);
 }
 
-// UserAppService: manage user ↔ app access grants.
+// UserAppService: manage user - app access grants.
 service UserAppService {
   rpc GrantUserAppAccess  (GrantUserAppAccessRequest)  returns (GrantUserAppAccessResponse);
   rpc RevokeUserAppAccess (RevokeUserAppAccessRequest) returns (RevokeUserAppAccessResponse);
