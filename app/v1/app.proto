@@ -88,18 +88,12 @@ message RevokeUserAppAccessRequest {
 
 message RevokeUserAppAccessResponse {}
 
-message ListAppsByUserIdRequest {
-  string               user_id    = 10;
-  common.v1.Pagination pagination = 20;
-
-  // filters — empty/unset fields are ignored
-  optional bool is_public = 30; // filter by visibility
+message GetAppsByUserIdRequest {
+  string user_id    = 10;
 }
 
-message ListAppsByUserIdResponse {
-  repeated common.v1.App apps            = 1;
-  string                 next_page_token = 2;
-  int32                  total_count     = 3;
+message GetAppsByUserIdResponse {
+  repeated common.v1.App apps = 1;
 }
 
 message ListUsersByAppIdRequest {
@@ -117,11 +111,11 @@ message ListUsersByAppIdResponse {
 
 // AppService: list, create, get, update, delete app.
 service AppService {
-  rpc ListApps    (ListAppsRequest)    returns (ListAppsResponse);
-  rpc CreateApp   (CreateAppRequest)   returns (CreateAppResponse);
-  rpc GetAppById  (GetAppByIdRequest)  returns (GetAppByIdResponse);
-  rpc GetAppByKey (GetAppByKeyRequest) returns (GetAppByKeyResponse);
-  rpc UpdateApp   (UpdateAppRequest)   returns (UpdateAppResponse);
+  rpc ListApps      (ListAppsRequest)      returns (ListAppsResponse);
+  rpc CreateApp     (CreateAppRequest)     returns (CreateAppResponse);
+  rpc GetAppById    (GetAppByIdRequest)    returns (GetAppByIdResponse);
+  rpc GetAppByKey   (GetAppByKeyRequest)   returns (GetAppByKeyResponse);
+  rpc UpdateApp     (UpdateAppRequest)     returns (UpdateAppResponse);
   rpc DeleteAppById (DeleteAppByIdRequest) returns (DeleteAppByIdResponse);
 }
 
@@ -129,6 +123,6 @@ service AppService {
 service UserAppService {
   rpc GrantUserAppAccess  (GrantUserAppAccessRequest)  returns (GrantUserAppAccessResponse);
   rpc RevokeUserAppAccess (RevokeUserAppAccessRequest) returns (RevokeUserAppAccessResponse);
-  rpc ListAppsByUserId    (ListAppsByUserIdRequest)    returns (ListAppsByUserIdResponse);
+  rpc GetAppsByUserId     (GetAppsByUserIdRequest)     returns (GetAppsByUserIdResponse);
   rpc ListUsersByAppId    (ListUsersByAppIdRequest)    returns (ListUsersByAppIdResponse);
 }
