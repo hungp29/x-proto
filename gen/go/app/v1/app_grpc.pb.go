@@ -317,7 +317,7 @@ var AppService_ServiceDesc = grpc.ServiceDesc{
 const (
 	UserAppService_GrantUserAppAccess_FullMethodName  = "/app.v1.UserAppService/GrantUserAppAccess"
 	UserAppService_RevokeUserAppAccess_FullMethodName = "/app.v1.UserAppService/RevokeUserAppAccess"
-	UserAppService_ListAppsByUserId_FullMethodName    = "/app.v1.UserAppService/ListAppsByUserId"
+	UserAppService_GetAppsByUserId_FullMethodName     = "/app.v1.UserAppService/GetAppsByUserId"
 	UserAppService_ListUsersByAppId_FullMethodName    = "/app.v1.UserAppService/ListUsersByAppId"
 )
 
@@ -325,11 +325,11 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// UserAppService: manage user ↔ app access grants.
+// UserAppService: manage user - app access grants.
 type UserAppServiceClient interface {
 	GrantUserAppAccess(ctx context.Context, in *GrantUserAppAccessRequest, opts ...grpc.CallOption) (*GrantUserAppAccessResponse, error)
 	RevokeUserAppAccess(ctx context.Context, in *RevokeUserAppAccessRequest, opts ...grpc.CallOption) (*RevokeUserAppAccessResponse, error)
-	ListAppsByUserId(ctx context.Context, in *ListAppsByUserIdRequest, opts ...grpc.CallOption) (*ListAppsByUserIdResponse, error)
+	GetAppsByUserId(ctx context.Context, in *GetAppsByUserIdRequest, opts ...grpc.CallOption) (*GetAppsByUserIdResponse, error)
 	ListUsersByAppId(ctx context.Context, in *ListUsersByAppIdRequest, opts ...grpc.CallOption) (*ListUsersByAppIdResponse, error)
 }
 
@@ -361,10 +361,10 @@ func (c *userAppServiceClient) RevokeUserAppAccess(ctx context.Context, in *Revo
 	return out, nil
 }
 
-func (c *userAppServiceClient) ListAppsByUserId(ctx context.Context, in *ListAppsByUserIdRequest, opts ...grpc.CallOption) (*ListAppsByUserIdResponse, error) {
+func (c *userAppServiceClient) GetAppsByUserId(ctx context.Context, in *GetAppsByUserIdRequest, opts ...grpc.CallOption) (*GetAppsByUserIdResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ListAppsByUserIdResponse)
-	err := c.cc.Invoke(ctx, UserAppService_ListAppsByUserId_FullMethodName, in, out, cOpts...)
+	out := new(GetAppsByUserIdResponse)
+	err := c.cc.Invoke(ctx, UserAppService_GetAppsByUserId_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -385,11 +385,11 @@ func (c *userAppServiceClient) ListUsersByAppId(ctx context.Context, in *ListUse
 // All implementations must embed UnimplementedUserAppServiceServer
 // for forward compatibility.
 //
-// UserAppService: manage user ↔ app access grants.
+// UserAppService: manage user - app access grants.
 type UserAppServiceServer interface {
 	GrantUserAppAccess(context.Context, *GrantUserAppAccessRequest) (*GrantUserAppAccessResponse, error)
 	RevokeUserAppAccess(context.Context, *RevokeUserAppAccessRequest) (*RevokeUserAppAccessResponse, error)
-	ListAppsByUserId(context.Context, *ListAppsByUserIdRequest) (*ListAppsByUserIdResponse, error)
+	GetAppsByUserId(context.Context, *GetAppsByUserIdRequest) (*GetAppsByUserIdResponse, error)
 	ListUsersByAppId(context.Context, *ListUsersByAppIdRequest) (*ListUsersByAppIdResponse, error)
 	mustEmbedUnimplementedUserAppServiceServer()
 }
@@ -407,8 +407,8 @@ func (UnimplementedUserAppServiceServer) GrantUserAppAccess(context.Context, *Gr
 func (UnimplementedUserAppServiceServer) RevokeUserAppAccess(context.Context, *RevokeUserAppAccessRequest) (*RevokeUserAppAccessResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method RevokeUserAppAccess not implemented")
 }
-func (UnimplementedUserAppServiceServer) ListAppsByUserId(context.Context, *ListAppsByUserIdRequest) (*ListAppsByUserIdResponse, error) {
-	return nil, status.Error(codes.Unimplemented, "method ListAppsByUserId not implemented")
+func (UnimplementedUserAppServiceServer) GetAppsByUserId(context.Context, *GetAppsByUserIdRequest) (*GetAppsByUserIdResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetAppsByUserId not implemented")
 }
 func (UnimplementedUserAppServiceServer) ListUsersByAppId(context.Context, *ListUsersByAppIdRequest) (*ListUsersByAppIdResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListUsersByAppId not implemented")
@@ -470,20 +470,20 @@ func _UserAppService_RevokeUserAppAccess_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserAppService_ListAppsByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListAppsByUserIdRequest)
+func _UserAppService_GetAppsByUserId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAppsByUserIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserAppServiceServer).ListAppsByUserId(ctx, in)
+		return srv.(UserAppServiceServer).GetAppsByUserId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserAppService_ListAppsByUserId_FullMethodName,
+		FullMethod: UserAppService_GetAppsByUserId_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserAppServiceServer).ListAppsByUserId(ctx, req.(*ListAppsByUserIdRequest))
+		return srv.(UserAppServiceServer).GetAppsByUserId(ctx, req.(*GetAppsByUserIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -522,8 +522,8 @@ var UserAppService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserAppService_RevokeUserAppAccess_Handler,
 		},
 		{
-			MethodName: "ListAppsByUserId",
-			Handler:    _UserAppService_ListAppsByUserId_Handler,
+			MethodName: "GetAppsByUserId",
+			Handler:    _UserAppService_GetAppsByUserId_Handler,
 		},
 		{
 			MethodName: "ListUsersByAppId",
