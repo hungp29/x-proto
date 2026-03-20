@@ -47,8 +47,19 @@ message GetWordsResponse {
   repeated Word words = 1;
 }
 
+message SaveWordRequest {
+  string word = 1;
+  string content = 2;
+}
+
+message SaveWordResponse {
+  int32 saved_count = 1;
+  string path = 2;
+}
+
 // WordService provides dictionary lookups (Cambridge).
 service WordService {
   rpc GetWord(GetWordRequest) returns (GetWordResponse);
   rpc GetWords(GetWordsRequest) returns (GetWordsResponse);
+  rpc SaveWord(SaveWordRequest) returns (SaveWordResponse);
 }
