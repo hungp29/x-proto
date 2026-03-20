@@ -57,9 +57,18 @@ message SaveWordResponse {
   string path = 2;
 }
 
+message ExportAnkiRequest {
+  string deck_name = 1; // optional; defaults to "My Words" if empty
+}
+
+message ExportAnkiResponse {
+  string path = 1; // absolute path to the generated .apkg file
+}
+
 // WordService provides dictionary lookups (Cambridge).
 service WordService {
   rpc GetWord(GetWordRequest) returns (GetWordResponse);
   rpc GetWords(GetWordsRequest) returns (GetWordsResponse);
   rpc SaveWord(SaveWordRequest) returns (SaveWordResponse);
+  rpc ExportAnki(ExportAnkiRequest) returns (ExportAnkiResponse);
 }
