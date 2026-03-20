@@ -417,6 +417,110 @@ func (x *GetWordsResponse) GetWords() []*Word {
 	return nil
 }
 
+type SaveWordRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Word          string                 `protobuf:"bytes,1,opt,name=word,proto3" json:"word,omitempty"`
+	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveWordRequest) Reset() {
+	*x = SaveWordRequest{}
+	mi := &file_word_v1_word_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveWordRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveWordRequest) ProtoMessage() {}
+
+func (x *SaveWordRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_word_v1_word_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveWordRequest.ProtoReflect.Descriptor instead.
+func (*SaveWordRequest) Descriptor() ([]byte, []int) {
+	return file_word_v1_word_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *SaveWordRequest) GetWord() string {
+	if x != nil {
+		return x.Word
+	}
+	return ""
+}
+
+func (x *SaveWordRequest) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+type SaveWordResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SavedCount    int32                  `protobuf:"varint,1,opt,name=saved_count,json=savedCount,proto3" json:"saved_count,omitempty"`
+	Path          string                 `protobuf:"bytes,2,opt,name=path,proto3" json:"path,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SaveWordResponse) Reset() {
+	*x = SaveWordResponse{}
+	mi := &file_word_v1_word_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SaveWordResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SaveWordResponse) ProtoMessage() {}
+
+func (x *SaveWordResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_word_v1_word_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SaveWordResponse.ProtoReflect.Descriptor instead.
+func (*SaveWordResponse) Descriptor() ([]byte, []int) {
+	return file_word_v1_word_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *SaveWordResponse) GetSavedCount() int32 {
+	if x != nil {
+		return x.SavedCount
+	}
+	return 0
+}
+
+func (x *SaveWordResponse) GetPath() string {
+	if x != nil {
+		return x.Path
+	}
+	return ""
+}
+
 var File_word_v1_word_proto protoreflect.FileDescriptor
 
 const file_word_v1_word_proto_rawDesc = "" +
@@ -447,15 +551,23 @@ const file_word_v1_word_proto_rawDesc = "" +
 	"\x05words\x18\x01 \x03(\tR\x05words\x12'\n" +
 	"\x04dict\x18\x02 \x01(\x0e2\x13.word.v1.DictionaryR\x04dict\"7\n" +
 	"\x10GetWordsResponse\x12#\n" +
-	"\x05words\x18\x01 \x03(\v2\r.word.v1.WordR\x05words*c\n" +
+	"\x05words\x18\x01 \x03(\v2\r.word.v1.WordR\x05words\"?\n" +
+	"\x0fSaveWordRequest\x12\x12\n" +
+	"\x04word\x18\x01 \x01(\tR\x04word\x12\x18\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\"G\n" +
+	"\x10SaveWordResponse\x12\x1f\n" +
+	"\vsaved_count\x18\x01 \x01(\x05R\n" +
+	"savedCount\x12\x12\n" +
+	"\x04path\x18\x02 \x01(\tR\x04path*c\n" +
 	"\n" +
 	"Dictionary\x12\x1a\n" +
 	"\x16DICTIONARY_UNSPECIFIED\x10\x00\x12\x16\n" +
 	"\x12DICTIONARY_ENGLISH\x10\x01\x12!\n" +
-	"\x1dDICTIONARY_ENGLISH_VIETNAMESE\x10\x022\x8c\x01\n" +
+	"\x1dDICTIONARY_ENGLISH_VIETNAMESE\x10\x022\xcd\x01\n" +
 	"\vWordService\x12<\n" +
 	"\aGetWord\x12\x17.word.v1.GetWordRequest\x1a\x18.word.v1.GetWordResponse\x12?\n" +
-	"\bGetWords\x12\x18.word.v1.GetWordsRequest\x1a\x19.word.v1.GetWordsResponseB\x87\x01\n" +
+	"\bGetWords\x12\x18.word.v1.GetWordsRequest\x1a\x19.word.v1.GetWordsResponse\x12?\n" +
+	"\bSaveWord\x12\x18.word.v1.SaveWordRequest\x1a\x19.word.v1.SaveWordResponseB\x87\x01\n" +
 	"\vcom.word.v1B\tWordProtoP\x01Z0github.com/hungp29/x-proto/gen/go/word/v1;wordv1\xa2\x02\x03WXX\xaa\x02\aWord.V1\xca\x02\aWord\\V1\xe2\x02\x13Word\\V1\\GPBMetadata\xea\x02\bWord::V1b\x06proto3"
 
 var (
@@ -471,7 +583,7 @@ func file_word_v1_word_proto_rawDescGZIP() []byte {
 }
 
 var file_word_v1_word_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_word_v1_word_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_word_v1_word_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_word_v1_word_proto_goTypes = []any{
 	(Dictionary)(0),          // 0: word.v1.Dictionary
 	(*Meaning)(nil),          // 1: word.v1.Meaning
@@ -480,6 +592,8 @@ var file_word_v1_word_proto_goTypes = []any{
 	(*GetWordResponse)(nil),  // 4: word.v1.GetWordResponse
 	(*GetWordsRequest)(nil),  // 5: word.v1.GetWordsRequest
 	(*GetWordsResponse)(nil), // 6: word.v1.GetWordsResponse
+	(*SaveWordRequest)(nil),  // 7: word.v1.SaveWordRequest
+	(*SaveWordResponse)(nil), // 8: word.v1.SaveWordResponse
 }
 var file_word_v1_word_proto_depIdxs = []int32{
 	1, // 0: word.v1.Word.meanings:type_name -> word.v1.Meaning
@@ -489,10 +603,12 @@ var file_word_v1_word_proto_depIdxs = []int32{
 	2, // 4: word.v1.GetWordsResponse.words:type_name -> word.v1.Word
 	3, // 5: word.v1.WordService.GetWord:input_type -> word.v1.GetWordRequest
 	5, // 6: word.v1.WordService.GetWords:input_type -> word.v1.GetWordsRequest
-	4, // 7: word.v1.WordService.GetWord:output_type -> word.v1.GetWordResponse
-	6, // 8: word.v1.WordService.GetWords:output_type -> word.v1.GetWordsResponse
-	7, // [7:9] is the sub-list for method output_type
-	5, // [5:7] is the sub-list for method input_type
+	7, // 7: word.v1.WordService.SaveWord:input_type -> word.v1.SaveWordRequest
+	4, // 8: word.v1.WordService.GetWord:output_type -> word.v1.GetWordResponse
+	6, // 9: word.v1.WordService.GetWords:output_type -> word.v1.GetWordsResponse
+	8, // 10: word.v1.WordService.SaveWord:output_type -> word.v1.SaveWordResponse
+	8, // [8:11] is the sub-list for method output_type
+	5, // [5:8] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name
 	5, // [5:5] is the sub-list for extension extendee
 	0, // [0:5] is the sub-list for field type_name
@@ -509,7 +625,7 @@ func file_word_v1_word_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_word_v1_word_proto_rawDesc), len(file_word_v1_word_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
