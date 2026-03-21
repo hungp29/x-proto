@@ -323,6 +323,34 @@ message ListPermissionsResponse {
   int32                   total_count       = 3;
 }
 
+// ── SettingsService messages ──────────────────────────────────────────────────
+//
+// Settings are stored as key/value pairs with dot-namespaced keys:
+//   general.language        → "en" | "vi"
+//   general.theme           → "system" | "light" | "dark"
+//   app.word.anki_deck_name → arbitrary string
+//
+// The caller's user_id is resolved from the auth context in x-gatekeeper
+// (x-user-id gRPC metadata), so it does not appear in these messages.
+
+message GetSettingsRequest {}
+
+message GetSettingsResponse {
+  // All settings for the authenticated user as key → value pairs.
+  map<string, string> settings = 1;
+}
+
+message UpdateSettingsRequest {
+  // Partial map: only the provided keys are updated. Existing keys not
+  // present in this map are left unchanged.
+  map<string, string> settings = 1;
+}
+
+message UpdateSettingsResponse {
+  // Full settings map after the update.
+  map<string, string> settings = 1;
+}
+
 // ── Services ──────────────────────────────────────────────────────────────────
 
 // AuthService handles authentication: registration, login, token management.
@@ -377,4 +405,11 @@ service PermissionService {
   rpc GetPermissionsByRoleId   (GetPermissionsByRoleIdRequest)   returns (GetPermissionsByRoleIdResponse);
   rpc UpdatePermission         (UpdatePermissionRequest)         returns (UpdatePermissionResponse);
   rpc DeletePermissionById     (DeletePermissionByIdRequest)     returns (DeletePermissionByIdResponse);
+}
+
+// SettingsService: get and update per-user settings.
+// The caller's user_id is resolved from gRPC metadata (x-user-id) set by x-gatekeeper.
+service SettingsService {
+  rpc GetSettings    (GetSettingsRequest)    returns (GetSettingsResponse);
+  rpc UpdateSettings (UpdateSettingsRequest) returns (UpdateSettingsResponse);
 }
