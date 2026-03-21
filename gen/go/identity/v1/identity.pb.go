@@ -3180,6 +3180,178 @@ func (x *ListPermissionsResponse) GetTotalCount() int32 {
 	return 0
 }
 
+type GetSettingsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSettingsRequest) Reset() {
+	*x = GetSettingsRequest{}
+	mi := &file_identity_v1_identity_proto_msgTypes[64]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSettingsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSettingsRequest) ProtoMessage() {}
+
+func (x *GetSettingsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_identity_v1_identity_proto_msgTypes[64]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSettingsRequest.ProtoReflect.Descriptor instead.
+func (*GetSettingsRequest) Descriptor() ([]byte, []int) {
+	return file_identity_v1_identity_proto_rawDescGZIP(), []int{64}
+}
+
+type GetSettingsResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// All settings for the authenticated user as key → value pairs.
+	Settings      map[string]string `protobuf:"bytes,1,rep,name=settings,proto3" json:"settings,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetSettingsResponse) Reset() {
+	*x = GetSettingsResponse{}
+	mi := &file_identity_v1_identity_proto_msgTypes[65]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetSettingsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetSettingsResponse) ProtoMessage() {}
+
+func (x *GetSettingsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_identity_v1_identity_proto_msgTypes[65]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetSettingsResponse.ProtoReflect.Descriptor instead.
+func (*GetSettingsResponse) Descriptor() ([]byte, []int) {
+	return file_identity_v1_identity_proto_rawDescGZIP(), []int{65}
+}
+
+func (x *GetSettingsResponse) GetSettings() map[string]string {
+	if x != nil {
+		return x.Settings
+	}
+	return nil
+}
+
+type UpdateSettingsRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Partial map: only the provided keys are updated. Existing keys not
+	// present in this map are left unchanged.
+	Settings      map[string]string `protobuf:"bytes,1,rep,name=settings,proto3" json:"settings,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSettingsRequest) Reset() {
+	*x = UpdateSettingsRequest{}
+	mi := &file_identity_v1_identity_proto_msgTypes[66]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSettingsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSettingsRequest) ProtoMessage() {}
+
+func (x *UpdateSettingsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_identity_v1_identity_proto_msgTypes[66]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSettingsRequest.ProtoReflect.Descriptor instead.
+func (*UpdateSettingsRequest) Descriptor() ([]byte, []int) {
+	return file_identity_v1_identity_proto_rawDescGZIP(), []int{66}
+}
+
+func (x *UpdateSettingsRequest) GetSettings() map[string]string {
+	if x != nil {
+		return x.Settings
+	}
+	return nil
+}
+
+type UpdateSettingsResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Full settings map after the update.
+	Settings      map[string]string `protobuf:"bytes,1,rep,name=settings,proto3" json:"settings,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSettingsResponse) Reset() {
+	*x = UpdateSettingsResponse{}
+	mi := &file_identity_v1_identity_proto_msgTypes[67]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSettingsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSettingsResponse) ProtoMessage() {}
+
+func (x *UpdateSettingsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_identity_v1_identity_proto_msgTypes[67]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSettingsResponse.ProtoReflect.Descriptor instead.
+func (*UpdateSettingsResponse) Descriptor() ([]byte, []int) {
+	return file_identity_v1_identity_proto_rawDescGZIP(), []int{67}
+}
+
+func (x *UpdateSettingsResponse) GetSettings() map[string]string {
+	if x != nil {
+		return x.Settings
+	}
+	return nil
+}
+
 var File_identity_v1_identity_proto protoreflect.FileDescriptor
 
 const file_identity_v1_identity_proto_rawDesc = "" +
@@ -3411,7 +3583,23 @@ const file_identity_v1_identity_proto_rawDesc = "" +
 	"\vpermissions\x18\x01 \x03(\v2\x15.common.v1.PermissionR\vpermissions\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1f\n" +
 	"\vtotal_count\x18\x03 \x01(\x05R\n" +
-	"totalCount2\x86\x03\n" +
+	"totalCount\"\x14\n" +
+	"\x12GetSettingsRequest\"\x9e\x01\n" +
+	"\x13GetSettingsResponse\x12J\n" +
+	"\bsettings\x18\x01 \x03(\v2..identity.v1.GetSettingsResponse.SettingsEntryR\bsettings\x1a;\n" +
+	"\rSettingsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xa2\x01\n" +
+	"\x15UpdateSettingsRequest\x12L\n" +
+	"\bsettings\x18\x01 \x03(\v20.identity.v1.UpdateSettingsRequest.SettingsEntryR\bsettings\x1a;\n" +
+	"\rSettingsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xa4\x01\n" +
+	"\x16UpdateSettingsResponse\x12M\n" +
+	"\bsettings\x18\x01 \x03(\v21.identity.v1.UpdateSettingsResponse.SettingsEntryR\bsettings\x1a;\n" +
+	"\rSettingsEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x012\x86\x03\n" +
 	"\vAuthService\x12G\n" +
 	"\bRegister\x12\x1c.identity.v1.RegisterRequest\x1a\x1d.identity.v1.RegisterResponse\x12>\n" +
 	"\x05Login\x12\x19.identity.v1.LoginRequest\x1a\x1a.identity.v1.LoginResponse\x12A\n" +
@@ -3453,7 +3641,10 @@ const file_identity_v1_identity_proto_rawDesc = "" +
 	"\x18GetPermissionsByResource\x12,.identity.v1.GetPermissionsByResourceRequest\x1a-.identity.v1.GetPermissionsByResourceResponse\x12q\n" +
 	"\x16GetPermissionsByRoleId\x12*.identity.v1.GetPermissionsByRoleIdRequest\x1a+.identity.v1.GetPermissionsByRoleIdResponse\x12_\n" +
 	"\x10UpdatePermission\x12$.identity.v1.UpdatePermissionRequest\x1a%.identity.v1.UpdatePermissionResponse\x12k\n" +
-	"\x14DeletePermissionById\x12(.identity.v1.DeletePermissionByIdRequest\x1a).identity.v1.DeletePermissionByIdResponseB\xa7\x01\n" +
+	"\x14DeletePermissionById\x12(.identity.v1.DeletePermissionByIdRequest\x1a).identity.v1.DeletePermissionByIdResponse2\xbe\x01\n" +
+	"\x0fSettingsService\x12P\n" +
+	"\vGetSettings\x12\x1f.identity.v1.GetSettingsRequest\x1a .identity.v1.GetSettingsResponse\x12Y\n" +
+	"\x0eUpdateSettings\x12\".identity.v1.UpdateSettingsRequest\x1a#.identity.v1.UpdateSettingsResponseB\xa7\x01\n" +
 	"\x0fcom.identity.v1B\rIdentityProtoP\x01Z8github.com/hungp29/x-proto/gen/go/identity/v1;identityv1\xa2\x02\x03IXX\xaa\x02\vIdentity.V1\xca\x02\vIdentity\\V1\xe2\x02\x17Identity\\V1\\GPBMetadata\xea\x02\fIdentity::V1b\x06proto3"
 
 var (
@@ -3468,7 +3659,7 @@ func file_identity_v1_identity_proto_rawDescGZIP() []byte {
 	return file_identity_v1_identity_proto_rawDescData
 }
 
-var file_identity_v1_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 64)
+var file_identity_v1_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 71)
 var file_identity_v1_identity_proto_goTypes = []any{
 	(*RegisterRequest)(nil),                   // 0: identity.v1.RegisterRequest
 	(*RegisterResponse)(nil),                  // 1: identity.v1.RegisterResponse
@@ -3534,107 +3725,121 @@ var file_identity_v1_identity_proto_goTypes = []any{
 	(*DeletePermissionByIdResponse)(nil),      // 61: identity.v1.DeletePermissionByIdResponse
 	(*ListPermissionsRequest)(nil),            // 62: identity.v1.ListPermissionsRequest
 	(*ListPermissionsResponse)(nil),           // 63: identity.v1.ListPermissionsResponse
-	(*v1.User)(nil),                           // 64: common.v1.User
-	(*v1.TokenPair)(nil),                      // 65: common.v1.TokenPair
-	(*v1.Permission)(nil),                     // 66: common.v1.Permission
-	(*v1.Pagination)(nil),                     // 67: common.v1.Pagination
-	(*v1.Role)(nil),                           // 68: common.v1.Role
+	(*GetSettingsRequest)(nil),                // 64: identity.v1.GetSettingsRequest
+	(*GetSettingsResponse)(nil),               // 65: identity.v1.GetSettingsResponse
+	(*UpdateSettingsRequest)(nil),             // 66: identity.v1.UpdateSettingsRequest
+	(*UpdateSettingsResponse)(nil),            // 67: identity.v1.UpdateSettingsResponse
+	nil,                                       // 68: identity.v1.GetSettingsResponse.SettingsEntry
+	nil,                                       // 69: identity.v1.UpdateSettingsRequest.SettingsEntry
+	nil,                                       // 70: identity.v1.UpdateSettingsResponse.SettingsEntry
+	(*v1.User)(nil),                           // 71: common.v1.User
+	(*v1.TokenPair)(nil),                      // 72: common.v1.TokenPair
+	(*v1.Permission)(nil),                     // 73: common.v1.Permission
+	(*v1.Pagination)(nil),                     // 74: common.v1.Pagination
+	(*v1.Role)(nil),                           // 75: common.v1.Role
 }
 var file_identity_v1_identity_proto_depIdxs = []int32{
-	64, // 0: identity.v1.RegisterResponse.user:type_name -> common.v1.User
-	64, // 1: identity.v1.LoginResponse.user:type_name -> common.v1.User
-	65, // 2: identity.v1.LoginResponse.tokens:type_name -> common.v1.TokenPair
-	65, // 3: identity.v1.RefreshTokenResponse.tokens:type_name -> common.v1.TokenPair
-	66, // 4: identity.v1.GetUserPermissionsResponse.permissions:type_name -> common.v1.Permission
-	67, // 5: identity.v1.ListUsersRequest.pagination:type_name -> common.v1.Pagination
-	64, // 6: identity.v1.ListUsersResponse.users:type_name -> common.v1.User
-	64, // 7: identity.v1.GetUserByIdResponse.user:type_name -> common.v1.User
-	64, // 8: identity.v1.GetUserByEmailResponse.user:type_name -> common.v1.User
-	64, // 9: identity.v1.SearchUsersByEmailResponse.users:type_name -> common.v1.User
-	64, // 10: identity.v1.UpdateUserResponse.user:type_name -> common.v1.User
-	67, // 11: identity.v1.ListRolesRequest.pagination:type_name -> common.v1.Pagination
-	68, // 12: identity.v1.ListRolesResponse.roles:type_name -> common.v1.Role
-	68, // 13: identity.v1.CreateRoleResponse.role:type_name -> common.v1.Role
-	68, // 14: identity.v1.GetRoleByIdResponse.role:type_name -> common.v1.Role
-	68, // 15: identity.v1.GetRoleByNameResponse.role:type_name -> common.v1.Role
-	68, // 16: identity.v1.SearchRolesByNameResponse.roles:type_name -> common.v1.Role
-	68, // 17: identity.v1.GetRolesByUserIdResponse.roles:type_name -> common.v1.Role
-	68, // 18: identity.v1.UpdateRoleResponse.role:type_name -> common.v1.Role
-	66, // 19: identity.v1.CreatePermissionResponse.permission:type_name -> common.v1.Permission
-	66, // 20: identity.v1.GetPermissionsByResourceResponse.permissions:type_name -> common.v1.Permission
-	66, // 21: identity.v1.GetPermissionsByRoleIdResponse.permissions:type_name -> common.v1.Permission
-	66, // 22: identity.v1.UpdatePermissionResponse.permission:type_name -> common.v1.Permission
-	67, // 23: identity.v1.ListPermissionsRequest.pagination:type_name -> common.v1.Pagination
-	66, // 24: identity.v1.ListPermissionsResponse.permissions:type_name -> common.v1.Permission
-	0,  // 25: identity.v1.AuthService.Register:input_type -> identity.v1.RegisterRequest
-	2,  // 26: identity.v1.AuthService.Login:input_type -> identity.v1.LoginRequest
-	4,  // 27: identity.v1.AuthService.Logout:input_type -> identity.v1.LogoutRequest
-	6,  // 28: identity.v1.AuthService.RefreshToken:input_type -> identity.v1.RefreshTokenRequest
-	8,  // 29: identity.v1.AuthService.ValidateToken:input_type -> identity.v1.ValidateTokenRequest
-	10, // 30: identity.v1.AuthzService.CheckPermission:input_type -> identity.v1.CheckPermissionRequest
-	12, // 31: identity.v1.AuthzService.GetUserPermissions:input_type -> identity.v1.GetUserPermissionsRequest
-	14, // 32: identity.v1.AuthzService.AssignRole:input_type -> identity.v1.AssignRoleRequest
-	16, // 33: identity.v1.AuthzService.RevokeRole:input_type -> identity.v1.RevokeRoleRequest
-	18, // 34: identity.v1.UserService.ListUsers:input_type -> identity.v1.ListUsersRequest
-	20, // 35: identity.v1.UserService.GetUserById:input_type -> identity.v1.GetUserByIdRequest
-	22, // 36: identity.v1.UserService.GetUserByEmail:input_type -> identity.v1.GetUserByEmailRequest
-	24, // 37: identity.v1.UserService.SearchUsersByEmail:input_type -> identity.v1.SearchUsersByEmailRequest
-	26, // 38: identity.v1.UserService.UpdateUser:input_type -> identity.v1.UpdateUserRequest
-	28, // 39: identity.v1.UserService.DeleteUserById:input_type -> identity.v1.DeleteUserByIdRequest
-	30, // 40: identity.v1.RoleService.ListRoles:input_type -> identity.v1.ListRolesRequest
-	32, // 41: identity.v1.RoleService.CreateRole:input_type -> identity.v1.CreateRoleRequest
-	34, // 42: identity.v1.RoleService.GetRoleById:input_type -> identity.v1.GetRoleByIdRequest
-	36, // 43: identity.v1.RoleService.GetRoleByName:input_type -> identity.v1.GetRoleByNameRequest
-	40, // 44: identity.v1.RoleService.GetRolesByUserId:input_type -> identity.v1.GetRolesByUserIdRequest
-	38, // 45: identity.v1.RoleService.SearchRolesByName:input_type -> identity.v1.SearchRolesByNameRequest
-	42, // 46: identity.v1.RoleService.UpdateRole:input_type -> identity.v1.UpdateRoleRequest
-	44, // 47: identity.v1.RoleService.DeleteRoleById:input_type -> identity.v1.DeleteRoleByIdRequest
-	46, // 48: identity.v1.RoleService.AddPermissionsToRole:input_type -> identity.v1.AddPermissionsToRoleRequest
-	48, // 49: identity.v1.RoleService.RemovePermissionsFromRole:input_type -> identity.v1.RemovePermissionsFromRoleRequest
-	50, // 50: identity.v1.RoleService.SetPermissionsForRole:input_type -> identity.v1.SetPermissionsForRoleRequest
-	62, // 51: identity.v1.PermissionService.ListPermissions:input_type -> identity.v1.ListPermissionsRequest
-	52, // 52: identity.v1.PermissionService.CreatePermission:input_type -> identity.v1.CreatePermissionRequest
-	54, // 53: identity.v1.PermissionService.GetPermissionsByResource:input_type -> identity.v1.GetPermissionsByResourceRequest
-	56, // 54: identity.v1.PermissionService.GetPermissionsByRoleId:input_type -> identity.v1.GetPermissionsByRoleIdRequest
-	58, // 55: identity.v1.PermissionService.UpdatePermission:input_type -> identity.v1.UpdatePermissionRequest
-	60, // 56: identity.v1.PermissionService.DeletePermissionById:input_type -> identity.v1.DeletePermissionByIdRequest
-	1,  // 57: identity.v1.AuthService.Register:output_type -> identity.v1.RegisterResponse
-	3,  // 58: identity.v1.AuthService.Login:output_type -> identity.v1.LoginResponse
-	5,  // 59: identity.v1.AuthService.Logout:output_type -> identity.v1.LogoutResponse
-	7,  // 60: identity.v1.AuthService.RefreshToken:output_type -> identity.v1.RefreshTokenResponse
-	9,  // 61: identity.v1.AuthService.ValidateToken:output_type -> identity.v1.ValidateTokenResponse
-	11, // 62: identity.v1.AuthzService.CheckPermission:output_type -> identity.v1.CheckPermissionResponse
-	13, // 63: identity.v1.AuthzService.GetUserPermissions:output_type -> identity.v1.GetUserPermissionsResponse
-	15, // 64: identity.v1.AuthzService.AssignRole:output_type -> identity.v1.AssignRoleResponse
-	17, // 65: identity.v1.AuthzService.RevokeRole:output_type -> identity.v1.RevokeRoleResponse
-	19, // 66: identity.v1.UserService.ListUsers:output_type -> identity.v1.ListUsersResponse
-	21, // 67: identity.v1.UserService.GetUserById:output_type -> identity.v1.GetUserByIdResponse
-	23, // 68: identity.v1.UserService.GetUserByEmail:output_type -> identity.v1.GetUserByEmailResponse
-	25, // 69: identity.v1.UserService.SearchUsersByEmail:output_type -> identity.v1.SearchUsersByEmailResponse
-	27, // 70: identity.v1.UserService.UpdateUser:output_type -> identity.v1.UpdateUserResponse
-	29, // 71: identity.v1.UserService.DeleteUserById:output_type -> identity.v1.DeleteUserByIdResponse
-	31, // 72: identity.v1.RoleService.ListRoles:output_type -> identity.v1.ListRolesResponse
-	33, // 73: identity.v1.RoleService.CreateRole:output_type -> identity.v1.CreateRoleResponse
-	35, // 74: identity.v1.RoleService.GetRoleById:output_type -> identity.v1.GetRoleByIdResponse
-	37, // 75: identity.v1.RoleService.GetRoleByName:output_type -> identity.v1.GetRoleByNameResponse
-	41, // 76: identity.v1.RoleService.GetRolesByUserId:output_type -> identity.v1.GetRolesByUserIdResponse
-	39, // 77: identity.v1.RoleService.SearchRolesByName:output_type -> identity.v1.SearchRolesByNameResponse
-	43, // 78: identity.v1.RoleService.UpdateRole:output_type -> identity.v1.UpdateRoleResponse
-	45, // 79: identity.v1.RoleService.DeleteRoleById:output_type -> identity.v1.DeleteRoleByIdResponse
-	47, // 80: identity.v1.RoleService.AddPermissionsToRole:output_type -> identity.v1.AddPermissionsToRoleResponse
-	49, // 81: identity.v1.RoleService.RemovePermissionsFromRole:output_type -> identity.v1.RemovePermissionsFromRoleResponse
-	51, // 82: identity.v1.RoleService.SetPermissionsForRole:output_type -> identity.v1.SetPermissionsForRoleResponse
-	63, // 83: identity.v1.PermissionService.ListPermissions:output_type -> identity.v1.ListPermissionsResponse
-	53, // 84: identity.v1.PermissionService.CreatePermission:output_type -> identity.v1.CreatePermissionResponse
-	55, // 85: identity.v1.PermissionService.GetPermissionsByResource:output_type -> identity.v1.GetPermissionsByResourceResponse
-	57, // 86: identity.v1.PermissionService.GetPermissionsByRoleId:output_type -> identity.v1.GetPermissionsByRoleIdResponse
-	59, // 87: identity.v1.PermissionService.UpdatePermission:output_type -> identity.v1.UpdatePermissionResponse
-	61, // 88: identity.v1.PermissionService.DeletePermissionById:output_type -> identity.v1.DeletePermissionByIdResponse
-	57, // [57:89] is the sub-list for method output_type
-	25, // [25:57] is the sub-list for method input_type
-	25, // [25:25] is the sub-list for extension type_name
-	25, // [25:25] is the sub-list for extension extendee
-	0,  // [0:25] is the sub-list for field type_name
+	71, // 0: identity.v1.RegisterResponse.user:type_name -> common.v1.User
+	71, // 1: identity.v1.LoginResponse.user:type_name -> common.v1.User
+	72, // 2: identity.v1.LoginResponse.tokens:type_name -> common.v1.TokenPair
+	72, // 3: identity.v1.RefreshTokenResponse.tokens:type_name -> common.v1.TokenPair
+	73, // 4: identity.v1.GetUserPermissionsResponse.permissions:type_name -> common.v1.Permission
+	74, // 5: identity.v1.ListUsersRequest.pagination:type_name -> common.v1.Pagination
+	71, // 6: identity.v1.ListUsersResponse.users:type_name -> common.v1.User
+	71, // 7: identity.v1.GetUserByIdResponse.user:type_name -> common.v1.User
+	71, // 8: identity.v1.GetUserByEmailResponse.user:type_name -> common.v1.User
+	71, // 9: identity.v1.SearchUsersByEmailResponse.users:type_name -> common.v1.User
+	71, // 10: identity.v1.UpdateUserResponse.user:type_name -> common.v1.User
+	74, // 11: identity.v1.ListRolesRequest.pagination:type_name -> common.v1.Pagination
+	75, // 12: identity.v1.ListRolesResponse.roles:type_name -> common.v1.Role
+	75, // 13: identity.v1.CreateRoleResponse.role:type_name -> common.v1.Role
+	75, // 14: identity.v1.GetRoleByIdResponse.role:type_name -> common.v1.Role
+	75, // 15: identity.v1.GetRoleByNameResponse.role:type_name -> common.v1.Role
+	75, // 16: identity.v1.SearchRolesByNameResponse.roles:type_name -> common.v1.Role
+	75, // 17: identity.v1.GetRolesByUserIdResponse.roles:type_name -> common.v1.Role
+	75, // 18: identity.v1.UpdateRoleResponse.role:type_name -> common.v1.Role
+	73, // 19: identity.v1.CreatePermissionResponse.permission:type_name -> common.v1.Permission
+	73, // 20: identity.v1.GetPermissionsByResourceResponse.permissions:type_name -> common.v1.Permission
+	73, // 21: identity.v1.GetPermissionsByRoleIdResponse.permissions:type_name -> common.v1.Permission
+	73, // 22: identity.v1.UpdatePermissionResponse.permission:type_name -> common.v1.Permission
+	74, // 23: identity.v1.ListPermissionsRequest.pagination:type_name -> common.v1.Pagination
+	73, // 24: identity.v1.ListPermissionsResponse.permissions:type_name -> common.v1.Permission
+	68, // 25: identity.v1.GetSettingsResponse.settings:type_name -> identity.v1.GetSettingsResponse.SettingsEntry
+	69, // 26: identity.v1.UpdateSettingsRequest.settings:type_name -> identity.v1.UpdateSettingsRequest.SettingsEntry
+	70, // 27: identity.v1.UpdateSettingsResponse.settings:type_name -> identity.v1.UpdateSettingsResponse.SettingsEntry
+	0,  // 28: identity.v1.AuthService.Register:input_type -> identity.v1.RegisterRequest
+	2,  // 29: identity.v1.AuthService.Login:input_type -> identity.v1.LoginRequest
+	4,  // 30: identity.v1.AuthService.Logout:input_type -> identity.v1.LogoutRequest
+	6,  // 31: identity.v1.AuthService.RefreshToken:input_type -> identity.v1.RefreshTokenRequest
+	8,  // 32: identity.v1.AuthService.ValidateToken:input_type -> identity.v1.ValidateTokenRequest
+	10, // 33: identity.v1.AuthzService.CheckPermission:input_type -> identity.v1.CheckPermissionRequest
+	12, // 34: identity.v1.AuthzService.GetUserPermissions:input_type -> identity.v1.GetUserPermissionsRequest
+	14, // 35: identity.v1.AuthzService.AssignRole:input_type -> identity.v1.AssignRoleRequest
+	16, // 36: identity.v1.AuthzService.RevokeRole:input_type -> identity.v1.RevokeRoleRequest
+	18, // 37: identity.v1.UserService.ListUsers:input_type -> identity.v1.ListUsersRequest
+	20, // 38: identity.v1.UserService.GetUserById:input_type -> identity.v1.GetUserByIdRequest
+	22, // 39: identity.v1.UserService.GetUserByEmail:input_type -> identity.v1.GetUserByEmailRequest
+	24, // 40: identity.v1.UserService.SearchUsersByEmail:input_type -> identity.v1.SearchUsersByEmailRequest
+	26, // 41: identity.v1.UserService.UpdateUser:input_type -> identity.v1.UpdateUserRequest
+	28, // 42: identity.v1.UserService.DeleteUserById:input_type -> identity.v1.DeleteUserByIdRequest
+	30, // 43: identity.v1.RoleService.ListRoles:input_type -> identity.v1.ListRolesRequest
+	32, // 44: identity.v1.RoleService.CreateRole:input_type -> identity.v1.CreateRoleRequest
+	34, // 45: identity.v1.RoleService.GetRoleById:input_type -> identity.v1.GetRoleByIdRequest
+	36, // 46: identity.v1.RoleService.GetRoleByName:input_type -> identity.v1.GetRoleByNameRequest
+	40, // 47: identity.v1.RoleService.GetRolesByUserId:input_type -> identity.v1.GetRolesByUserIdRequest
+	38, // 48: identity.v1.RoleService.SearchRolesByName:input_type -> identity.v1.SearchRolesByNameRequest
+	42, // 49: identity.v1.RoleService.UpdateRole:input_type -> identity.v1.UpdateRoleRequest
+	44, // 50: identity.v1.RoleService.DeleteRoleById:input_type -> identity.v1.DeleteRoleByIdRequest
+	46, // 51: identity.v1.RoleService.AddPermissionsToRole:input_type -> identity.v1.AddPermissionsToRoleRequest
+	48, // 52: identity.v1.RoleService.RemovePermissionsFromRole:input_type -> identity.v1.RemovePermissionsFromRoleRequest
+	50, // 53: identity.v1.RoleService.SetPermissionsForRole:input_type -> identity.v1.SetPermissionsForRoleRequest
+	62, // 54: identity.v1.PermissionService.ListPermissions:input_type -> identity.v1.ListPermissionsRequest
+	52, // 55: identity.v1.PermissionService.CreatePermission:input_type -> identity.v1.CreatePermissionRequest
+	54, // 56: identity.v1.PermissionService.GetPermissionsByResource:input_type -> identity.v1.GetPermissionsByResourceRequest
+	56, // 57: identity.v1.PermissionService.GetPermissionsByRoleId:input_type -> identity.v1.GetPermissionsByRoleIdRequest
+	58, // 58: identity.v1.PermissionService.UpdatePermission:input_type -> identity.v1.UpdatePermissionRequest
+	60, // 59: identity.v1.PermissionService.DeletePermissionById:input_type -> identity.v1.DeletePermissionByIdRequest
+	64, // 60: identity.v1.SettingsService.GetSettings:input_type -> identity.v1.GetSettingsRequest
+	66, // 61: identity.v1.SettingsService.UpdateSettings:input_type -> identity.v1.UpdateSettingsRequest
+	1,  // 62: identity.v1.AuthService.Register:output_type -> identity.v1.RegisterResponse
+	3,  // 63: identity.v1.AuthService.Login:output_type -> identity.v1.LoginResponse
+	5,  // 64: identity.v1.AuthService.Logout:output_type -> identity.v1.LogoutResponse
+	7,  // 65: identity.v1.AuthService.RefreshToken:output_type -> identity.v1.RefreshTokenResponse
+	9,  // 66: identity.v1.AuthService.ValidateToken:output_type -> identity.v1.ValidateTokenResponse
+	11, // 67: identity.v1.AuthzService.CheckPermission:output_type -> identity.v1.CheckPermissionResponse
+	13, // 68: identity.v1.AuthzService.GetUserPermissions:output_type -> identity.v1.GetUserPermissionsResponse
+	15, // 69: identity.v1.AuthzService.AssignRole:output_type -> identity.v1.AssignRoleResponse
+	17, // 70: identity.v1.AuthzService.RevokeRole:output_type -> identity.v1.RevokeRoleResponse
+	19, // 71: identity.v1.UserService.ListUsers:output_type -> identity.v1.ListUsersResponse
+	21, // 72: identity.v1.UserService.GetUserById:output_type -> identity.v1.GetUserByIdResponse
+	23, // 73: identity.v1.UserService.GetUserByEmail:output_type -> identity.v1.GetUserByEmailResponse
+	25, // 74: identity.v1.UserService.SearchUsersByEmail:output_type -> identity.v1.SearchUsersByEmailResponse
+	27, // 75: identity.v1.UserService.UpdateUser:output_type -> identity.v1.UpdateUserResponse
+	29, // 76: identity.v1.UserService.DeleteUserById:output_type -> identity.v1.DeleteUserByIdResponse
+	31, // 77: identity.v1.RoleService.ListRoles:output_type -> identity.v1.ListRolesResponse
+	33, // 78: identity.v1.RoleService.CreateRole:output_type -> identity.v1.CreateRoleResponse
+	35, // 79: identity.v1.RoleService.GetRoleById:output_type -> identity.v1.GetRoleByIdResponse
+	37, // 80: identity.v1.RoleService.GetRoleByName:output_type -> identity.v1.GetRoleByNameResponse
+	41, // 81: identity.v1.RoleService.GetRolesByUserId:output_type -> identity.v1.GetRolesByUserIdResponse
+	39, // 82: identity.v1.RoleService.SearchRolesByName:output_type -> identity.v1.SearchRolesByNameResponse
+	43, // 83: identity.v1.RoleService.UpdateRole:output_type -> identity.v1.UpdateRoleResponse
+	45, // 84: identity.v1.RoleService.DeleteRoleById:output_type -> identity.v1.DeleteRoleByIdResponse
+	47, // 85: identity.v1.RoleService.AddPermissionsToRole:output_type -> identity.v1.AddPermissionsToRoleResponse
+	49, // 86: identity.v1.RoleService.RemovePermissionsFromRole:output_type -> identity.v1.RemovePermissionsFromRoleResponse
+	51, // 87: identity.v1.RoleService.SetPermissionsForRole:output_type -> identity.v1.SetPermissionsForRoleResponse
+	63, // 88: identity.v1.PermissionService.ListPermissions:output_type -> identity.v1.ListPermissionsResponse
+	53, // 89: identity.v1.PermissionService.CreatePermission:output_type -> identity.v1.CreatePermissionResponse
+	55, // 90: identity.v1.PermissionService.GetPermissionsByResource:output_type -> identity.v1.GetPermissionsByResourceResponse
+	57, // 91: identity.v1.PermissionService.GetPermissionsByRoleId:output_type -> identity.v1.GetPermissionsByRoleIdResponse
+	59, // 92: identity.v1.PermissionService.UpdatePermission:output_type -> identity.v1.UpdatePermissionResponse
+	61, // 93: identity.v1.PermissionService.DeletePermissionById:output_type -> identity.v1.DeletePermissionByIdResponse
+	65, // 94: identity.v1.SettingsService.GetSettings:output_type -> identity.v1.GetSettingsResponse
+	67, // 95: identity.v1.SettingsService.UpdateSettings:output_type -> identity.v1.UpdateSettingsResponse
+	62, // [62:96] is the sub-list for method output_type
+	28, // [28:62] is the sub-list for method input_type
+	28, // [28:28] is the sub-list for extension type_name
+	28, // [28:28] is the sub-list for extension extendee
+	0,  // [0:28] is the sub-list for field type_name
 }
 
 func init() { file_identity_v1_identity_proto_init() }
@@ -3654,9 +3859,9 @@ func file_identity_v1_identity_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_identity_v1_identity_proto_rawDesc), len(file_identity_v1_identity_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   64,
+			NumMessages:   71,
 			NumExtensions: 0,
-			NumServices:   5,
+			NumServices:   6,
 		},
 		GoTypes:           file_identity_v1_identity_proto_goTypes,
 		DependencyIndexes: file_identity_v1_identity_proto_depIdxs,
