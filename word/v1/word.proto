@@ -50,6 +50,8 @@ message GetWordsResponse {
 message SaveWordRequest {
   string word = 1;
   string content = 2;
+  string audio_uk = 3;
+  string audio_us = 4;
 }
 
 message SaveWordResponse {
