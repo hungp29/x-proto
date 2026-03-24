@@ -1199,3 +1199,257 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "finance/v1/finance.proto",
 }
+
+const (
+	FamilyService_CreateFamily_FullMethodName       = "/finance.v1.FamilyService/CreateFamily"
+	FamilyService_GetFamily_FullMethodName          = "/finance.v1.FamilyService/GetFamily"
+	FamilyService_AddFamilyMember_FullMethodName    = "/finance.v1.FamilyService/AddFamilyMember"
+	FamilyService_RemoveFamilyMember_FullMethodName = "/finance.v1.FamilyService/RemoveFamilyMember"
+	FamilyService_LeaveFamily_FullMethodName        = "/finance.v1.FamilyService/LeaveFamily"
+)
+
+// FamilyServiceClient is the client API for FamilyService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type FamilyServiceClient interface {
+	CreateFamily(ctx context.Context, in *CreateFamilyRequest, opts ...grpc.CallOption) (*CreateFamilyResponse, error)
+	GetFamily(ctx context.Context, in *GetFamilyRequest, opts ...grpc.CallOption) (*GetFamilyResponse, error)
+	AddFamilyMember(ctx context.Context, in *AddFamilyMemberRequest, opts ...grpc.CallOption) (*AddFamilyMemberResponse, error)
+	RemoveFamilyMember(ctx context.Context, in *RemoveFamilyMemberRequest, opts ...grpc.CallOption) (*RemoveFamilyMemberResponse, error)
+	LeaveFamily(ctx context.Context, in *LeaveFamilyRequest, opts ...grpc.CallOption) (*LeaveFamilyResponse, error)
+}
+
+type familyServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewFamilyServiceClient(cc grpc.ClientConnInterface) FamilyServiceClient {
+	return &familyServiceClient{cc}
+}
+
+func (c *familyServiceClient) CreateFamily(ctx context.Context, in *CreateFamilyRequest, opts ...grpc.CallOption) (*CreateFamilyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateFamilyResponse)
+	err := c.cc.Invoke(ctx, FamilyService_CreateFamily_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *familyServiceClient) GetFamily(ctx context.Context, in *GetFamilyRequest, opts ...grpc.CallOption) (*GetFamilyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFamilyResponse)
+	err := c.cc.Invoke(ctx, FamilyService_GetFamily_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *familyServiceClient) AddFamilyMember(ctx context.Context, in *AddFamilyMemberRequest, opts ...grpc.CallOption) (*AddFamilyMemberResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddFamilyMemberResponse)
+	err := c.cc.Invoke(ctx, FamilyService_AddFamilyMember_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *familyServiceClient) RemoveFamilyMember(ctx context.Context, in *RemoveFamilyMemberRequest, opts ...grpc.CallOption) (*RemoveFamilyMemberResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveFamilyMemberResponse)
+	err := c.cc.Invoke(ctx, FamilyService_RemoveFamilyMember_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *familyServiceClient) LeaveFamily(ctx context.Context, in *LeaveFamilyRequest, opts ...grpc.CallOption) (*LeaveFamilyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LeaveFamilyResponse)
+	err := c.cc.Invoke(ctx, FamilyService_LeaveFamily_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// FamilyServiceServer is the server API for FamilyService service.
+// All implementations must embed UnimplementedFamilyServiceServer
+// for forward compatibility.
+type FamilyServiceServer interface {
+	CreateFamily(context.Context, *CreateFamilyRequest) (*CreateFamilyResponse, error)
+	GetFamily(context.Context, *GetFamilyRequest) (*GetFamilyResponse, error)
+	AddFamilyMember(context.Context, *AddFamilyMemberRequest) (*AddFamilyMemberResponse, error)
+	RemoveFamilyMember(context.Context, *RemoveFamilyMemberRequest) (*RemoveFamilyMemberResponse, error)
+	LeaveFamily(context.Context, *LeaveFamilyRequest) (*LeaveFamilyResponse, error)
+	mustEmbedUnimplementedFamilyServiceServer()
+}
+
+// UnimplementedFamilyServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedFamilyServiceServer struct{}
+
+func (UnimplementedFamilyServiceServer) CreateFamily(context.Context, *CreateFamilyRequest) (*CreateFamilyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateFamily not implemented")
+}
+func (UnimplementedFamilyServiceServer) GetFamily(context.Context, *GetFamilyRequest) (*GetFamilyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFamily not implemented")
+}
+func (UnimplementedFamilyServiceServer) AddFamilyMember(context.Context, *AddFamilyMemberRequest) (*AddFamilyMemberResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddFamilyMember not implemented")
+}
+func (UnimplementedFamilyServiceServer) RemoveFamilyMember(context.Context, *RemoveFamilyMemberRequest) (*RemoveFamilyMemberResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RemoveFamilyMember not implemented")
+}
+func (UnimplementedFamilyServiceServer) LeaveFamily(context.Context, *LeaveFamilyRequest) (*LeaveFamilyResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method LeaveFamily not implemented")
+}
+func (UnimplementedFamilyServiceServer) mustEmbedUnimplementedFamilyServiceServer() {}
+func (UnimplementedFamilyServiceServer) testEmbeddedByValue()                       {}
+
+// UnsafeFamilyServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to FamilyServiceServer will
+// result in compilation errors.
+type UnsafeFamilyServiceServer interface {
+	mustEmbedUnimplementedFamilyServiceServer()
+}
+
+func RegisterFamilyServiceServer(s grpc.ServiceRegistrar, srv FamilyServiceServer) {
+	// If the following call panics, it indicates UnimplementedFamilyServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&FamilyService_ServiceDesc, srv)
+}
+
+func _FamilyService_CreateFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateFamilyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).CreateFamily(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_CreateFamily_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).CreateFamily(ctx, req.(*CreateFamilyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FamilyService_GetFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFamilyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).GetFamily(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_GetFamily_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).GetFamily(ctx, req.(*GetFamilyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FamilyService_AddFamilyMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddFamilyMemberRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).AddFamilyMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_AddFamilyMember_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).AddFamilyMember(ctx, req.(*AddFamilyMemberRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FamilyService_RemoveFamilyMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveFamilyMemberRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).RemoveFamilyMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_RemoveFamilyMember_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).RemoveFamilyMember(ctx, req.(*RemoveFamilyMemberRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FamilyService_LeaveFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LeaveFamilyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).LeaveFamily(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_LeaveFamily_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).LeaveFamily(ctx, req.(*LeaveFamilyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// FamilyService_ServiceDesc is the grpc.ServiceDesc for FamilyService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var FamilyService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "finance.v1.FamilyService",
+	HandlerType: (*FamilyServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateFamily",
+			Handler:    _FamilyService_CreateFamily_Handler,
+		},
+		{
+			MethodName: "GetFamily",
+			Handler:    _FamilyService_GetFamily_Handler,
+		},
+		{
+			MethodName: "AddFamilyMember",
+			Handler:    _FamilyService_AddFamilyMember_Handler,
+		},
+		{
+			MethodName: "RemoveFamilyMember",
+			Handler:    _FamilyService_RemoveFamilyMember_Handler,
+		},
+		{
+			MethodName: "LeaveFamily",
+			Handler:    _FamilyService_LeaveFamily_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "finance/v1/finance.proto",
+}
