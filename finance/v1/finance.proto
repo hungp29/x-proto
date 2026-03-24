@@ -44,6 +44,8 @@ message Transaction {
   // Denormalized for convenience
   Category category = 11;
   Wallet   wallet   = 12;
+  // Optional link to a savings/debt-payoff goal
+  string goal_id = 13;
 }
 
 message Budget {
@@ -232,6 +234,7 @@ message CreateTransactionRequest {
   string type             = 4;
   string note             = 5;
   string transaction_date = 6; // YYYY-MM-DD
+  optional string goal_id          = 7; // optional
 }
 
 message CreateTransactionResponse {
@@ -246,6 +249,7 @@ message UpdateTransactionRequest {
   string type             = 5;
   string note             = 6;
   string transaction_date = 7;
+  optional string goal_id          = 8; // optional; empty string clears the link
 }
 
 message UpdateTransactionResponse {
