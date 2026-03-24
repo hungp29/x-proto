@@ -421,6 +421,8 @@ type SaveWordRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Word          string                 `protobuf:"bytes,1,opt,name=word,proto3" json:"word,omitempty"`
 	Content       string                 `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
+	AudioUk       string                 `protobuf:"bytes,3,opt,name=audio_uk,json=audioUk,proto3" json:"audio_uk,omitempty"`
+	AudioUs       string                 `protobuf:"bytes,4,opt,name=audio_us,json=audioUs,proto3" json:"audio_us,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -465,6 +467,20 @@ func (x *SaveWordRequest) GetWord() string {
 func (x *SaveWordRequest) GetContent() string {
 	if x != nil {
 		return x.Content
+	}
+	return ""
+}
+
+func (x *SaveWordRequest) GetAudioUk() string {
+	if x != nil {
+		return x.AudioUk
+	}
+	return ""
+}
+
+func (x *SaveWordRequest) GetAudioUs() string {
+	if x != nil {
+		return x.AudioUs
 	}
 	return ""
 }
@@ -639,10 +655,12 @@ const file_word_v1_word_proto_rawDesc = "" +
 	"\x05words\x18\x01 \x03(\tR\x05words\x12'\n" +
 	"\x04dict\x18\x02 \x01(\x0e2\x13.word.v1.DictionaryR\x04dict\"7\n" +
 	"\x10GetWordsResponse\x12#\n" +
-	"\x05words\x18\x01 \x03(\v2\r.word.v1.WordR\x05words\"?\n" +
+	"\x05words\x18\x01 \x03(\v2\r.word.v1.WordR\x05words\"u\n" +
 	"\x0fSaveWordRequest\x12\x12\n" +
 	"\x04word\x18\x01 \x01(\tR\x04word\x12\x18\n" +
-	"\acontent\x18\x02 \x01(\tR\acontent\"G\n" +
+	"\acontent\x18\x02 \x01(\tR\acontent\x12\x19\n" +
+	"\baudio_uk\x18\x03 \x01(\tR\aaudioUk\x12\x19\n" +
+	"\baudio_us\x18\x04 \x01(\tR\aaudioUs\"G\n" +
 	"\x10SaveWordResponse\x12\x1f\n" +
 	"\vsaved_count\x18\x01 \x01(\x05R\n" +
 	"savedCount\x12\x12\n" +
