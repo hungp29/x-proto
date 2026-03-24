@@ -1,0 +1,349 @@
+syntax = "proto3";
+
+package finance.v1;
+
+option go_package = "github.com/hungp29/x-proto/gen/go/finance/v1;financev1";
+
+// ── Shared domain types ───────────────────────────────────────────────────────
+
+message Wallet {
+  string id         = 1;
+  string user_id    = 2;
+  string name       = 3;
+  string type       = 4; // cash | bank | ewallet | credit_card
+  string balance    = 5; // formatted decimal string
+  string currency   = 6;
+  bool   is_default = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+message Category {
+  string id        = 1;
+  string user_id   = 2; // empty = system default
+  string name      = 3;
+  string icon      = 4;
+  string color     = 5;
+  string type      = 6; // expense | income
+  bool   is_system = 7;
+}
+
+message Transaction {
+  string id               = 1;
+  string user_id          = 2;
+  string wallet_id        = 3;
+  string category_id      = 4;
+  string amount           = 5; // formatted decimal string
+  string type             = 6; // expense | income | transfer
+  string note             = 7;
+  string transaction_date = 8; // YYYY-MM-DD
+  string created_at       = 9;
+  string updated_at       = 10;
+  // Denormalized for convenience
+  Category category = 11;
+  Wallet   wallet   = 12;
+}
+
+message Budget {
+  string id          = 1;
+  string user_id     = 2;
+  string category_id = 3;
+  string amount      = 4; // budget limit
+  string spent       = 5; // actual spent this month (computed)
+  int32  month       = 6;
+  int32  year        = 7;
+  Category category  = 8;
+}
+
+message Goal {
+  string id             = 1;
+  string user_id        = 2;
+  string name           = 3;
+  string type           = 4; // savings | debt_payoff
+  string target_amount  = 5;
+  string current_amount = 6;
+  string deadline       = 7; // YYYY-MM-DD, empty if none
+  string note           = 8;
+  bool   is_completed   = 9;
+  string created_at     = 10;
+  string updated_at     = 11;
+}
+
+message CategoryBreakdown {
+  string category_id   = 1;
+  string category_name = 2;
+  string category_icon = 3;
+  string category_color= 4;
+  string amount        = 5;
+  double percentage    = 6;
+}
+
+message MonthlySummary {
+  int32  month           = 1;
+  int32  year            = 2;
+  string total_income    = 3;
+  string total_expense   = 4;
+  string net_balance     = 5;
+  string savings_rate    = 6; // percentage string, e.g. "23.5"
+  repeated CategoryBreakdown expense_breakdown = 7;
+  repeated CategoryBreakdown income_breakdown  = 8;
+}
+
+message MonthlyTrendItem {
+  int32  month   = 1;
+  int32  year    = 2;
+  string income  = 3;
+  string expense = 4;
+}
+
+// ── WalletService ─────────────────────────────────────────────────────────────
+
+message ListWalletsRequest {}
+
+message ListWalletsResponse {
+  repeated Wallet wallets = 1;
+}
+
+message CreateWalletRequest {
+  string name       = 1;
+  string type       = 2;
+  string balance    = 3;
+  string currency   = 4;
+  bool   is_default = 5;
+}
+
+message CreateWalletResponse {
+  Wallet wallet = 1;
+}
+
+message UpdateWalletRequest {
+  string wallet_id  = 1;
+  string name       = 2;
+  string type       = 3;
+  string currency   = 4;
+  bool   is_default = 5;
+}
+
+message UpdateWalletResponse {
+  Wallet wallet = 1;
+}
+
+message DeleteWalletRequest {
+  string wallet_id = 1;
+}
+
+message DeleteWalletResponse {}
+
+service WalletService {
+  rpc ListWallets  (ListWalletsRequest)  returns (ListWalletsResponse);
+  rpc CreateWallet (CreateWalletRequest) returns (CreateWalletResponse);
+  rpc UpdateWallet (UpdateWalletRequest) returns (UpdateWalletResponse);
+  rpc DeleteWallet (DeleteWalletRequest) returns (DeleteWalletResponse);
+}
+
+// ── CategoryService ───────────────────────────────────────────────────────────
+
+message ListCategoriesRequest {
+  string type = 1; // expense | income | empty = all
+}
+
+message ListCategoriesResponse {
+  repeated Category categories = 1;
+}
+
+message CreateCategoryRequest {
+  string name  = 1;
+  string icon  = 2;
+  string color = 3;
+  string type  = 4;
+}
+
+message CreateCategoryResponse {
+  Category category = 1;
+}
+
+message UpdateCategoryRequest {
+  string category_id = 1;
+  string name        = 2;
+  string icon        = 3;
+  string color       = 4;
+}
+
+message UpdateCategoryResponse {
+  Category category = 1;
+}
+
+message DeleteCategoryRequest {
+  string category_id = 1;
+}
+
+message DeleteCategoryResponse {}
+
+service CategoryService {
+  rpc ListCategories  (ListCategoriesRequest)  returns (ListCategoriesResponse);
+  rpc CreateCategory  (CreateCategoryRequest)  returns (CreateCategoryResponse);
+  rpc UpdateCategory  (UpdateCategoryRequest)  returns (UpdateCategoryResponse);
+  rpc DeleteCategory  (DeleteCategoryRequest)  returns (DeleteCategoryResponse);
+}
+
+// ── TransactionService ────────────────────────────────────────────────────────
+
+message ListTransactionsRequest {
+  int32  month       = 1; // 0 = all months
+  int32  year        = 2; // 0 = all years
+  string category_id = 3; // empty = all categories
+  string type        = 4; // expense | income | transfer | empty = all
+  int32  page        = 5; // 1-based, default 1
+  int32  page_size   = 6; // default 20
+}
+
+message ListTransactionsResponse {
+  repeated Transaction transactions = 1;
+  int32                total_count  = 2;
+}
+
+message CreateTransactionRequest {
+  string wallet_id        = 1;
+  string category_id      = 2;
+  string amount           = 3;
+  string type             = 4;
+  string note             = 5;
+  string transaction_date = 6; // YYYY-MM-DD
+}
+
+message CreateTransactionResponse {
+  Transaction transaction = 1;
+}
+
+message UpdateTransactionRequest {
+  string transaction_id   = 1;
+  string wallet_id        = 2;
+  string category_id      = 3;
+  string amount           = 4;
+  string type             = 5;
+  string note             = 6;
+  string transaction_date = 7;
+}
+
+message UpdateTransactionResponse {
+  Transaction transaction = 1;
+}
+
+message DeleteTransactionRequest {
+  string transaction_id = 1;
+}
+
+message DeleteTransactionResponse {}
+
+service TransactionService {
+  rpc ListTransactions  (ListTransactionsRequest)  returns (ListTransactionsResponse);
+  rpc CreateTransaction (CreateTransactionRequest) returns (CreateTransactionResponse);
+  rpc UpdateTransaction (UpdateTransactionRequest) returns (UpdateTransactionResponse);
+  rpc DeleteTransaction (DeleteTransactionRequest) returns (DeleteTransactionResponse);
+}
+
+// ── BudgetService ─────────────────────────────────────────────────────────────
+
+message SetBudgetRequest {
+  string category_id = 1;
+  string amount      = 2;
+  int32  month       = 3;
+  int32  year        = 4;
+}
+
+message SetBudgetResponse {
+  Budget budget = 1;
+}
+
+message DeleteBudgetRequest {
+  string budget_id = 1;
+}
+
+message DeleteBudgetResponse {}
+
+message ListBudgetsRequest {
+  int32 month = 1;
+  int32 year  = 2;
+}
+
+message ListBudgetsResponse {
+  repeated Budget budgets = 1;
+}
+
+service BudgetService {
+  rpc SetBudget    (SetBudgetRequest)    returns (SetBudgetResponse);
+  rpc DeleteBudget (DeleteBudgetRequest) returns (DeleteBudgetResponse);
+  rpc ListBudgets  (ListBudgetsRequest)  returns (ListBudgetsResponse);
+}
+
+// ── GoalService ───────────────────────────────────────────────────────────────
+
+message ListGoalsRequest {}
+
+message ListGoalsResponse {
+  repeated Goal goals = 1;
+}
+
+message CreateGoalRequest {
+  string name           = 1;
+  string type           = 2;
+  string target_amount  = 3;
+  string current_amount = 4;
+  string deadline       = 5;
+  string note           = 6;
+}
+
+message CreateGoalResponse {
+  Goal goal = 1;
+}
+
+message UpdateGoalRequest {
+  string goal_id        = 1;
+  string name           = 2;
+  string target_amount  = 3;
+  string current_amount = 4;
+  string deadline       = 5;
+  string note           = 6;
+  bool   is_completed   = 7;
+}
+
+message UpdateGoalResponse {
+  Goal goal = 1;
+}
+
+message DeleteGoalRequest {
+  string goal_id = 1;
+}
+
+message DeleteGoalResponse {}
+
+service GoalService {
+  rpc ListGoals  (ListGoalsRequest)  returns (ListGoalsResponse);
+  rpc CreateGoal (CreateGoalRequest) returns (CreateGoalResponse);
+  rpc UpdateGoal (UpdateGoalRequest) returns (UpdateGoalResponse);
+  rpc DeleteGoal (DeleteGoalRequest) returns (DeleteGoalResponse);
+}
+
+// ── AnalyticsService ──────────────────────────────────────────────────────────
+
+message GetMonthlySummaryRequest {
+  int32 month = 1;
+  int32 year  = 2;
+}
+
+message GetMonthlySummaryResponse {
+  MonthlySummary summary = 1;
+}
+
+message GetMonthlyTrendRequest {
+  int32 months = 1; // number of months to include (default 6, max 12)
+}
+
+message GetMonthlyTrendResponse {
+  repeated MonthlyTrendItem items = 1;
+}
+
+service AnalyticsService {
+  rpc GetMonthlySummary (GetMonthlySummaryRequest) returns (GetMonthlySummaryResponse);
+  rpc GetMonthlyTrend   (GetMonthlyTrendRequest)   returns (GetMonthlyTrendResponse);
+}
