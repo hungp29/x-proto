@@ -16,6 +16,7 @@ message Wallet {
   bool   is_default = 7;
   string created_at = 8;
   string updated_at = 9;
+  bool   is_private = 10; // hidden from other family members when true
 }
 
 message Category {
@@ -26,6 +27,7 @@ message Category {
   string color     = 5;
   string type      = 6; // expense | income
   bool   is_system = 7;
+  string i18n_key  = 8; // translation key; empty for user-defined categories
 }
 
 message Transaction {
@@ -69,13 +71,32 @@ message Goal {
   string updated_at     = 11;
 }
 
+message Family {
+  string id         = 1;
+  string name       = 2;
+  string created_at = 3;
+  string updated_at = 4;
+  repeated FamilyMember members = 5;
+}
+
+message FamilyMember {
+  string user_id   = 1;
+  string family_id = 2;
+  string role      = 3; // owner | member
+  string joined_at = 4;
+  // Denormalized
+  string user_name  = 5;
+  string user_email = 6;
+}
+
 message CategoryBreakdown {
-  string category_id   = 1;
-  string category_name = 2;
-  string category_icon = 3;
-  string category_color= 4;
-  string amount        = 5;
-  double percentage    = 6;
+  string category_id    = 1;
+  string category_name  = 2;
+  string category_icon  = 3;
+  string category_color = 4;
+  string amount         = 5;
+  double percentage     = 6;
+  string i18n_key       = 7;
 }
 
 message MonthlySummary {
@@ -110,6 +131,7 @@ message CreateWalletRequest {
   string balance    = 3;
   string currency   = 4;
   bool   is_default = 5;
+  bool   is_private = 6;
 }
 
 message CreateWalletResponse {
@@ -122,6 +144,7 @@ message UpdateWalletRequest {
   string type       = 3;
   string currency   = 4;
   bool   is_default = 5;
+  bool   is_private = 6;
 }
 
 message UpdateWalletResponse {
@@ -346,4 +369,46 @@ message GetMonthlyTrendResponse {
 service AnalyticsService {
   rpc GetMonthlySummary (GetMonthlySummaryRequest) returns (GetMonthlySummaryResponse);
   rpc GetMonthlyTrend   (GetMonthlyTrendRequest)   returns (GetMonthlyTrendResponse);
+}
+
+// ── FamilyService ─────────────────────────────────────────────────────────────
+
+message CreateFamilyRequest {
+  string name = 1;
+}
+
+message CreateFamilyResponse {
+  Family family = 1;
+}
+
+message GetFamilyRequest {}   // returns the calling user's family
+
+message GetFamilyResponse {
+  Family family = 1; // empty id when user has no family
+}
+
+message AddFamilyMemberRequest {
+  string user_email = 1; // invite by email
+}
+
+message AddFamilyMemberResponse {
+  FamilyMember member = 1;
+}
+
+message RemoveFamilyMemberRequest {
+  string user_id = 1;
+}
+
+message RemoveFamilyMemberResponse {}
+
+message LeaveFamilyRequest {}
+
+message LeaveFamilyResponse {}
+
+service FamilyService {
+  rpc CreateFamily       (CreateFamilyRequest)       returns (CreateFamilyResponse);
+  rpc GetFamily          (GetFamilyRequest)           returns (GetFamilyResponse);
+  rpc AddFamilyMember    (AddFamilyMemberRequest)     returns (AddFamilyMemberResponse);
+  rpc RemoveFamilyMember (RemoveFamilyMemberRequest)  returns (RemoveFamilyMemberResponse);
+  rpc LeaveFamily        (LeaveFamilyRequest)         returns (LeaveFamilyResponse);
 }
