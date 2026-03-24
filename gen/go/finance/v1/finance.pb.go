@@ -250,8 +250,10 @@ type Transaction struct {
 	CreatedAt       string                 `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt       string                 `protobuf:"bytes,10,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	// Denormalized for convenience
-	Category      *Category `protobuf:"bytes,11,opt,name=category,proto3" json:"category,omitempty"`
-	Wallet        *Wallet   `protobuf:"bytes,12,opt,name=wallet,proto3" json:"wallet,omitempty"`
+	Category *Category `protobuf:"bytes,11,opt,name=category,proto3" json:"category,omitempty"`
+	Wallet   *Wallet   `protobuf:"bytes,12,opt,name=wallet,proto3" json:"wallet,omitempty"`
+	// Optional link to a savings/debt-payoff goal
+	GoalId        string `protobuf:"bytes,13,opt,name=goal_id,json=goalId,proto3" json:"goal_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -368,6 +370,13 @@ func (x *Transaction) GetWallet() *Wallet {
 		return x.Wallet
 	}
 	return nil
+}
+
+func (x *Transaction) GetGoalId() string {
+	if x != nil {
+		return x.GoalId
+	}
+	return ""
 }
 
 type Budget struct {
@@ -1967,6 +1976,7 @@ type CreateTransactionRequest struct {
 	Type            string                 `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`
 	Note            string                 `protobuf:"bytes,5,opt,name=note,proto3" json:"note,omitempty"`
 	TransactionDate string                 `protobuf:"bytes,6,opt,name=transaction_date,json=transactionDate,proto3" json:"transaction_date,omitempty"` // YYYY-MM-DD
+	GoalId          *string                `protobuf:"bytes,7,opt,name=goal_id,json=goalId,proto3,oneof" json:"goal_id,omitempty"`                      // optional
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -2043,6 +2053,13 @@ func (x *CreateTransactionRequest) GetTransactionDate() string {
 	return ""
 }
 
+func (x *CreateTransactionRequest) GetGoalId() string {
+	if x != nil && x.GoalId != nil {
+		return *x.GoalId
+	}
+	return ""
+}
+
 type CreateTransactionResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Transaction   *Transaction           `protobuf:"bytes,1,opt,name=transaction,proto3" json:"transaction,omitempty"`
@@ -2096,6 +2113,7 @@ type UpdateTransactionRequest struct {
 	Type            string                 `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`
 	Note            string                 `protobuf:"bytes,6,opt,name=note,proto3" json:"note,omitempty"`
 	TransactionDate string                 `protobuf:"bytes,7,opt,name=transaction_date,json=transactionDate,proto3" json:"transaction_date,omitempty"`
+	GoalId          *string                `protobuf:"bytes,8,opt,name=goal_id,json=goalId,proto3,oneof" json:"goal_id,omitempty"` // optional; empty string clears the link
 	unknownFields   protoimpl.UnknownFields
 	sizeCache       protoimpl.SizeCache
 }
@@ -2175,6 +2193,13 @@ func (x *UpdateTransactionRequest) GetNote() string {
 func (x *UpdateTransactionRequest) GetTransactionDate() string {
 	if x != nil {
 		return x.TransactionDate
+	}
+	return ""
+}
+
+func (x *UpdateTransactionRequest) GetGoalId() string {
+	if x != nil && x.GoalId != nil {
+		return *x.GoalId
 	}
 	return ""
 }
@@ -3637,7 +3662,7 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x05color\x18\x05 \x01(\tR\x05color\x12\x12\n" +
 	"\x04type\x18\x06 \x01(\tR\x04type\x12\x1b\n" +
 	"\tis_system\x18\a \x01(\bR\bisSystem\x12\x19\n" +
-	"\bi18n_key\x18\b \x01(\tR\ai18nKey\"\xfb\x02\n" +
+	"\bi18n_key\x18\b \x01(\tR\ai18nKey\"\x94\x03\n" +
 	"\vTransaction\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1b\n" +
@@ -3654,7 +3679,8 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"updated_at\x18\n" +
 	" \x01(\tR\tupdatedAt\x120\n" +
 	"\bcategory\x18\v \x01(\v2\x14.finance.v1.CategoryR\bcategory\x12*\n" +
-	"\x06wallet\x18\f \x01(\v2\x12.finance.v1.WalletR\x06wallet\"\xdc\x01\n" +
+	"\x06wallet\x18\f \x01(\v2\x12.finance.v1.WalletR\x06wallet\x12\x17\n" +
+	"\agoal_id\x18\r \x01(\tR\x06goalId\"\xdc\x01\n" +
 	"\x06Budget\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1f\n" +
@@ -3786,7 +3812,7 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x18ListTransactionsResponse\x12;\n" +
 	"\ftransactions\x18\x01 \x03(\v2\x17.finance.v1.TransactionR\ftransactions\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +
-	"totalCount\"\xc3\x01\n" +
+	"totalCount\"\xed\x01\n" +
 	"\x18CreateTransactionRequest\x12\x1b\n" +
 	"\twallet_id\x18\x01 \x01(\tR\bwalletId\x12\x1f\n" +
 	"\vcategory_id\x18\x02 \x01(\tR\n" +
@@ -3794,9 +3820,12 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x06amount\x18\x03 \x01(\tR\x06amount\x12\x12\n" +
 	"\x04type\x18\x04 \x01(\tR\x04type\x12\x12\n" +
 	"\x04note\x18\x05 \x01(\tR\x04note\x12)\n" +
-	"\x10transaction_date\x18\x06 \x01(\tR\x0ftransactionDate\"V\n" +
+	"\x10transaction_date\x18\x06 \x01(\tR\x0ftransactionDate\x12\x1c\n" +
+	"\agoal_id\x18\a \x01(\tH\x00R\x06goalId\x88\x01\x01B\n" +
+	"\n" +
+	"\b_goal_id\"V\n" +
 	"\x19CreateTransactionResponse\x129\n" +
-	"\vtransaction\x18\x01 \x01(\v2\x17.finance.v1.TransactionR\vtransaction\"\xea\x01\n" +
+	"\vtransaction\x18\x01 \x01(\v2\x17.finance.v1.TransactionR\vtransaction\"\x94\x02\n" +
 	"\x18UpdateTransactionRequest\x12%\n" +
 	"\x0etransaction_id\x18\x01 \x01(\tR\rtransactionId\x12\x1b\n" +
 	"\twallet_id\x18\x02 \x01(\tR\bwalletId\x12\x1f\n" +
@@ -3805,7 +3834,10 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x06amount\x18\x04 \x01(\tR\x06amount\x12\x12\n" +
 	"\x04type\x18\x05 \x01(\tR\x04type\x12\x12\n" +
 	"\x04note\x18\x06 \x01(\tR\x04note\x12)\n" +
-	"\x10transaction_date\x18\a \x01(\tR\x0ftransactionDate\"V\n" +
+	"\x10transaction_date\x18\a \x01(\tR\x0ftransactionDate\x12\x1c\n" +
+	"\agoal_id\x18\b \x01(\tH\x00R\x06goalId\x88\x01\x01B\n" +
+	"\n" +
+	"\b_goal_id\"V\n" +
 	"\x19UpdateTransactionResponse\x129\n" +
 	"\vtransaction\x18\x01 \x01(\v2\x17.finance.v1.TransactionR\vtransaction\"A\n" +
 	"\x18DeleteTransactionRequest\x12%\n" +
@@ -4085,6 +4117,8 @@ func file_finance_v1_finance_proto_init() {
 	if File_finance_v1_finance_proto != nil {
 		return
 	}
+	file_finance_v1_finance_proto_msgTypes[28].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[30].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
