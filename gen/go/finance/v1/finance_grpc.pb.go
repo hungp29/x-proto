@@ -235,6 +235,108 @@ var WalletService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
+	IconService_ListIcons_FullMethodName = "/finance.v1.IconService/ListIcons"
+)
+
+// IconServiceClient is the client API for IconService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type IconServiceClient interface {
+	ListIcons(ctx context.Context, in *ListIconsRequest, opts ...grpc.CallOption) (*ListIconsResponse, error)
+}
+
+type iconServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewIconServiceClient(cc grpc.ClientConnInterface) IconServiceClient {
+	return &iconServiceClient{cc}
+}
+
+func (c *iconServiceClient) ListIcons(ctx context.Context, in *ListIconsRequest, opts ...grpc.CallOption) (*ListIconsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListIconsResponse)
+	err := c.cc.Invoke(ctx, IconService_ListIcons_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// IconServiceServer is the server API for IconService service.
+// All implementations must embed UnimplementedIconServiceServer
+// for forward compatibility.
+type IconServiceServer interface {
+	ListIcons(context.Context, *ListIconsRequest) (*ListIconsResponse, error)
+	mustEmbedUnimplementedIconServiceServer()
+}
+
+// UnimplementedIconServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedIconServiceServer struct{}
+
+func (UnimplementedIconServiceServer) ListIcons(context.Context, *ListIconsRequest) (*ListIconsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListIcons not implemented")
+}
+func (UnimplementedIconServiceServer) mustEmbedUnimplementedIconServiceServer() {}
+func (UnimplementedIconServiceServer) testEmbeddedByValue()                     {}
+
+// UnsafeIconServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to IconServiceServer will
+// result in compilation errors.
+type UnsafeIconServiceServer interface {
+	mustEmbedUnimplementedIconServiceServer()
+}
+
+func RegisterIconServiceServer(s grpc.ServiceRegistrar, srv IconServiceServer) {
+	// If the following call panics, it indicates UnimplementedIconServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&IconService_ServiceDesc, srv)
+}
+
+func _IconService_ListIcons_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListIconsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IconServiceServer).ListIcons(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IconService_ListIcons_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IconServiceServer).ListIcons(ctx, req.(*ListIconsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// IconService_ServiceDesc is the grpc.ServiceDesc for IconService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var IconService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "finance.v1.IconService",
+	HandlerType: (*IconServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListIcons",
+			Handler:    _IconService_ListIcons_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "finance/v1/finance.proto",
+}
+
+const (
 	CategoryService_ListCategories_FullMethodName = "/finance.v1.CategoryService/ListCategories"
 	CategoryService_CreateCategory_FullMethodName = "/finance.v1.CategoryService/CreateCategory"
 	CategoryService_UpdateCategory_FullMethodName = "/finance.v1.CategoryService/UpdateCategory"
