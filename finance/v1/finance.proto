@@ -17,6 +17,15 @@ message Wallet {
   string created_at = 8;
   string updated_at = 9;
   bool   is_private = 10; // hidden from other family members when true
+  string icon       = 11; // icon value from finance_icons
+}
+
+// ── Icon ──────────────────────────────────────────────────────────────────────
+
+message Icon {
+  string id       = 1;
+  string category = 2;
+  string value    = 3;
 }
 
 message Category {
@@ -134,6 +143,7 @@ message CreateWalletRequest {
   string currency   = 4;
   bool   is_default = 5;
   bool   is_private = 6;
+  string icon       = 7;
 }
 
 message CreateWalletResponse {
@@ -147,6 +157,7 @@ message UpdateWalletRequest {
   string currency   = 4;
   bool   is_default = 5;
   bool   is_private = 6;
+  string icon       = 7;
 }
 
 message UpdateWalletResponse {
@@ -164,6 +175,20 @@ service WalletService {
   rpc CreateWallet (CreateWalletRequest) returns (CreateWalletResponse);
   rpc UpdateWallet (UpdateWalletRequest) returns (UpdateWalletResponse);
   rpc DeleteWallet (DeleteWalletRequest) returns (DeleteWalletResponse);
+}
+
+// ── IconService ───────────────────────────────────────────────────────────────
+
+message ListIconsRequest {
+  string category = 1; // optional filter by category
+}
+
+message ListIconsResponse {
+  repeated Icon icons = 1;
+}
+
+service IconService {
+  rpc ListIcons (ListIconsRequest) returns (ListIconsResponse);
 }
 
 // ── CategoryService ───────────────────────────────────────────────────────────
