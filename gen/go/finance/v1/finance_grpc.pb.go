@@ -553,10 +553,12 @@ var CategoryService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	TransactionService_ListTransactions_FullMethodName  = "/finance.v1.TransactionService/ListTransactions"
-	TransactionService_CreateTransaction_FullMethodName = "/finance.v1.TransactionService/CreateTransaction"
-	TransactionService_UpdateTransaction_FullMethodName = "/finance.v1.TransactionService/UpdateTransaction"
-	TransactionService_DeleteTransaction_FullMethodName = "/finance.v1.TransactionService/DeleteTransaction"
+	TransactionService_ListTransactions_FullMethodName     = "/finance.v1.TransactionService/ListTransactions"
+	TransactionService_CreateTransaction_FullMethodName    = "/finance.v1.TransactionService/CreateTransaction"
+	TransactionService_UpdateTransaction_FullMethodName    = "/finance.v1.TransactionService/UpdateTransaction"
+	TransactionService_DeleteTransaction_FullMethodName    = "/finance.v1.TransactionService/DeleteTransaction"
+	TransactionService_GetLatestTransaction_FullMethodName = "/finance.v1.TransactionService/GetLatestTransaction"
+	TransactionService_GetFirstTransaction_FullMethodName  = "/finance.v1.TransactionService/GetFirstTransaction"
 )
 
 // TransactionServiceClient is the client API for TransactionService service.
@@ -567,6 +569,8 @@ type TransactionServiceClient interface {
 	CreateTransaction(ctx context.Context, in *CreateTransactionRequest, opts ...grpc.CallOption) (*CreateTransactionResponse, error)
 	UpdateTransaction(ctx context.Context, in *UpdateTransactionRequest, opts ...grpc.CallOption) (*UpdateTransactionResponse, error)
 	DeleteTransaction(ctx context.Context, in *DeleteTransactionRequest, opts ...grpc.CallOption) (*DeleteTransactionResponse, error)
+	GetLatestTransaction(ctx context.Context, in *GetLatestTransactionRequest, opts ...grpc.CallOption) (*GetLatestTransactionResponse, error)
+	GetFirstTransaction(ctx context.Context, in *GetFirstTransactionRequest, opts ...grpc.CallOption) (*GetFirstTransactionResponse, error)
 }
 
 type transactionServiceClient struct {
@@ -617,6 +621,26 @@ func (c *transactionServiceClient) DeleteTransaction(ctx context.Context, in *De
 	return out, nil
 }
 
+func (c *transactionServiceClient) GetLatestTransaction(ctx context.Context, in *GetLatestTransactionRequest, opts ...grpc.CallOption) (*GetLatestTransactionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetLatestTransactionResponse)
+	err := c.cc.Invoke(ctx, TransactionService_GetLatestTransaction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionServiceClient) GetFirstTransaction(ctx context.Context, in *GetFirstTransactionRequest, opts ...grpc.CallOption) (*GetFirstTransactionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFirstTransactionResponse)
+	err := c.cc.Invoke(ctx, TransactionService_GetFirstTransaction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TransactionServiceServer is the server API for TransactionService service.
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility.
@@ -625,6 +649,8 @@ type TransactionServiceServer interface {
 	CreateTransaction(context.Context, *CreateTransactionRequest) (*CreateTransactionResponse, error)
 	UpdateTransaction(context.Context, *UpdateTransactionRequest) (*UpdateTransactionResponse, error)
 	DeleteTransaction(context.Context, *DeleteTransactionRequest) (*DeleteTransactionResponse, error)
+	GetLatestTransaction(context.Context, *GetLatestTransactionRequest) (*GetLatestTransactionResponse, error)
+	GetFirstTransaction(context.Context, *GetFirstTransactionRequest) (*GetFirstTransactionResponse, error)
 	mustEmbedUnimplementedTransactionServiceServer()
 }
 
@@ -646,6 +672,12 @@ func (UnimplementedTransactionServiceServer) UpdateTransaction(context.Context, 
 }
 func (UnimplementedTransactionServiceServer) DeleteTransaction(context.Context, *DeleteTransactionRequest) (*DeleteTransactionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteTransaction not implemented")
+}
+func (UnimplementedTransactionServiceServer) GetLatestTransaction(context.Context, *GetLatestTransactionRequest) (*GetLatestTransactionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetLatestTransaction not implemented")
+}
+func (UnimplementedTransactionServiceServer) GetFirstTransaction(context.Context, *GetFirstTransactionRequest) (*GetFirstTransactionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFirstTransaction not implemented")
 }
 func (UnimplementedTransactionServiceServer) mustEmbedUnimplementedTransactionServiceServer() {}
 func (UnimplementedTransactionServiceServer) testEmbeddedByValue()                            {}
@@ -740,6 +772,42 @@ func _TransactionService_DeleteTransaction_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TransactionService_GetLatestTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLatestTransactionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).GetLatestTransaction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_GetLatestTransaction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).GetLatestTransaction(ctx, req.(*GetLatestTransactionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TransactionService_GetFirstTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFirstTransactionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).GetFirstTransaction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_GetFirstTransaction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).GetFirstTransaction(ctx, req.(*GetFirstTransactionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TransactionService_ServiceDesc is the grpc.ServiceDesc for TransactionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -762,6 +830,14 @@ var TransactionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteTransaction",
 			Handler:    _TransactionService_DeleteTransaction_Handler,
+		},
+		{
+			MethodName: "GetLatestTransaction",
+			Handler:    _TransactionService_GetLatestTransaction_Handler,
+		},
+		{
+			MethodName: "GetFirstTransaction",
+			Handler:    _TransactionService_GetFirstTransaction_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

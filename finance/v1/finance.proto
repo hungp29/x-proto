@@ -124,8 +124,9 @@ message MonthlySummary {
 message MonthlyTrendItem {
   int32  month   = 1;
   int32  year    = 2;
-  string income  = 3;
-  string expense = 4;
+  double income  = 3;
+  double expense = 4;
+  double balance = 5; // income - expense
 }
 
 // ── WalletService ─────────────────────────────────────────────────────────────
@@ -287,11 +288,33 @@ message DeleteTransactionRequest {
 
 message DeleteTransactionResponse {}
 
+message GetLatestTransactionRequest {
+  string wallet_id = 1; // optional; highest priority
+  string family_id = 2; // optional; used when wallet_id is empty
+  string user_id   = 3; // optional; used when wallet_id and family_id are both empty
+}
+
+message GetLatestTransactionResponse {
+  Transaction transaction = 1; // null/empty when no transactions exist
+}
+
+message GetFirstTransactionRequest {
+  string wallet_id = 1; // optional; highest priority
+  string family_id = 2; // optional; used when wallet_id is empty
+  string user_id   = 3; // optional; used when wallet_id and family_id are both empty
+}
+
+message GetFirstTransactionResponse {
+  Transaction transaction = 1; // null/empty when no transactions exist
+}
+
 service TransactionService {
-  rpc ListTransactions  (ListTransactionsRequest)  returns (ListTransactionsResponse);
-  rpc CreateTransaction (CreateTransactionRequest) returns (CreateTransactionResponse);
-  rpc UpdateTransaction (UpdateTransactionRequest) returns (UpdateTransactionResponse);
-  rpc DeleteTransaction (DeleteTransactionRequest) returns (DeleteTransactionResponse);
+  rpc ListTransactions     (ListTransactionsRequest)     returns (ListTransactionsResponse);
+  rpc CreateTransaction    (CreateTransactionRequest)    returns (CreateTransactionResponse);
+  rpc UpdateTransaction    (UpdateTransactionRequest)    returns (UpdateTransactionResponse);
+  rpc DeleteTransaction    (DeleteTransactionRequest)    returns (DeleteTransactionResponse);
+  rpc GetLatestTransaction (GetLatestTransactionRequest) returns (GetLatestTransactionResponse);
+  rpc GetFirstTransaction  (GetFirstTransactionRequest)  returns (GetFirstTransactionResponse);
 }
 
 // ── BudgetService ─────────────────────────────────────────────────────────────
@@ -388,7 +411,14 @@ message GetMonthlySummaryResponse {
 }
 
 message GetMonthlyTrendRequest {
-  int32 months = 1; // number of months to include (default 6, max 12)
+  string wallet_id  = 1; // optional; highest priority
+  string family_id  = 2; // optional; used when wallet_id is empty
+  string user_id    = 3; // optional; used when wallet_id and family_id are both empty
+
+  int32  from_year  = 4;
+  int32  from_month = 5;
+  int32  to_year    = 6;
+  int32  to_month   = 7;
 }
 
 message GetMonthlyTrendResponse {
