@@ -347,6 +347,10 @@ message ListTransactionsRequest {
   string type        = 4; // expense | income | transfer | empty = all
   int32  page        = 5; // 1-based, default 1
   int32  page_size   = 6; // default 20
+  // Optional: restrict to a single wallet (must be visible to caller: own or shared family non-private).
+  string wallet_id = 7;
+  // Optional: "mine" = only wallets owned by caller; "shared" = only other members' non-private family wallets; empty = all visible.
+  string wallet_scope = 8;
 }
 
 message ListTransactionsResponse {
