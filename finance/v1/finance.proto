@@ -17,7 +17,14 @@ message Wallet {
   string created_at = 8;
   string updated_at = 9;
   bool   is_private = 10; // hidden from other family members when true
-  string icon       = 11; // icon value from finance_icons
+  string icon_id    = 11; // FK → finance_icons.id; empty = no icon
+  // credit_card-only fields (empty/zero for other wallet types)
+  string          credit_limit        = 12; // formatted decimal; 0 = no limit set
+  string          due_date            = 13; // YYYY-MM-DD; empty if not set
+  optional int32  billing_cycle_start = 14; // day of month 1–31; unset if not applicable
+  optional int32  billing_cycle_end   = 15; // day of month 1–31; unset if not applicable
+  string          interest_rate       = 16; // annual percentage rate as decimal string
+  Icon            icon_info           = 17; // resolved icon (null when icon_id is empty)
 }
 
 // ── Icon ──────────────────────────────────────────────────────────────────────
@@ -30,13 +37,17 @@ message Icon {
 
 message Category {
   string id        = 1;
-  string user_id   = 2; // empty = system default
+  string user_id   = 2; // empty = system default or family category
   string name      = 3;
-  string icon      = 4;
+  string icon_id   = 4; // FK → finance_icons.id; empty = no icon
   string color     = 5;
   string type      = 6; // expense | income
   bool   is_system = 7;
   string i18n_key  = 8; // translation key; empty for user-defined categories
+  optional string family_id = 9; // set when category is shared across a family
+  bool is_family = 10; // true when family_id is set
+  bool is_user   = 11; // true when user_id is set and family_id is not
+  Icon icon_info = 12; // resolved icon (null when icon_id is empty)
 }
 
 message Transaction {
@@ -144,7 +155,13 @@ message CreateWalletRequest {
   string currency   = 4;
   bool   is_default = 5;
   bool   is_private = 6;
-  string icon       = 7;
+  string icon_id    = 7; // FK → finance_icons.id
+  // credit_card-only fields; ignored for other wallet types
+  string          credit_limit        = 8;
+  string          due_date            = 9;  // YYYY-MM-DD
+  optional int32  billing_cycle_start = 10;
+  optional int32  billing_cycle_end   = 11;
+  string          interest_rate       = 12;
 }
 
 message CreateWalletResponse {
@@ -158,7 +175,13 @@ message UpdateWalletRequest {
   string currency   = 4;
   bool   is_default = 5;
   bool   is_private = 6;
-  string icon       = 7;
+  string icon_id    = 7; // FK → finance_icons.id
+  // credit_card-only fields; ignored for other wallet types
+  string          credit_limit        = 8;
+  string          due_date            = 9;  // YYYY-MM-DD
+  optional int32  billing_cycle_start = 10;
+  optional int32  billing_cycle_end   = 11;
+  string          interest_rate       = 12;
 }
 
 message UpdateWalletResponse {
@@ -188,14 +211,44 @@ message ListIconsResponse {
   repeated Icon icons = 1;
 }
 
+message CreateIconRequest {
+  string category = 1; // e.g. wallet | category | goal
+  string value    = 2; // image URL
+}
+
+message CreateIconResponse {
+  Icon icon = 1;
+}
+
+message UpdateIconRequest {
+  string icon_id  = 1;
+  string category = 2;
+  string value    = 3; // image URL
+}
+
+message UpdateIconResponse {
+  Icon icon = 1;
+}
+
+message DeleteIconRequest {
+  string icon_id = 1;
+}
+
+message DeleteIconResponse {}
+
 service IconService {
-  rpc ListIcons (ListIconsRequest) returns (ListIconsResponse);
+  rpc ListIcons  (ListIconsRequest)  returns (ListIconsResponse);
+  rpc CreateIcon (CreateIconRequest) returns (CreateIconResponse);
+  rpc UpdateIcon (UpdateIconRequest) returns (UpdateIconResponse);
+  rpc DeleteIcon (DeleteIconRequest) returns (DeleteIconResponse);
 }
 
 // ── CategoryService ───────────────────────────────────────────────────────────
 
 message ListCategoriesRequest {
-  string type = 1; // expense | income | empty = all
+  string          type      = 1; // expense | income | empty = all
+  optional string user_id   = 2; // filter by owner user; mutually exclusive with family_id
+  optional string family_id = 3; // filter by family; mutually exclusive with user_id
 }
 
 message ListCategoriesResponse {
@@ -203,10 +256,11 @@ message ListCategoriesResponse {
 }
 
 message CreateCategoryRequest {
-  string name  = 1;
-  string icon  = 2;
-  string color = 3;
-  string type  = 4;
+  string          name      = 1;
+  string          icon_id   = 2; // FK → finance_icons.id
+  string          color     = 3;
+  string          type      = 4;
+  optional string family_id = 5; // set to create a family-shared category
 }
 
 message CreateCategoryResponse {
@@ -214,10 +268,11 @@ message CreateCategoryResponse {
 }
 
 message UpdateCategoryRequest {
-  string category_id = 1;
-  string name        = 2;
-  string icon        = 3;
-  string color       = 4;
+  string          category_id = 1;
+  string          name        = 2;
+  string          icon_id     = 3; // FK → finance_icons.id
+  string          color       = 4;
+  optional string family_id   = 5; // family context for ownership validation
 }
 
 message UpdateCategoryResponse {
@@ -230,11 +285,57 @@ message DeleteCategoryRequest {
 
 message DeleteCategoryResponse {}
 
+// ── Admin: System Category Management ─────────────────────────────────────
+
+message ListSystemCategoriesRequest {
+  string type = 1; // expense | income | empty = all
+}
+
+message ListSystemCategoriesResponse {
+  repeated Category categories = 1;
+}
+
+message CreateSystemCategoryRequest {
+  string name     = 1;
+  string icon_id  = 2; // FK → finance_icons.id
+  string color    = 3;
+  string type     = 4; // expense | income
+  string i18n_key = 5; // optional translation key
+}
+
+message CreateSystemCategoryResponse {
+  Category category = 1;
+}
+
+message UpdateSystemCategoryRequest {
+  string category_id = 1;
+  string name        = 2;
+  string icon_id     = 3; // FK → finance_icons.id
+  string color       = 4;
+  string type        = 5; // expense | income
+  string i18n_key    = 6; // optional
+}
+
+message UpdateSystemCategoryResponse {
+  Category category = 1;
+}
+
+message DeleteSystemCategoryRequest {
+  string category_id = 1;
+}
+
+message DeleteSystemCategoryResponse {}
+
 service CategoryService {
-  rpc ListCategories  (ListCategoriesRequest)  returns (ListCategoriesResponse);
-  rpc CreateCategory  (CreateCategoryRequest)  returns (CreateCategoryResponse);
-  rpc UpdateCategory  (UpdateCategoryRequest)  returns (UpdateCategoryResponse);
-  rpc DeleteCategory  (DeleteCategoryRequest)  returns (DeleteCategoryResponse);
+  rpc ListCategories         (ListCategoriesRequest)         returns (ListCategoriesResponse);
+  rpc CreateCategory         (CreateCategoryRequest)         returns (CreateCategoryResponse);
+  rpc UpdateCategory         (UpdateCategoryRequest)         returns (UpdateCategoryResponse);
+  rpc DeleteCategory         (DeleteCategoryRequest)         returns (DeleteCategoryResponse);
+  // Admin RPCs — require finance_admin permission at the gateway level
+  rpc ListSystemCategories   (ListSystemCategoriesRequest)   returns (ListSystemCategoriesResponse);
+  rpc CreateSystemCategory   (CreateSystemCategoryRequest)   returns (CreateSystemCategoryResponse);
+  rpc UpdateSystemCategory   (UpdateSystemCategoryRequest)   returns (UpdateSystemCategoryResponse);
+  rpc DeleteSystemCategory   (DeleteSystemCategoryRequest)   returns (DeleteSystemCategoryResponse);
 }
 
 // ── TransactionService ────────────────────────────────────────────────────────

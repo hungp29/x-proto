@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FOLDER_NAME="$(basename "$SCRIPT_DIR")"
 PARENT_DIR="$(dirname "$SCRIPT_DIR")"
-ZIP_FILE="$PARENT_DIR/$FOLDER_NAME.zip"
+ZIP_FILE="$PARENT_DIR/$FOLDER_NAME.xlsx"
 PASSFILE="$SCRIPT_DIR/zippass.txt"
 
 if [ ! -f "$PASSFILE" ]; then
