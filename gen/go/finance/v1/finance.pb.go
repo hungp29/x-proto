@@ -2904,13 +2904,17 @@ func (*DeleteSystemCategoryResponse) Descriptor() ([]byte, []int) {
 }
 
 type ListTransactionsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Month         int32                  `protobuf:"varint,1,opt,name=month,proto3" json:"month,omitempty"`                            // 0 = all months
-	Year          int32                  `protobuf:"varint,2,opt,name=year,proto3" json:"year,omitempty"`                              // 0 = all years
-	CategoryId    string                 `protobuf:"bytes,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"` // empty = all categories
-	Type          string                 `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`                               // expense | income | transfer | empty = all
-	Page          int32                  `protobuf:"varint,5,opt,name=page,proto3" json:"page,omitempty"`                              // 1-based, default 1
-	PageSize      int32                  `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`      // default 20
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	Month      int32                  `protobuf:"varint,1,opt,name=month,proto3" json:"month,omitempty"`                            // 0 = all months
+	Year       int32                  `protobuf:"varint,2,opt,name=year,proto3" json:"year,omitempty"`                              // 0 = all years
+	CategoryId string                 `protobuf:"bytes,3,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"` // empty = all categories
+	Type       string                 `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`                               // expense | income | transfer | empty = all
+	Page       int32                  `protobuf:"varint,5,opt,name=page,proto3" json:"page,omitempty"`                              // 1-based, default 1
+	PageSize   int32                  `protobuf:"varint,6,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`      // default 20
+	// Optional: restrict to a single wallet (must be visible to caller: own or shared family non-private).
+	WalletId string `protobuf:"bytes,7,opt,name=wallet_id,json=walletId,proto3" json:"wallet_id,omitempty"`
+	// Optional: "mine" = only wallets owned by caller; "shared" = only other members' non-private family wallets; empty = all visible.
+	WalletScope   string `protobuf:"bytes,8,opt,name=wallet_scope,json=walletScope,proto3" json:"wallet_scope,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -2985,6 +2989,20 @@ func (x *ListTransactionsRequest) GetPageSize() int32 {
 		return x.PageSize
 	}
 	return 0
+}
+
+func (x *ListTransactionsRequest) GetWalletId() string {
+	if x != nil {
+		return x.WalletId
+	}
+	return ""
+}
+
+func (x *ListTransactionsRequest) GetWalletScope() string {
+	if x != nil {
+		return x.WalletScope
+	}
+	return ""
 }
 
 type ListTransactionsResponse struct {
@@ -5224,7 +5242,7 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x1bDeleteSystemCategoryRequest\x12\x1f\n" +
 	"\vcategory_id\x18\x01 \x01(\tR\n" +
 	"categoryId\"\x1e\n" +
-	"\x1cDeleteSystemCategoryResponse\"\xa9\x01\n" +
+	"\x1cDeleteSystemCategoryResponse\"\xe9\x01\n" +
 	"\x17ListTransactionsRequest\x12\x14\n" +
 	"\x05month\x18\x01 \x01(\x05R\x05month\x12\x12\n" +
 	"\x04year\x18\x02 \x01(\x05R\x04year\x12\x1f\n" +
@@ -5232,7 +5250,9 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"categoryId\x12\x12\n" +
 	"\x04type\x18\x04 \x01(\tR\x04type\x12\x12\n" +
 	"\x04page\x18\x05 \x01(\x05R\x04page\x12\x1b\n" +
-	"\tpage_size\x18\x06 \x01(\x05R\bpageSize\"x\n" +
+	"\tpage_size\x18\x06 \x01(\x05R\bpageSize\x12\x1b\n" +
+	"\twallet_id\x18\a \x01(\tR\bwalletId\x12!\n" +
+	"\fwallet_scope\x18\b \x01(\tR\vwalletScope\"x\n" +
 	"\x18ListTransactionsResponse\x12;\n" +
 	"\ftransactions\x18\x01 \x03(\v2\x17.finance.v1.TransactionR\ftransactions\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +
