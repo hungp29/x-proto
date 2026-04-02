@@ -22,20 +22,27 @@ const (
 )
 
 type Wallet struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Type          string                 `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`       // cash | bank | ewallet | credit_card
-	Balance       string                 `protobuf:"bytes,5,opt,name=balance,proto3" json:"balance,omitempty"` // formatted decimal string
-	Currency      string                 `protobuf:"bytes,6,opt,name=currency,proto3" json:"currency,omitempty"`
-	IsDefault     bool                   `protobuf:"varint,7,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
-	CreatedAt     string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     string                 `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	IsPrivate     bool                   `protobuf:"varint,10,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"` // hidden from other family members when true
-	Icon          string                 `protobuf:"bytes,11,opt,name=icon,proto3" json:"icon,omitempty"`                             // icon value from finance_icons
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	Id        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId    string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Name      string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Type      string                 `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`       // cash | bank | ewallet | credit_card
+	Balance   string                 `protobuf:"bytes,5,opt,name=balance,proto3" json:"balance,omitempty"` // formatted decimal string
+	Currency  string                 `protobuf:"bytes,6,opt,name=currency,proto3" json:"currency,omitempty"`
+	IsDefault bool                   `protobuf:"varint,7,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
+	CreatedAt string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt string                 `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	IsPrivate bool                   `protobuf:"varint,10,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"` // hidden from other family members when true
+	IconId    string                 `protobuf:"bytes,11,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"`           // FK → finance_icons.id; empty = no icon
+	// credit_card-only fields (empty/zero for other wallet types)
+	CreditLimit       string `protobuf:"bytes,12,opt,name=credit_limit,json=creditLimit,proto3" json:"credit_limit,omitempty"`                            // formatted decimal; 0 = no limit set
+	DueDate           string `protobuf:"bytes,13,opt,name=due_date,json=dueDate,proto3" json:"due_date,omitempty"`                                        // YYYY-MM-DD; empty if not set
+	BillingCycleStart *int32 `protobuf:"varint,14,opt,name=billing_cycle_start,json=billingCycleStart,proto3,oneof" json:"billing_cycle_start,omitempty"` // day of month 1–31; unset if not applicable
+	BillingCycleEnd   *int32 `protobuf:"varint,15,opt,name=billing_cycle_end,json=billingCycleEnd,proto3,oneof" json:"billing_cycle_end,omitempty"`       // day of month 1–31; unset if not applicable
+	InterestRate      string `protobuf:"bytes,16,opt,name=interest_rate,json=interestRate,proto3" json:"interest_rate,omitempty"`                         // annual percentage rate as decimal string
+	IconInfo          *Icon  `protobuf:"bytes,17,opt,name=icon_info,json=iconInfo,proto3" json:"icon_info,omitempty"`                                     // resolved icon (null when icon_id is empty)
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *Wallet) Reset() {
@@ -138,11 +145,53 @@ func (x *Wallet) GetIsPrivate() bool {
 	return false
 }
 
-func (x *Wallet) GetIcon() string {
+func (x *Wallet) GetIconId() string {
 	if x != nil {
-		return x.Icon
+		return x.IconId
 	}
 	return ""
+}
+
+func (x *Wallet) GetCreditLimit() string {
+	if x != nil {
+		return x.CreditLimit
+	}
+	return ""
+}
+
+func (x *Wallet) GetDueDate() string {
+	if x != nil {
+		return x.DueDate
+	}
+	return ""
+}
+
+func (x *Wallet) GetBillingCycleStart() int32 {
+	if x != nil && x.BillingCycleStart != nil {
+		return *x.BillingCycleStart
+	}
+	return 0
+}
+
+func (x *Wallet) GetBillingCycleEnd() int32 {
+	if x != nil && x.BillingCycleEnd != nil {
+		return *x.BillingCycleEnd
+	}
+	return 0
+}
+
+func (x *Wallet) GetInterestRate() string {
+	if x != nil {
+		return x.InterestRate
+	}
+	return ""
+}
+
+func (x *Wallet) GetIconInfo() *Icon {
+	if x != nil {
+		return x.IconInfo
+	}
+	return nil
 }
 
 type Icon struct {
@@ -208,13 +257,17 @@ func (x *Icon) GetValue() string {
 type Category struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // empty = system default
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // empty = system default or family category
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	Icon          string                 `protobuf:"bytes,4,opt,name=icon,proto3" json:"icon,omitempty"`
+	IconId        string                 `protobuf:"bytes,4,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"` // FK → finance_icons.id; empty = no icon
 	Color         string                 `protobuf:"bytes,5,opt,name=color,proto3" json:"color,omitempty"`
 	Type          string                 `protobuf:"bytes,6,opt,name=type,proto3" json:"type,omitempty"` // expense | income
 	IsSystem      bool                   `protobuf:"varint,7,opt,name=is_system,json=isSystem,proto3" json:"is_system,omitempty"`
-	I18NKey       string                 `protobuf:"bytes,8,opt,name=i18n_key,json=i18nKey,proto3" json:"i18n_key,omitempty"` // translation key; empty for user-defined categories
+	I18NKey       string                 `protobuf:"bytes,8,opt,name=i18n_key,json=i18nKey,proto3" json:"i18n_key,omitempty"`          // translation key; empty for user-defined categories
+	FamilyId      *string                `protobuf:"bytes,9,opt,name=family_id,json=familyId,proto3,oneof" json:"family_id,omitempty"` // set when category is shared across a family
+	IsFamily      bool                   `protobuf:"varint,10,opt,name=is_family,json=isFamily,proto3" json:"is_family,omitempty"`     // true when family_id is set
+	IsUser        bool                   `protobuf:"varint,11,opt,name=is_user,json=isUser,proto3" json:"is_user,omitempty"`           // true when user_id is set and family_id is not
+	IconInfo      *Icon                  `protobuf:"bytes,12,opt,name=icon_info,json=iconInfo,proto3" json:"icon_info,omitempty"`      // resolved icon (null when icon_id is empty)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -270,9 +323,9 @@ func (x *Category) GetName() string {
 	return ""
 }
 
-func (x *Category) GetIcon() string {
+func (x *Category) GetIconId() string {
 	if x != nil {
-		return x.Icon
+		return x.IconId
 	}
 	return ""
 }
@@ -303,6 +356,34 @@ func (x *Category) GetI18NKey() string {
 		return x.I18NKey
 	}
 	return ""
+}
+
+func (x *Category) GetFamilyId() string {
+	if x != nil && x.FamilyId != nil {
+		return *x.FamilyId
+	}
+	return ""
+}
+
+func (x *Category) GetIsFamily() bool {
+	if x != nil {
+		return x.IsFamily
+	}
+	return false
+}
+
+func (x *Category) GetIsUser() bool {
+	if x != nil {
+		return x.IsUser
+	}
+	return false
+}
+
+func (x *Category) GetIconInfo() *Icon {
+	if x != nil {
+		return x.IconInfo
+	}
+	return nil
 }
 
 type Transaction struct {
@@ -1181,16 +1262,22 @@ func (x *ListWalletsResponse) GetWallets() []*Wallet {
 }
 
 type CreateWalletRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Type          string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
-	Balance       string                 `protobuf:"bytes,3,opt,name=balance,proto3" json:"balance,omitempty"`
-	Currency      string                 `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
-	IsDefault     bool                   `protobuf:"varint,5,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
-	IsPrivate     bool                   `protobuf:"varint,6,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"`
-	Icon          string                 `protobuf:"bytes,7,opt,name=icon,proto3" json:"icon,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	Name      string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Type      string                 `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
+	Balance   string                 `protobuf:"bytes,3,opt,name=balance,proto3" json:"balance,omitempty"`
+	Currency  string                 `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
+	IsDefault bool                   `protobuf:"varint,5,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
+	IsPrivate bool                   `protobuf:"varint,6,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"`
+	IconId    string                 `protobuf:"bytes,7,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"` // FK → finance_icons.id
+	// credit_card-only fields; ignored for other wallet types
+	CreditLimit       string `protobuf:"bytes,8,opt,name=credit_limit,json=creditLimit,proto3" json:"credit_limit,omitempty"`
+	DueDate           string `protobuf:"bytes,9,opt,name=due_date,json=dueDate,proto3" json:"due_date,omitempty"` // YYYY-MM-DD
+	BillingCycleStart *int32 `protobuf:"varint,10,opt,name=billing_cycle_start,json=billingCycleStart,proto3,oneof" json:"billing_cycle_start,omitempty"`
+	BillingCycleEnd   *int32 `protobuf:"varint,11,opt,name=billing_cycle_end,json=billingCycleEnd,proto3,oneof" json:"billing_cycle_end,omitempty"`
+	InterestRate      string `protobuf:"bytes,12,opt,name=interest_rate,json=interestRate,proto3" json:"interest_rate,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *CreateWalletRequest) Reset() {
@@ -1265,9 +1352,44 @@ func (x *CreateWalletRequest) GetIsPrivate() bool {
 	return false
 }
 
-func (x *CreateWalletRequest) GetIcon() string {
+func (x *CreateWalletRequest) GetIconId() string {
 	if x != nil {
-		return x.Icon
+		return x.IconId
+	}
+	return ""
+}
+
+func (x *CreateWalletRequest) GetCreditLimit() string {
+	if x != nil {
+		return x.CreditLimit
+	}
+	return ""
+}
+
+func (x *CreateWalletRequest) GetDueDate() string {
+	if x != nil {
+		return x.DueDate
+	}
+	return ""
+}
+
+func (x *CreateWalletRequest) GetBillingCycleStart() int32 {
+	if x != nil && x.BillingCycleStart != nil {
+		return *x.BillingCycleStart
+	}
+	return 0
+}
+
+func (x *CreateWalletRequest) GetBillingCycleEnd() int32 {
+	if x != nil && x.BillingCycleEnd != nil {
+		return *x.BillingCycleEnd
+	}
+	return 0
+}
+
+func (x *CreateWalletRequest) GetInterestRate() string {
+	if x != nil {
+		return x.InterestRate
 	}
 	return ""
 }
@@ -1317,16 +1439,22 @@ func (x *CreateWalletResponse) GetWallet() *Wallet {
 }
 
 type UpdateWalletRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	WalletId      string                 `protobuf:"bytes,1,opt,name=wallet_id,json=walletId,proto3" json:"wallet_id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Type          string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
-	Currency      string                 `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
-	IsDefault     bool                   `protobuf:"varint,5,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
-	IsPrivate     bool                   `protobuf:"varint,6,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"`
-	Icon          string                 `protobuf:"bytes,7,opt,name=icon,proto3" json:"icon,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	WalletId  string                 `protobuf:"bytes,1,opt,name=wallet_id,json=walletId,proto3" json:"wallet_id,omitempty"`
+	Name      string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Type      string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
+	Currency  string                 `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
+	IsDefault bool                   `protobuf:"varint,5,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
+	IsPrivate bool                   `protobuf:"varint,6,opt,name=is_private,json=isPrivate,proto3" json:"is_private,omitempty"`
+	IconId    string                 `protobuf:"bytes,7,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"` // FK → finance_icons.id
+	// credit_card-only fields; ignored for other wallet types
+	CreditLimit       string `protobuf:"bytes,8,opt,name=credit_limit,json=creditLimit,proto3" json:"credit_limit,omitempty"`
+	DueDate           string `protobuf:"bytes,9,opt,name=due_date,json=dueDate,proto3" json:"due_date,omitempty"` // YYYY-MM-DD
+	BillingCycleStart *int32 `protobuf:"varint,10,opt,name=billing_cycle_start,json=billingCycleStart,proto3,oneof" json:"billing_cycle_start,omitempty"`
+	BillingCycleEnd   *int32 `protobuf:"varint,11,opt,name=billing_cycle_end,json=billingCycleEnd,proto3,oneof" json:"billing_cycle_end,omitempty"`
+	InterestRate      string `protobuf:"bytes,12,opt,name=interest_rate,json=interestRate,proto3" json:"interest_rate,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
 }
 
 func (x *UpdateWalletRequest) Reset() {
@@ -1401,9 +1529,44 @@ func (x *UpdateWalletRequest) GetIsPrivate() bool {
 	return false
 }
 
-func (x *UpdateWalletRequest) GetIcon() string {
+func (x *UpdateWalletRequest) GetIconId() string {
 	if x != nil {
-		return x.Icon
+		return x.IconId
+	}
+	return ""
+}
+
+func (x *UpdateWalletRequest) GetCreditLimit() string {
+	if x != nil {
+		return x.CreditLimit
+	}
+	return ""
+}
+
+func (x *UpdateWalletRequest) GetDueDate() string {
+	if x != nil {
+		return x.DueDate
+	}
+	return ""
+}
+
+func (x *UpdateWalletRequest) GetBillingCycleStart() int32 {
+	if x != nil && x.BillingCycleStart != nil {
+		return *x.BillingCycleStart
+	}
+	return 0
+}
+
+func (x *UpdateWalletRequest) GetBillingCycleEnd() int32 {
+	if x != nil && x.BillingCycleEnd != nil {
+		return *x.BillingCycleEnd
+	}
+	return 0
+}
+
+func (x *UpdateWalletRequest) GetInterestRate() string {
+	if x != nil {
+		return x.InterestRate
 	}
 	return ""
 }
@@ -1620,16 +1783,298 @@ func (x *ListIconsResponse) GetIcons() []*Icon {
 	return nil
 }
 
+type CreateIconRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Category      string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"` // e.g. wallet | category | goal
+	Value         string                 `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`       // image URL
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateIconRequest) Reset() {
+	*x = CreateIconRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateIconRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateIconRequest) ProtoMessage() {}
+
+func (x *CreateIconRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateIconRequest.ProtoReflect.Descriptor instead.
+func (*CreateIconRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *CreateIconRequest) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *CreateIconRequest) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+type CreateIconResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Icon          *Icon                  `protobuf:"bytes,1,opt,name=icon,proto3" json:"icon,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateIconResponse) Reset() {
+	*x = CreateIconResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateIconResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateIconResponse) ProtoMessage() {}
+
+func (x *CreateIconResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateIconResponse.ProtoReflect.Descriptor instead.
+func (*CreateIconResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *CreateIconResponse) GetIcon() *Icon {
+	if x != nil {
+		return x.Icon
+	}
+	return nil
+}
+
+type UpdateIconRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IconId        string                 `protobuf:"bytes,1,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"`
+	Category      string                 `protobuf:"bytes,2,opt,name=category,proto3" json:"category,omitempty"`
+	Value         string                 `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"` // image URL
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateIconRequest) Reset() {
+	*x = UpdateIconRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateIconRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateIconRequest) ProtoMessage() {}
+
+func (x *UpdateIconRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateIconRequest.ProtoReflect.Descriptor instead.
+func (*UpdateIconRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *UpdateIconRequest) GetIconId() string {
+	if x != nil {
+		return x.IconId
+	}
+	return ""
+}
+
+func (x *UpdateIconRequest) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *UpdateIconRequest) GetValue() string {
+	if x != nil {
+		return x.Value
+	}
+	return ""
+}
+
+type UpdateIconResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Icon          *Icon                  `protobuf:"bytes,1,opt,name=icon,proto3" json:"icon,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateIconResponse) Reset() {
+	*x = UpdateIconResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateIconResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateIconResponse) ProtoMessage() {}
+
+func (x *UpdateIconResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateIconResponse.ProtoReflect.Descriptor instead.
+func (*UpdateIconResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *UpdateIconResponse) GetIcon() *Icon {
+	if x != nil {
+		return x.Icon
+	}
+	return nil
+}
+
+type DeleteIconRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	IconId        string                 `protobuf:"bytes,1,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteIconRequest) Reset() {
+	*x = DeleteIconRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteIconRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteIconRequest) ProtoMessage() {}
+
+func (x *DeleteIconRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteIconRequest.ProtoReflect.Descriptor instead.
+func (*DeleteIconRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *DeleteIconRequest) GetIconId() string {
+	if x != nil {
+		return x.IconId
+	}
+	return ""
+}
+
+type DeleteIconResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteIconResponse) Reset() {
+	*x = DeleteIconResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteIconResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteIconResponse) ProtoMessage() {}
+
+func (x *DeleteIconResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteIconResponse.ProtoReflect.Descriptor instead.
+func (*DeleteIconResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{26}
+}
+
 type ListCategoriesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"` // expense | income | empty = all
+	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`                               // expense | income | empty = all
+	UserId        *string                `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3,oneof" json:"user_id,omitempty"`       // filter by owner user; mutually exclusive with family_id
+	FamilyId      *string                `protobuf:"bytes,3,opt,name=family_id,json=familyId,proto3,oneof" json:"family_id,omitempty"` // filter by family; mutually exclusive with user_id
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *ListCategoriesRequest) Reset() {
 	*x = ListCategoriesRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[21]
+	mi := &file_finance_v1_finance_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1641,7 +2086,7 @@ func (x *ListCategoriesRequest) String() string {
 func (*ListCategoriesRequest) ProtoMessage() {}
 
 func (x *ListCategoriesRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[21]
+	mi := &file_finance_v1_finance_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1654,12 +2099,26 @@ func (x *ListCategoriesRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCategoriesRequest.ProtoReflect.Descriptor instead.
 func (*ListCategoriesRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{21}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *ListCategoriesRequest) GetType() string {
 	if x != nil {
 		return x.Type
+	}
+	return ""
+}
+
+func (x *ListCategoriesRequest) GetUserId() string {
+	if x != nil && x.UserId != nil {
+		return *x.UserId
+	}
+	return ""
+}
+
+func (x *ListCategoriesRequest) GetFamilyId() string {
+	if x != nil && x.FamilyId != nil {
+		return *x.FamilyId
 	}
 	return ""
 }
@@ -1673,7 +2132,7 @@ type ListCategoriesResponse struct {
 
 func (x *ListCategoriesResponse) Reset() {
 	*x = ListCategoriesResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[22]
+	mi := &file_finance_v1_finance_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1685,7 +2144,7 @@ func (x *ListCategoriesResponse) String() string {
 func (*ListCategoriesResponse) ProtoMessage() {}
 
 func (x *ListCategoriesResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[22]
+	mi := &file_finance_v1_finance_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1698,7 +2157,7 @@ func (x *ListCategoriesResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListCategoriesResponse.ProtoReflect.Descriptor instead.
 func (*ListCategoriesResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{22}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *ListCategoriesResponse) GetCategories() []*Category {
@@ -1711,16 +2170,17 @@ func (x *ListCategoriesResponse) GetCategories() []*Category {
 type CreateCategoryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Icon          string                 `protobuf:"bytes,2,opt,name=icon,proto3" json:"icon,omitempty"`
+	IconId        string                 `protobuf:"bytes,2,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"` // FK → finance_icons.id
 	Color         string                 `protobuf:"bytes,3,opt,name=color,proto3" json:"color,omitempty"`
 	Type          string                 `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`
+	FamilyId      *string                `protobuf:"bytes,5,opt,name=family_id,json=familyId,proto3,oneof" json:"family_id,omitempty"` // set to create a family-shared category
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateCategoryRequest) Reset() {
 	*x = CreateCategoryRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[23]
+	mi := &file_finance_v1_finance_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1732,7 +2192,7 @@ func (x *CreateCategoryRequest) String() string {
 func (*CreateCategoryRequest) ProtoMessage() {}
 
 func (x *CreateCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[23]
+	mi := &file_finance_v1_finance_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1745,7 +2205,7 @@ func (x *CreateCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCategoryRequest.ProtoReflect.Descriptor instead.
 func (*CreateCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{23}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *CreateCategoryRequest) GetName() string {
@@ -1755,9 +2215,9 @@ func (x *CreateCategoryRequest) GetName() string {
 	return ""
 }
 
-func (x *CreateCategoryRequest) GetIcon() string {
+func (x *CreateCategoryRequest) GetIconId() string {
 	if x != nil {
-		return x.Icon
+		return x.IconId
 	}
 	return ""
 }
@@ -1776,6 +2236,13 @@ func (x *CreateCategoryRequest) GetType() string {
 	return ""
 }
 
+func (x *CreateCategoryRequest) GetFamilyId() string {
+	if x != nil && x.FamilyId != nil {
+		return *x.FamilyId
+	}
+	return ""
+}
+
 type CreateCategoryResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Category      *Category              `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
@@ -1785,7 +2252,7 @@ type CreateCategoryResponse struct {
 
 func (x *CreateCategoryResponse) Reset() {
 	*x = CreateCategoryResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[24]
+	mi := &file_finance_v1_finance_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1797,7 +2264,7 @@ func (x *CreateCategoryResponse) String() string {
 func (*CreateCategoryResponse) ProtoMessage() {}
 
 func (x *CreateCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[24]
+	mi := &file_finance_v1_finance_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1810,7 +2277,7 @@ func (x *CreateCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateCategoryResponse.ProtoReflect.Descriptor instead.
 func (*CreateCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{24}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *CreateCategoryResponse) GetCategory() *Category {
@@ -1824,15 +2291,16 @@ type UpdateCategoryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CategoryId    string                 `protobuf:"bytes,1,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Icon          string                 `protobuf:"bytes,3,opt,name=icon,proto3" json:"icon,omitempty"`
+	IconId        string                 `protobuf:"bytes,3,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"` // FK → finance_icons.id
 	Color         string                 `protobuf:"bytes,4,opt,name=color,proto3" json:"color,omitempty"`
+	FamilyId      *string                `protobuf:"bytes,5,opt,name=family_id,json=familyId,proto3,oneof" json:"family_id,omitempty"` // family context for ownership validation
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *UpdateCategoryRequest) Reset() {
 	*x = UpdateCategoryRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[25]
+	mi := &file_finance_v1_finance_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1844,7 +2312,7 @@ func (x *UpdateCategoryRequest) String() string {
 func (*UpdateCategoryRequest) ProtoMessage() {}
 
 func (x *UpdateCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[25]
+	mi := &file_finance_v1_finance_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1857,7 +2325,7 @@ func (x *UpdateCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCategoryRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{25}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *UpdateCategoryRequest) GetCategoryId() string {
@@ -1874,9 +2342,9 @@ func (x *UpdateCategoryRequest) GetName() string {
 	return ""
 }
 
-func (x *UpdateCategoryRequest) GetIcon() string {
+func (x *UpdateCategoryRequest) GetIconId() string {
 	if x != nil {
-		return x.Icon
+		return x.IconId
 	}
 	return ""
 }
@@ -1884,6 +2352,13 @@ func (x *UpdateCategoryRequest) GetIcon() string {
 func (x *UpdateCategoryRequest) GetColor() string {
 	if x != nil {
 		return x.Color
+	}
+	return ""
+}
+
+func (x *UpdateCategoryRequest) GetFamilyId() string {
+	if x != nil && x.FamilyId != nil {
+		return *x.FamilyId
 	}
 	return ""
 }
@@ -1897,7 +2372,7 @@ type UpdateCategoryResponse struct {
 
 func (x *UpdateCategoryResponse) Reset() {
 	*x = UpdateCategoryResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[26]
+	mi := &file_finance_v1_finance_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1909,7 +2384,7 @@ func (x *UpdateCategoryResponse) String() string {
 func (*UpdateCategoryResponse) ProtoMessage() {}
 
 func (x *UpdateCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[26]
+	mi := &file_finance_v1_finance_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1922,7 +2397,7 @@ func (x *UpdateCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCategoryResponse.ProtoReflect.Descriptor instead.
 func (*UpdateCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{26}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *UpdateCategoryResponse) GetCategory() *Category {
@@ -1941,7 +2416,7 @@ type DeleteCategoryRequest struct {
 
 func (x *DeleteCategoryRequest) Reset() {
 	*x = DeleteCategoryRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[27]
+	mi := &file_finance_v1_finance_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1953,7 +2428,7 @@ func (x *DeleteCategoryRequest) String() string {
 func (*DeleteCategoryRequest) ProtoMessage() {}
 
 func (x *DeleteCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[27]
+	mi := &file_finance_v1_finance_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1966,7 +2441,7 @@ func (x *DeleteCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCategoryRequest.ProtoReflect.Descriptor instead.
 func (*DeleteCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{27}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *DeleteCategoryRequest) GetCategoryId() string {
@@ -1984,7 +2459,7 @@ type DeleteCategoryResponse struct {
 
 func (x *DeleteCategoryResponse) Reset() {
 	*x = DeleteCategoryResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[28]
+	mi := &file_finance_v1_finance_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1996,7 +2471,7 @@ func (x *DeleteCategoryResponse) String() string {
 func (*DeleteCategoryResponse) ProtoMessage() {}
 
 func (x *DeleteCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[28]
+	mi := &file_finance_v1_finance_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2009,7 +2484,423 @@ func (x *DeleteCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteCategoryResponse.ProtoReflect.Descriptor instead.
 func (*DeleteCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{28}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{34}
+}
+
+type ListSystemCategoriesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"` // expense | income | empty = all
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSystemCategoriesRequest) Reset() {
+	*x = ListSystemCategoriesRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSystemCategoriesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSystemCategoriesRequest) ProtoMessage() {}
+
+func (x *ListSystemCategoriesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSystemCategoriesRequest.ProtoReflect.Descriptor instead.
+func (*ListSystemCategoriesRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *ListSystemCategoriesRequest) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+type ListSystemCategoriesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Categories    []*Category            `protobuf:"bytes,1,rep,name=categories,proto3" json:"categories,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListSystemCategoriesResponse) Reset() {
+	*x = ListSystemCategoriesResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListSystemCategoriesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListSystemCategoriesResponse) ProtoMessage() {}
+
+func (x *ListSystemCategoriesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListSystemCategoriesResponse.ProtoReflect.Descriptor instead.
+func (*ListSystemCategoriesResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *ListSystemCategoriesResponse) GetCategories() []*Category {
+	if x != nil {
+		return x.Categories
+	}
+	return nil
+}
+
+type CreateSystemCategoryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	IconId        string                 `protobuf:"bytes,2,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"` // FK → finance_icons.id
+	Color         string                 `protobuf:"bytes,3,opt,name=color,proto3" json:"color,omitempty"`
+	Type          string                 `protobuf:"bytes,4,opt,name=type,proto3" json:"type,omitempty"`                      // expense | income
+	I18NKey       string                 `protobuf:"bytes,5,opt,name=i18n_key,json=i18nKey,proto3" json:"i18n_key,omitempty"` // optional translation key
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSystemCategoryRequest) Reset() {
+	*x = CreateSystemCategoryRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSystemCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSystemCategoryRequest) ProtoMessage() {}
+
+func (x *CreateSystemCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSystemCategoryRequest.ProtoReflect.Descriptor instead.
+func (*CreateSystemCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{37}
+}
+
+func (x *CreateSystemCategoryRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateSystemCategoryRequest) GetIconId() string {
+	if x != nil {
+		return x.IconId
+	}
+	return ""
+}
+
+func (x *CreateSystemCategoryRequest) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+func (x *CreateSystemCategoryRequest) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *CreateSystemCategoryRequest) GetI18NKey() string {
+	if x != nil {
+		return x.I18NKey
+	}
+	return ""
+}
+
+type CreateSystemCategoryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Category      *Category              `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateSystemCategoryResponse) Reset() {
+	*x = CreateSystemCategoryResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateSystemCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateSystemCategoryResponse) ProtoMessage() {}
+
+func (x *CreateSystemCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateSystemCategoryResponse.ProtoReflect.Descriptor instead.
+func (*CreateSystemCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *CreateSystemCategoryResponse) GetCategory() *Category {
+	if x != nil {
+		return x.Category
+	}
+	return nil
+}
+
+type UpdateSystemCategoryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CategoryId    string                 `protobuf:"bytes,1,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	IconId        string                 `protobuf:"bytes,3,opt,name=icon_id,json=iconId,proto3" json:"icon_id,omitempty"` // FK → finance_icons.id
+	Color         string                 `protobuf:"bytes,4,opt,name=color,proto3" json:"color,omitempty"`
+	Type          string                 `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`                      // expense | income
+	I18NKey       string                 `protobuf:"bytes,6,opt,name=i18n_key,json=i18nKey,proto3" json:"i18n_key,omitempty"` // optional
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSystemCategoryRequest) Reset() {
+	*x = UpdateSystemCategoryRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[39]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSystemCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSystemCategoryRequest) ProtoMessage() {}
+
+func (x *UpdateSystemCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[39]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSystemCategoryRequest.ProtoReflect.Descriptor instead.
+func (*UpdateSystemCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{39}
+}
+
+func (x *UpdateSystemCategoryRequest) GetCategoryId() string {
+	if x != nil {
+		return x.CategoryId
+	}
+	return ""
+}
+
+func (x *UpdateSystemCategoryRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateSystemCategoryRequest) GetIconId() string {
+	if x != nil {
+		return x.IconId
+	}
+	return ""
+}
+
+func (x *UpdateSystemCategoryRequest) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+func (x *UpdateSystemCategoryRequest) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *UpdateSystemCategoryRequest) GetI18NKey() string {
+	if x != nil {
+		return x.I18NKey
+	}
+	return ""
+}
+
+type UpdateSystemCategoryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Category      *Category              `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateSystemCategoryResponse) Reset() {
+	*x = UpdateSystemCategoryResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[40]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateSystemCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateSystemCategoryResponse) ProtoMessage() {}
+
+func (x *UpdateSystemCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[40]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateSystemCategoryResponse.ProtoReflect.Descriptor instead.
+func (*UpdateSystemCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *UpdateSystemCategoryResponse) GetCategory() *Category {
+	if x != nil {
+		return x.Category
+	}
+	return nil
+}
+
+type DeleteSystemCategoryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CategoryId    string                 `protobuf:"bytes,1,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteSystemCategoryRequest) Reset() {
+	*x = DeleteSystemCategoryRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[41]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteSystemCategoryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteSystemCategoryRequest) ProtoMessage() {}
+
+func (x *DeleteSystemCategoryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[41]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteSystemCategoryRequest.ProtoReflect.Descriptor instead.
+func (*DeleteSystemCategoryRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *DeleteSystemCategoryRequest) GetCategoryId() string {
+	if x != nil {
+		return x.CategoryId
+	}
+	return ""
+}
+
+type DeleteSystemCategoryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteSystemCategoryResponse) Reset() {
+	*x = DeleteSystemCategoryResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[42]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteSystemCategoryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteSystemCategoryResponse) ProtoMessage() {}
+
+func (x *DeleteSystemCategoryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[42]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteSystemCategoryResponse.ProtoReflect.Descriptor instead.
+func (*DeleteSystemCategoryResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{42}
 }
 
 type ListTransactionsRequest struct {
@@ -2026,7 +2917,7 @@ type ListTransactionsRequest struct {
 
 func (x *ListTransactionsRequest) Reset() {
 	*x = ListTransactionsRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[29]
+	mi := &file_finance_v1_finance_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2038,7 +2929,7 @@ func (x *ListTransactionsRequest) String() string {
 func (*ListTransactionsRequest) ProtoMessage() {}
 
 func (x *ListTransactionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[29]
+	mi := &file_finance_v1_finance_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2051,7 +2942,7 @@ func (x *ListTransactionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTransactionsRequest.ProtoReflect.Descriptor instead.
 func (*ListTransactionsRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{29}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *ListTransactionsRequest) GetMonth() int32 {
@@ -2106,7 +2997,7 @@ type ListTransactionsResponse struct {
 
 func (x *ListTransactionsResponse) Reset() {
 	*x = ListTransactionsResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[30]
+	mi := &file_finance_v1_finance_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2118,7 +3009,7 @@ func (x *ListTransactionsResponse) String() string {
 func (*ListTransactionsResponse) ProtoMessage() {}
 
 func (x *ListTransactionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[30]
+	mi := &file_finance_v1_finance_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2131,7 +3022,7 @@ func (x *ListTransactionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTransactionsResponse.ProtoReflect.Descriptor instead.
 func (*ListTransactionsResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{30}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *ListTransactionsResponse) GetTransactions() []*Transaction {
@@ -2163,7 +3054,7 @@ type CreateTransactionRequest struct {
 
 func (x *CreateTransactionRequest) Reset() {
 	*x = CreateTransactionRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[31]
+	mi := &file_finance_v1_finance_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2175,7 +3066,7 @@ func (x *CreateTransactionRequest) String() string {
 func (*CreateTransactionRequest) ProtoMessage() {}
 
 func (x *CreateTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[31]
+	mi := &file_finance_v1_finance_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2188,7 +3079,7 @@ func (x *CreateTransactionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTransactionRequest.ProtoReflect.Descriptor instead.
 func (*CreateTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{31}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *CreateTransactionRequest) GetWalletId() string {
@@ -2249,7 +3140,7 @@ type CreateTransactionResponse struct {
 
 func (x *CreateTransactionResponse) Reset() {
 	*x = CreateTransactionResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[32]
+	mi := &file_finance_v1_finance_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2261,7 +3152,7 @@ func (x *CreateTransactionResponse) String() string {
 func (*CreateTransactionResponse) ProtoMessage() {}
 
 func (x *CreateTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[32]
+	mi := &file_finance_v1_finance_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2274,7 +3165,7 @@ func (x *CreateTransactionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTransactionResponse.ProtoReflect.Descriptor instead.
 func (*CreateTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{32}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *CreateTransactionResponse) GetTransaction() *Transaction {
@@ -2300,7 +3191,7 @@ type UpdateTransactionRequest struct {
 
 func (x *UpdateTransactionRequest) Reset() {
 	*x = UpdateTransactionRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[33]
+	mi := &file_finance_v1_finance_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2312,7 +3203,7 @@ func (x *UpdateTransactionRequest) String() string {
 func (*UpdateTransactionRequest) ProtoMessage() {}
 
 func (x *UpdateTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[33]
+	mi := &file_finance_v1_finance_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2325,7 +3216,7 @@ func (x *UpdateTransactionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTransactionRequest.ProtoReflect.Descriptor instead.
 func (*UpdateTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{33}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *UpdateTransactionRequest) GetTransactionId() string {
@@ -2393,7 +3284,7 @@ type UpdateTransactionResponse struct {
 
 func (x *UpdateTransactionResponse) Reset() {
 	*x = UpdateTransactionResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[34]
+	mi := &file_finance_v1_finance_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2405,7 +3296,7 @@ func (x *UpdateTransactionResponse) String() string {
 func (*UpdateTransactionResponse) ProtoMessage() {}
 
 func (x *UpdateTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[34]
+	mi := &file_finance_v1_finance_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2418,7 +3309,7 @@ func (x *UpdateTransactionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateTransactionResponse.ProtoReflect.Descriptor instead.
 func (*UpdateTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{34}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *UpdateTransactionResponse) GetTransaction() *Transaction {
@@ -2437,7 +3328,7 @@ type DeleteTransactionRequest struct {
 
 func (x *DeleteTransactionRequest) Reset() {
 	*x = DeleteTransactionRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[35]
+	mi := &file_finance_v1_finance_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2449,7 +3340,7 @@ func (x *DeleteTransactionRequest) String() string {
 func (*DeleteTransactionRequest) ProtoMessage() {}
 
 func (x *DeleteTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[35]
+	mi := &file_finance_v1_finance_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2462,7 +3353,7 @@ func (x *DeleteTransactionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTransactionRequest.ProtoReflect.Descriptor instead.
 func (*DeleteTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{35}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *DeleteTransactionRequest) GetTransactionId() string {
@@ -2480,7 +3371,7 @@ type DeleteTransactionResponse struct {
 
 func (x *DeleteTransactionResponse) Reset() {
 	*x = DeleteTransactionResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[36]
+	mi := &file_finance_v1_finance_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2492,7 +3383,7 @@ func (x *DeleteTransactionResponse) String() string {
 func (*DeleteTransactionResponse) ProtoMessage() {}
 
 func (x *DeleteTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[36]
+	mi := &file_finance_v1_finance_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2505,7 +3396,7 @@ func (x *DeleteTransactionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteTransactionResponse.ProtoReflect.Descriptor instead.
 func (*DeleteTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{36}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{50}
 }
 
 type GetLatestTransactionRequest struct {
@@ -2519,7 +3410,7 @@ type GetLatestTransactionRequest struct {
 
 func (x *GetLatestTransactionRequest) Reset() {
 	*x = GetLatestTransactionRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[37]
+	mi := &file_finance_v1_finance_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2531,7 +3422,7 @@ func (x *GetLatestTransactionRequest) String() string {
 func (*GetLatestTransactionRequest) ProtoMessage() {}
 
 func (x *GetLatestTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[37]
+	mi := &file_finance_v1_finance_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2544,7 +3435,7 @@ func (x *GetLatestTransactionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestTransactionRequest.ProtoReflect.Descriptor instead.
 func (*GetLatestTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{37}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *GetLatestTransactionRequest) GetWalletId() string {
@@ -2577,7 +3468,7 @@ type GetLatestTransactionResponse struct {
 
 func (x *GetLatestTransactionResponse) Reset() {
 	*x = GetLatestTransactionResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[38]
+	mi := &file_finance_v1_finance_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2589,7 +3480,7 @@ func (x *GetLatestTransactionResponse) String() string {
 func (*GetLatestTransactionResponse) ProtoMessage() {}
 
 func (x *GetLatestTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[38]
+	mi := &file_finance_v1_finance_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2602,7 +3493,7 @@ func (x *GetLatestTransactionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetLatestTransactionResponse.ProtoReflect.Descriptor instead.
 func (*GetLatestTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{38}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *GetLatestTransactionResponse) GetTransaction() *Transaction {
@@ -2623,7 +3514,7 @@ type GetFirstTransactionRequest struct {
 
 func (x *GetFirstTransactionRequest) Reset() {
 	*x = GetFirstTransactionRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[39]
+	mi := &file_finance_v1_finance_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2635,7 +3526,7 @@ func (x *GetFirstTransactionRequest) String() string {
 func (*GetFirstTransactionRequest) ProtoMessage() {}
 
 func (x *GetFirstTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[39]
+	mi := &file_finance_v1_finance_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2648,7 +3539,7 @@ func (x *GetFirstTransactionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFirstTransactionRequest.ProtoReflect.Descriptor instead.
 func (*GetFirstTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{39}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *GetFirstTransactionRequest) GetWalletId() string {
@@ -2681,7 +3572,7 @@ type GetFirstTransactionResponse struct {
 
 func (x *GetFirstTransactionResponse) Reset() {
 	*x = GetFirstTransactionResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[40]
+	mi := &file_finance_v1_finance_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2693,7 +3584,7 @@ func (x *GetFirstTransactionResponse) String() string {
 func (*GetFirstTransactionResponse) ProtoMessage() {}
 
 func (x *GetFirstTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[40]
+	mi := &file_finance_v1_finance_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2706,7 +3597,7 @@ func (x *GetFirstTransactionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFirstTransactionResponse.ProtoReflect.Descriptor instead.
 func (*GetFirstTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{40}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *GetFirstTransactionResponse) GetTransaction() *Transaction {
@@ -2728,7 +3619,7 @@ type SetBudgetRequest struct {
 
 func (x *SetBudgetRequest) Reset() {
 	*x = SetBudgetRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[41]
+	mi := &file_finance_v1_finance_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2740,7 +3631,7 @@ func (x *SetBudgetRequest) String() string {
 func (*SetBudgetRequest) ProtoMessage() {}
 
 func (x *SetBudgetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[41]
+	mi := &file_finance_v1_finance_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2753,7 +3644,7 @@ func (x *SetBudgetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetBudgetRequest.ProtoReflect.Descriptor instead.
 func (*SetBudgetRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{41}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{55}
 }
 
 func (x *SetBudgetRequest) GetCategoryId() string {
@@ -2793,7 +3684,7 @@ type SetBudgetResponse struct {
 
 func (x *SetBudgetResponse) Reset() {
 	*x = SetBudgetResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[42]
+	mi := &file_finance_v1_finance_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2805,7 +3696,7 @@ func (x *SetBudgetResponse) String() string {
 func (*SetBudgetResponse) ProtoMessage() {}
 
 func (x *SetBudgetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[42]
+	mi := &file_finance_v1_finance_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2818,7 +3709,7 @@ func (x *SetBudgetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SetBudgetResponse.ProtoReflect.Descriptor instead.
 func (*SetBudgetResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{42}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *SetBudgetResponse) GetBudget() *Budget {
@@ -2837,7 +3728,7 @@ type DeleteBudgetRequest struct {
 
 func (x *DeleteBudgetRequest) Reset() {
 	*x = DeleteBudgetRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[43]
+	mi := &file_finance_v1_finance_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2849,7 +3740,7 @@ func (x *DeleteBudgetRequest) String() string {
 func (*DeleteBudgetRequest) ProtoMessage() {}
 
 func (x *DeleteBudgetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[43]
+	mi := &file_finance_v1_finance_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2862,7 +3753,7 @@ func (x *DeleteBudgetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteBudgetRequest.ProtoReflect.Descriptor instead.
 func (*DeleteBudgetRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{43}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *DeleteBudgetRequest) GetBudgetId() string {
@@ -2880,7 +3771,7 @@ type DeleteBudgetResponse struct {
 
 func (x *DeleteBudgetResponse) Reset() {
 	*x = DeleteBudgetResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[44]
+	mi := &file_finance_v1_finance_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2892,7 +3783,7 @@ func (x *DeleteBudgetResponse) String() string {
 func (*DeleteBudgetResponse) ProtoMessage() {}
 
 func (x *DeleteBudgetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[44]
+	mi := &file_finance_v1_finance_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2905,7 +3796,7 @@ func (x *DeleteBudgetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteBudgetResponse.ProtoReflect.Descriptor instead.
 func (*DeleteBudgetResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{44}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{58}
 }
 
 type ListBudgetsRequest struct {
@@ -2918,7 +3809,7 @@ type ListBudgetsRequest struct {
 
 func (x *ListBudgetsRequest) Reset() {
 	*x = ListBudgetsRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[45]
+	mi := &file_finance_v1_finance_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2930,7 +3821,7 @@ func (x *ListBudgetsRequest) String() string {
 func (*ListBudgetsRequest) ProtoMessage() {}
 
 func (x *ListBudgetsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[45]
+	mi := &file_finance_v1_finance_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2943,7 +3834,7 @@ func (x *ListBudgetsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListBudgetsRequest.ProtoReflect.Descriptor instead.
 func (*ListBudgetsRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{45}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *ListBudgetsRequest) GetMonth() int32 {
@@ -2969,7 +3860,7 @@ type ListBudgetsResponse struct {
 
 func (x *ListBudgetsResponse) Reset() {
 	*x = ListBudgetsResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[46]
+	mi := &file_finance_v1_finance_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2981,7 +3872,7 @@ func (x *ListBudgetsResponse) String() string {
 func (*ListBudgetsResponse) ProtoMessage() {}
 
 func (x *ListBudgetsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[46]
+	mi := &file_finance_v1_finance_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2994,7 +3885,7 @@ func (x *ListBudgetsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListBudgetsResponse.ProtoReflect.Descriptor instead.
 func (*ListBudgetsResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{46}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *ListBudgetsResponse) GetBudgets() []*Budget {
@@ -3012,7 +3903,7 @@ type ListGoalsRequest struct {
 
 func (x *ListGoalsRequest) Reset() {
 	*x = ListGoalsRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[47]
+	mi := &file_finance_v1_finance_proto_msgTypes[61]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3024,7 +3915,7 @@ func (x *ListGoalsRequest) String() string {
 func (*ListGoalsRequest) ProtoMessage() {}
 
 func (x *ListGoalsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[47]
+	mi := &file_finance_v1_finance_proto_msgTypes[61]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3037,7 +3928,7 @@ func (x *ListGoalsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListGoalsRequest.ProtoReflect.Descriptor instead.
 func (*ListGoalsRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{47}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{61}
 }
 
 type ListGoalsResponse struct {
@@ -3049,7 +3940,7 @@ type ListGoalsResponse struct {
 
 func (x *ListGoalsResponse) Reset() {
 	*x = ListGoalsResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[48]
+	mi := &file_finance_v1_finance_proto_msgTypes[62]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3061,7 +3952,7 @@ func (x *ListGoalsResponse) String() string {
 func (*ListGoalsResponse) ProtoMessage() {}
 
 func (x *ListGoalsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[48]
+	mi := &file_finance_v1_finance_proto_msgTypes[62]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3074,7 +3965,7 @@ func (x *ListGoalsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListGoalsResponse.ProtoReflect.Descriptor instead.
 func (*ListGoalsResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{48}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{62}
 }
 
 func (x *ListGoalsResponse) GetGoals() []*Goal {
@@ -3098,7 +3989,7 @@ type CreateGoalRequest struct {
 
 func (x *CreateGoalRequest) Reset() {
 	*x = CreateGoalRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[49]
+	mi := &file_finance_v1_finance_proto_msgTypes[63]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3110,7 +4001,7 @@ func (x *CreateGoalRequest) String() string {
 func (*CreateGoalRequest) ProtoMessage() {}
 
 func (x *CreateGoalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[49]
+	mi := &file_finance_v1_finance_proto_msgTypes[63]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3123,7 +4014,7 @@ func (x *CreateGoalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGoalRequest.ProtoReflect.Descriptor instead.
 func (*CreateGoalRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{49}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{63}
 }
 
 func (x *CreateGoalRequest) GetName() string {
@@ -3177,7 +4068,7 @@ type CreateGoalResponse struct {
 
 func (x *CreateGoalResponse) Reset() {
 	*x = CreateGoalResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[50]
+	mi := &file_finance_v1_finance_proto_msgTypes[64]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3189,7 +4080,7 @@ func (x *CreateGoalResponse) String() string {
 func (*CreateGoalResponse) ProtoMessage() {}
 
 func (x *CreateGoalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[50]
+	mi := &file_finance_v1_finance_proto_msgTypes[64]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3202,7 +4093,7 @@ func (x *CreateGoalResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGoalResponse.ProtoReflect.Descriptor instead.
 func (*CreateGoalResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{50}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{64}
 }
 
 func (x *CreateGoalResponse) GetGoal() *Goal {
@@ -3227,7 +4118,7 @@ type UpdateGoalRequest struct {
 
 func (x *UpdateGoalRequest) Reset() {
 	*x = UpdateGoalRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[51]
+	mi := &file_finance_v1_finance_proto_msgTypes[65]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3239,7 +4130,7 @@ func (x *UpdateGoalRequest) String() string {
 func (*UpdateGoalRequest) ProtoMessage() {}
 
 func (x *UpdateGoalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[51]
+	mi := &file_finance_v1_finance_proto_msgTypes[65]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3252,7 +4143,7 @@ func (x *UpdateGoalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateGoalRequest.ProtoReflect.Descriptor instead.
 func (*UpdateGoalRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{51}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{65}
 }
 
 func (x *UpdateGoalRequest) GetGoalId() string {
@@ -3313,7 +4204,7 @@ type UpdateGoalResponse struct {
 
 func (x *UpdateGoalResponse) Reset() {
 	*x = UpdateGoalResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[52]
+	mi := &file_finance_v1_finance_proto_msgTypes[66]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3325,7 +4216,7 @@ func (x *UpdateGoalResponse) String() string {
 func (*UpdateGoalResponse) ProtoMessage() {}
 
 func (x *UpdateGoalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[52]
+	mi := &file_finance_v1_finance_proto_msgTypes[66]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3338,7 +4229,7 @@ func (x *UpdateGoalResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateGoalResponse.ProtoReflect.Descriptor instead.
 func (*UpdateGoalResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{52}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{66}
 }
 
 func (x *UpdateGoalResponse) GetGoal() *Goal {
@@ -3357,7 +4248,7 @@ type DeleteGoalRequest struct {
 
 func (x *DeleteGoalRequest) Reset() {
 	*x = DeleteGoalRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[53]
+	mi := &file_finance_v1_finance_proto_msgTypes[67]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3369,7 +4260,7 @@ func (x *DeleteGoalRequest) String() string {
 func (*DeleteGoalRequest) ProtoMessage() {}
 
 func (x *DeleteGoalRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[53]
+	mi := &file_finance_v1_finance_proto_msgTypes[67]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3382,7 +4273,7 @@ func (x *DeleteGoalRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGoalRequest.ProtoReflect.Descriptor instead.
 func (*DeleteGoalRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{53}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{67}
 }
 
 func (x *DeleteGoalRequest) GetGoalId() string {
@@ -3400,7 +4291,7 @@ type DeleteGoalResponse struct {
 
 func (x *DeleteGoalResponse) Reset() {
 	*x = DeleteGoalResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[54]
+	mi := &file_finance_v1_finance_proto_msgTypes[68]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3412,7 +4303,7 @@ func (x *DeleteGoalResponse) String() string {
 func (*DeleteGoalResponse) ProtoMessage() {}
 
 func (x *DeleteGoalResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[54]
+	mi := &file_finance_v1_finance_proto_msgTypes[68]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3425,7 +4316,7 @@ func (x *DeleteGoalResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGoalResponse.ProtoReflect.Descriptor instead.
 func (*DeleteGoalResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{54}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{68}
 }
 
 type GetMonthlySummaryRequest struct {
@@ -3438,7 +4329,7 @@ type GetMonthlySummaryRequest struct {
 
 func (x *GetMonthlySummaryRequest) Reset() {
 	*x = GetMonthlySummaryRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[55]
+	mi := &file_finance_v1_finance_proto_msgTypes[69]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3450,7 +4341,7 @@ func (x *GetMonthlySummaryRequest) String() string {
 func (*GetMonthlySummaryRequest) ProtoMessage() {}
 
 func (x *GetMonthlySummaryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[55]
+	mi := &file_finance_v1_finance_proto_msgTypes[69]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3463,7 +4354,7 @@ func (x *GetMonthlySummaryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMonthlySummaryRequest.ProtoReflect.Descriptor instead.
 func (*GetMonthlySummaryRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{55}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{69}
 }
 
 func (x *GetMonthlySummaryRequest) GetMonth() int32 {
@@ -3489,7 +4380,7 @@ type GetMonthlySummaryResponse struct {
 
 func (x *GetMonthlySummaryResponse) Reset() {
 	*x = GetMonthlySummaryResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[56]
+	mi := &file_finance_v1_finance_proto_msgTypes[70]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3501,7 +4392,7 @@ func (x *GetMonthlySummaryResponse) String() string {
 func (*GetMonthlySummaryResponse) ProtoMessage() {}
 
 func (x *GetMonthlySummaryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[56]
+	mi := &file_finance_v1_finance_proto_msgTypes[70]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3514,7 +4405,7 @@ func (x *GetMonthlySummaryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMonthlySummaryResponse.ProtoReflect.Descriptor instead.
 func (*GetMonthlySummaryResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{56}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{70}
 }
 
 func (x *GetMonthlySummaryResponse) GetSummary() *MonthlySummary {
@@ -3539,7 +4430,7 @@ type GetMonthlyTrendRequest struct {
 
 func (x *GetMonthlyTrendRequest) Reset() {
 	*x = GetMonthlyTrendRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[57]
+	mi := &file_finance_v1_finance_proto_msgTypes[71]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3551,7 +4442,7 @@ func (x *GetMonthlyTrendRequest) String() string {
 func (*GetMonthlyTrendRequest) ProtoMessage() {}
 
 func (x *GetMonthlyTrendRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[57]
+	mi := &file_finance_v1_finance_proto_msgTypes[71]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3564,7 +4455,7 @@ func (x *GetMonthlyTrendRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMonthlyTrendRequest.ProtoReflect.Descriptor instead.
 func (*GetMonthlyTrendRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{57}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{71}
 }
 
 func (x *GetMonthlyTrendRequest) GetWalletId() string {
@@ -3625,7 +4516,7 @@ type GetMonthlyTrendResponse struct {
 
 func (x *GetMonthlyTrendResponse) Reset() {
 	*x = GetMonthlyTrendResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[58]
+	mi := &file_finance_v1_finance_proto_msgTypes[72]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3637,7 +4528,7 @@ func (x *GetMonthlyTrendResponse) String() string {
 func (*GetMonthlyTrendResponse) ProtoMessage() {}
 
 func (x *GetMonthlyTrendResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[58]
+	mi := &file_finance_v1_finance_proto_msgTypes[72]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3650,7 +4541,7 @@ func (x *GetMonthlyTrendResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetMonthlyTrendResponse.ProtoReflect.Descriptor instead.
 func (*GetMonthlyTrendResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{58}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{72}
 }
 
 func (x *GetMonthlyTrendResponse) GetItems() []*MonthlyTrendItem {
@@ -3669,7 +4560,7 @@ type CreateFamilyRequest struct {
 
 func (x *CreateFamilyRequest) Reset() {
 	*x = CreateFamilyRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[59]
+	mi := &file_finance_v1_finance_proto_msgTypes[73]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3681,7 +4572,7 @@ func (x *CreateFamilyRequest) String() string {
 func (*CreateFamilyRequest) ProtoMessage() {}
 
 func (x *CreateFamilyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[59]
+	mi := &file_finance_v1_finance_proto_msgTypes[73]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3694,7 +4585,7 @@ func (x *CreateFamilyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateFamilyRequest.ProtoReflect.Descriptor instead.
 func (*CreateFamilyRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{59}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{73}
 }
 
 func (x *CreateFamilyRequest) GetName() string {
@@ -3713,7 +4604,7 @@ type CreateFamilyResponse struct {
 
 func (x *CreateFamilyResponse) Reset() {
 	*x = CreateFamilyResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[60]
+	mi := &file_finance_v1_finance_proto_msgTypes[74]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3725,7 +4616,7 @@ func (x *CreateFamilyResponse) String() string {
 func (*CreateFamilyResponse) ProtoMessage() {}
 
 func (x *CreateFamilyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[60]
+	mi := &file_finance_v1_finance_proto_msgTypes[74]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3738,7 +4629,7 @@ func (x *CreateFamilyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateFamilyResponse.ProtoReflect.Descriptor instead.
 func (*CreateFamilyResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{60}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{74}
 }
 
 func (x *CreateFamilyResponse) GetFamily() *Family {
@@ -3756,7 +4647,7 @@ type GetFamilyRequest struct {
 
 func (x *GetFamilyRequest) Reset() {
 	*x = GetFamilyRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[61]
+	mi := &file_finance_v1_finance_proto_msgTypes[75]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3768,7 +4659,7 @@ func (x *GetFamilyRequest) String() string {
 func (*GetFamilyRequest) ProtoMessage() {}
 
 func (x *GetFamilyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[61]
+	mi := &file_finance_v1_finance_proto_msgTypes[75]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3781,7 +4672,7 @@ func (x *GetFamilyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFamilyRequest.ProtoReflect.Descriptor instead.
 func (*GetFamilyRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{61}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{75}
 }
 
 type GetFamilyResponse struct {
@@ -3793,7 +4684,7 @@ type GetFamilyResponse struct {
 
 func (x *GetFamilyResponse) Reset() {
 	*x = GetFamilyResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[62]
+	mi := &file_finance_v1_finance_proto_msgTypes[76]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3805,7 +4696,7 @@ func (x *GetFamilyResponse) String() string {
 func (*GetFamilyResponse) ProtoMessage() {}
 
 func (x *GetFamilyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[62]
+	mi := &file_finance_v1_finance_proto_msgTypes[76]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3818,7 +4709,7 @@ func (x *GetFamilyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetFamilyResponse.ProtoReflect.Descriptor instead.
 func (*GetFamilyResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{62}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{76}
 }
 
 func (x *GetFamilyResponse) GetFamily() *Family {
@@ -3837,7 +4728,7 @@ type AddFamilyMemberRequest struct {
 
 func (x *AddFamilyMemberRequest) Reset() {
 	*x = AddFamilyMemberRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[63]
+	mi := &file_finance_v1_finance_proto_msgTypes[77]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3849,7 +4740,7 @@ func (x *AddFamilyMemberRequest) String() string {
 func (*AddFamilyMemberRequest) ProtoMessage() {}
 
 func (x *AddFamilyMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[63]
+	mi := &file_finance_v1_finance_proto_msgTypes[77]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3862,7 +4753,7 @@ func (x *AddFamilyMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddFamilyMemberRequest.ProtoReflect.Descriptor instead.
 func (*AddFamilyMemberRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{63}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{77}
 }
 
 func (x *AddFamilyMemberRequest) GetUserEmail() string {
@@ -3881,7 +4772,7 @@ type AddFamilyMemberResponse struct {
 
 func (x *AddFamilyMemberResponse) Reset() {
 	*x = AddFamilyMemberResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[64]
+	mi := &file_finance_v1_finance_proto_msgTypes[78]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3893,7 +4784,7 @@ func (x *AddFamilyMemberResponse) String() string {
 func (*AddFamilyMemberResponse) ProtoMessage() {}
 
 func (x *AddFamilyMemberResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[64]
+	mi := &file_finance_v1_finance_proto_msgTypes[78]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3906,7 +4797,7 @@ func (x *AddFamilyMemberResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddFamilyMemberResponse.ProtoReflect.Descriptor instead.
 func (*AddFamilyMemberResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{64}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{78}
 }
 
 func (x *AddFamilyMemberResponse) GetMember() *FamilyMember {
@@ -3925,7 +4816,7 @@ type RemoveFamilyMemberRequest struct {
 
 func (x *RemoveFamilyMemberRequest) Reset() {
 	*x = RemoveFamilyMemberRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[65]
+	mi := &file_finance_v1_finance_proto_msgTypes[79]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3937,7 +4828,7 @@ func (x *RemoveFamilyMemberRequest) String() string {
 func (*RemoveFamilyMemberRequest) ProtoMessage() {}
 
 func (x *RemoveFamilyMemberRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[65]
+	mi := &file_finance_v1_finance_proto_msgTypes[79]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3950,7 +4841,7 @@ func (x *RemoveFamilyMemberRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveFamilyMemberRequest.ProtoReflect.Descriptor instead.
 func (*RemoveFamilyMemberRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{65}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{79}
 }
 
 func (x *RemoveFamilyMemberRequest) GetUserId() string {
@@ -3968,7 +4859,7 @@ type RemoveFamilyMemberResponse struct {
 
 func (x *RemoveFamilyMemberResponse) Reset() {
 	*x = RemoveFamilyMemberResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[66]
+	mi := &file_finance_v1_finance_proto_msgTypes[80]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3980,7 +4871,7 @@ func (x *RemoveFamilyMemberResponse) String() string {
 func (*RemoveFamilyMemberResponse) ProtoMessage() {}
 
 func (x *RemoveFamilyMemberResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[66]
+	mi := &file_finance_v1_finance_proto_msgTypes[80]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3993,7 +4884,7 @@ func (x *RemoveFamilyMemberResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveFamilyMemberResponse.ProtoReflect.Descriptor instead.
 func (*RemoveFamilyMemberResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{66}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{80}
 }
 
 type LeaveFamilyRequest struct {
@@ -4004,7 +4895,7 @@ type LeaveFamilyRequest struct {
 
 func (x *LeaveFamilyRequest) Reset() {
 	*x = LeaveFamilyRequest{}
-	mi := &file_finance_v1_finance_proto_msgTypes[67]
+	mi := &file_finance_v1_finance_proto_msgTypes[81]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4016,7 +4907,7 @@ func (x *LeaveFamilyRequest) String() string {
 func (*LeaveFamilyRequest) ProtoMessage() {}
 
 func (x *LeaveFamilyRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[67]
+	mi := &file_finance_v1_finance_proto_msgTypes[81]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4029,7 +4920,7 @@ func (x *LeaveFamilyRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LeaveFamilyRequest.ProtoReflect.Descriptor instead.
 func (*LeaveFamilyRequest) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{67}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{81}
 }
 
 type LeaveFamilyResponse struct {
@@ -4040,7 +4931,7 @@ type LeaveFamilyResponse struct {
 
 func (x *LeaveFamilyResponse) Reset() {
 	*x = LeaveFamilyResponse{}
-	mi := &file_finance_v1_finance_proto_msgTypes[68]
+	mi := &file_finance_v1_finance_proto_msgTypes[82]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4052,7 +4943,7 @@ func (x *LeaveFamilyResponse) String() string {
 func (*LeaveFamilyResponse) ProtoMessage() {}
 
 func (x *LeaveFamilyResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_finance_v1_finance_proto_msgTypes[68]
+	mi := &file_finance_v1_finance_proto_msgTypes[82]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4065,7 +4956,7 @@ func (x *LeaveFamilyResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LeaveFamilyResponse.ProtoReflect.Descriptor instead.
 func (*LeaveFamilyResponse) Descriptor() ([]byte, []int) {
-	return file_finance_v1_finance_proto_rawDescGZIP(), []int{68}
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{82}
 }
 
 var File_finance_v1_finance_proto protoreflect.FileDescriptor
@@ -4073,7 +4964,7 @@ var File_finance_v1_finance_proto protoreflect.FileDescriptor
 const file_finance_v1_finance_proto_rawDesc = "" +
 	"\n" +
 	"\x18finance/v1/finance.proto\x12\n" +
-	"finance.v1\"\x9f\x02\n" +
+	"finance.v1\"\xca\x04\n" +
 	"\x06Wallet\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
@@ -4089,21 +4980,36 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"updated_at\x18\t \x01(\tR\tupdatedAt\x12\x1d\n" +
 	"\n" +
 	"is_private\x18\n" +
-	" \x01(\bR\tisPrivate\x12\x12\n" +
-	"\x04icon\x18\v \x01(\tR\x04icon\"H\n" +
+	" \x01(\bR\tisPrivate\x12\x17\n" +
+	"\aicon_id\x18\v \x01(\tR\x06iconId\x12!\n" +
+	"\fcredit_limit\x18\f \x01(\tR\vcreditLimit\x12\x19\n" +
+	"\bdue_date\x18\r \x01(\tR\adueDate\x123\n" +
+	"\x13billing_cycle_start\x18\x0e \x01(\x05H\x00R\x11billingCycleStart\x88\x01\x01\x12/\n" +
+	"\x11billing_cycle_end\x18\x0f \x01(\x05H\x01R\x0fbillingCycleEnd\x88\x01\x01\x12#\n" +
+	"\rinterest_rate\x18\x10 \x01(\tR\finterestRate\x12-\n" +
+	"\ticon_info\x18\x11 \x01(\v2\x10.finance.v1.IconR\biconInfoB\x16\n" +
+	"\x14_billing_cycle_startB\x14\n" +
+	"\x12_billing_cycle_end\"H\n" +
 	"\x04Icon\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1a\n" +
 	"\bcategory\x18\x02 \x01(\tR\bcategory\x12\x14\n" +
-	"\x05value\x18\x03 \x01(\tR\x05value\"\xbd\x01\n" +
+	"\x05value\x18\x03 \x01(\tR\x05value\"\xd7\x02\n" +
 	"\bCategory\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x12\n" +
-	"\x04icon\x18\x04 \x01(\tR\x04icon\x12\x14\n" +
+	"\x04name\x18\x03 \x01(\tR\x04name\x12\x17\n" +
+	"\aicon_id\x18\x04 \x01(\tR\x06iconId\x12\x14\n" +
 	"\x05color\x18\x05 \x01(\tR\x05color\x12\x12\n" +
 	"\x04type\x18\x06 \x01(\tR\x04type\x12\x1b\n" +
 	"\tis_system\x18\a \x01(\bR\bisSystem\x12\x19\n" +
-	"\bi18n_key\x18\b \x01(\tR\ai18nKey\"\x94\x03\n" +
+	"\bi18n_key\x18\b \x01(\tR\ai18nKey\x12 \n" +
+	"\tfamily_id\x18\t \x01(\tH\x00R\bfamilyId\x88\x01\x01\x12\x1b\n" +
+	"\tis_family\x18\n" +
+	" \x01(\bR\bisFamily\x12\x17\n" +
+	"\ais_user\x18\v \x01(\bR\x06isUser\x12-\n" +
+	"\ticon_info\x18\f \x01(\v2\x10.finance.v1.IconR\biconInfoB\f\n" +
+	"\n" +
+	"_family_id\"\x94\x03\n" +
 	"\vTransaction\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1b\n" +
@@ -4192,7 +5098,7 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\abalance\x18\x05 \x01(\x01R\abalance\"\x14\n" +
 	"\x12ListWalletsRequest\"C\n" +
 	"\x13ListWalletsResponse\x12,\n" +
-	"\awallets\x18\x01 \x03(\v2\x12.finance.v1.WalletR\awallets\"\xc5\x01\n" +
+	"\awallets\x18\x01 \x03(\v2\x12.finance.v1.WalletR\awallets\"\xc1\x03\n" +
 	"\x13CreateWalletRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x18\n" +
@@ -4201,10 +5107,18 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\n" +
 	"is_default\x18\x05 \x01(\bR\tisDefault\x12\x1d\n" +
 	"\n" +
-	"is_private\x18\x06 \x01(\bR\tisPrivate\x12\x12\n" +
-	"\x04icon\x18\a \x01(\tR\x04icon\"B\n" +
+	"is_private\x18\x06 \x01(\bR\tisPrivate\x12\x17\n" +
+	"\aicon_id\x18\a \x01(\tR\x06iconId\x12!\n" +
+	"\fcredit_limit\x18\b \x01(\tR\vcreditLimit\x12\x19\n" +
+	"\bdue_date\x18\t \x01(\tR\adueDate\x123\n" +
+	"\x13billing_cycle_start\x18\n" +
+	" \x01(\x05H\x00R\x11billingCycleStart\x88\x01\x01\x12/\n" +
+	"\x11billing_cycle_end\x18\v \x01(\x05H\x01R\x0fbillingCycleEnd\x88\x01\x01\x12#\n" +
+	"\rinterest_rate\x18\f \x01(\tR\finterestRateB\x16\n" +
+	"\x14_billing_cycle_startB\x14\n" +
+	"\x12_billing_cycle_end\"B\n" +
 	"\x14CreateWalletResponse\x12*\n" +
-	"\x06wallet\x18\x01 \x01(\v2\x12.finance.v1.WalletR\x06wallet\"\xc8\x01\n" +
+	"\x06wallet\x18\x01 \x01(\v2\x12.finance.v1.WalletR\x06wallet\"\xc4\x03\n" +
 	"\x13UpdateWalletRequest\x12\x1b\n" +
 	"\twallet_id\x18\x01 \x01(\tR\bwalletId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
@@ -4213,8 +5127,16 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\n" +
 	"is_default\x18\x05 \x01(\bR\tisDefault\x12\x1d\n" +
 	"\n" +
-	"is_private\x18\x06 \x01(\bR\tisPrivate\x12\x12\n" +
-	"\x04icon\x18\a \x01(\tR\x04icon\"B\n" +
+	"is_private\x18\x06 \x01(\bR\tisPrivate\x12\x17\n" +
+	"\aicon_id\x18\a \x01(\tR\x06iconId\x12!\n" +
+	"\fcredit_limit\x18\b \x01(\tR\vcreditLimit\x12\x19\n" +
+	"\bdue_date\x18\t \x01(\tR\adueDate\x123\n" +
+	"\x13billing_cycle_start\x18\n" +
+	" \x01(\x05H\x00R\x11billingCycleStart\x88\x01\x01\x12/\n" +
+	"\x11billing_cycle_end\x18\v \x01(\x05H\x01R\x0fbillingCycleEnd\x88\x01\x01\x12#\n" +
+	"\rinterest_rate\x18\f \x01(\tR\finterestRateB\x16\n" +
+	"\x14_billing_cycle_startB\x14\n" +
+	"\x12_billing_cycle_end\"B\n" +
 	"\x14UpdateWalletResponse\x12*\n" +
 	"\x06wallet\x18\x01 \x01(\v2\x12.finance.v1.WalletR\x06wallet\"2\n" +
 	"\x13DeleteWalletRequest\x12\x1b\n" +
@@ -4223,32 +5145,86 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x10ListIconsRequest\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\";\n" +
 	"\x11ListIconsResponse\x12&\n" +
-	"\x05icons\x18\x01 \x03(\v2\x10.finance.v1.IconR\x05icons\"+\n" +
+	"\x05icons\x18\x01 \x03(\v2\x10.finance.v1.IconR\x05icons\"E\n" +
+	"\x11CreateIconRequest\x12\x1a\n" +
+	"\bcategory\x18\x01 \x01(\tR\bcategory\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value\":\n" +
+	"\x12CreateIconResponse\x12$\n" +
+	"\x04icon\x18\x01 \x01(\v2\x10.finance.v1.IconR\x04icon\"^\n" +
+	"\x11UpdateIconRequest\x12\x17\n" +
+	"\aicon_id\x18\x01 \x01(\tR\x06iconId\x12\x1a\n" +
+	"\bcategory\x18\x02 \x01(\tR\bcategory\x12\x14\n" +
+	"\x05value\x18\x03 \x01(\tR\x05value\":\n" +
+	"\x12UpdateIconResponse\x12$\n" +
+	"\x04icon\x18\x01 \x01(\v2\x10.finance.v1.IconR\x04icon\",\n" +
+	"\x11DeleteIconRequest\x12\x17\n" +
+	"\aicon_id\x18\x01 \x01(\tR\x06iconId\"\x14\n" +
+	"\x12DeleteIconResponse\"\x85\x01\n" +
 	"\x15ListCategoriesRequest\x12\x12\n" +
-	"\x04type\x18\x01 \x01(\tR\x04type\"N\n" +
+	"\x04type\x18\x01 \x01(\tR\x04type\x12\x1c\n" +
+	"\auser_id\x18\x02 \x01(\tH\x00R\x06userId\x88\x01\x01\x12 \n" +
+	"\tfamily_id\x18\x03 \x01(\tH\x01R\bfamilyId\x88\x01\x01B\n" +
+	"\n" +
+	"\b_user_idB\f\n" +
+	"\n" +
+	"_family_id\"N\n" +
 	"\x16ListCategoriesResponse\x124\n" +
 	"\n" +
 	"categories\x18\x01 \x03(\v2\x14.finance.v1.CategoryR\n" +
-	"categories\"i\n" +
+	"categories\"\x9e\x01\n" +
 	"\x15CreateCategoryRequest\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
-	"\x04icon\x18\x02 \x01(\tR\x04icon\x12\x14\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x17\n" +
+	"\aicon_id\x18\x02 \x01(\tR\x06iconId\x12\x14\n" +
 	"\x05color\x18\x03 \x01(\tR\x05color\x12\x12\n" +
-	"\x04type\x18\x04 \x01(\tR\x04type\"J\n" +
+	"\x04type\x18\x04 \x01(\tR\x04type\x12 \n" +
+	"\tfamily_id\x18\x05 \x01(\tH\x00R\bfamilyId\x88\x01\x01B\f\n" +
+	"\n" +
+	"_family_id\"J\n" +
 	"\x16CreateCategoryResponse\x120\n" +
-	"\bcategory\x18\x01 \x01(\v2\x14.finance.v1.CategoryR\bcategory\"v\n" +
+	"\bcategory\x18\x01 \x01(\v2\x14.finance.v1.CategoryR\bcategory\"\xab\x01\n" +
 	"\x15UpdateCategoryRequest\x12\x1f\n" +
 	"\vcategory_id\x18\x01 \x01(\tR\n" +
 	"categoryId\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
-	"\x04icon\x18\x03 \x01(\tR\x04icon\x12\x14\n" +
-	"\x05color\x18\x04 \x01(\tR\x05color\"J\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x17\n" +
+	"\aicon_id\x18\x03 \x01(\tR\x06iconId\x12\x14\n" +
+	"\x05color\x18\x04 \x01(\tR\x05color\x12 \n" +
+	"\tfamily_id\x18\x05 \x01(\tH\x00R\bfamilyId\x88\x01\x01B\f\n" +
+	"\n" +
+	"_family_id\"J\n" +
 	"\x16UpdateCategoryResponse\x120\n" +
 	"\bcategory\x18\x01 \x01(\v2\x14.finance.v1.CategoryR\bcategory\"8\n" +
 	"\x15DeleteCategoryRequest\x12\x1f\n" +
 	"\vcategory_id\x18\x01 \x01(\tR\n" +
 	"categoryId\"\x18\n" +
-	"\x16DeleteCategoryResponse\"\xa9\x01\n" +
+	"\x16DeleteCategoryResponse\"1\n" +
+	"\x1bListSystemCategoriesRequest\x12\x12\n" +
+	"\x04type\x18\x01 \x01(\tR\x04type\"T\n" +
+	"\x1cListSystemCategoriesResponse\x124\n" +
+	"\n" +
+	"categories\x18\x01 \x03(\v2\x14.finance.v1.CategoryR\n" +
+	"categories\"\x8f\x01\n" +
+	"\x1bCreateSystemCategoryRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x17\n" +
+	"\aicon_id\x18\x02 \x01(\tR\x06iconId\x12\x14\n" +
+	"\x05color\x18\x03 \x01(\tR\x05color\x12\x12\n" +
+	"\x04type\x18\x04 \x01(\tR\x04type\x12\x19\n" +
+	"\bi18n_key\x18\x05 \x01(\tR\ai18nKey\"P\n" +
+	"\x1cCreateSystemCategoryResponse\x120\n" +
+	"\bcategory\x18\x01 \x01(\v2\x14.finance.v1.CategoryR\bcategory\"\xb0\x01\n" +
+	"\x1bUpdateSystemCategoryRequest\x12\x1f\n" +
+	"\vcategory_id\x18\x01 \x01(\tR\n" +
+	"categoryId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x17\n" +
+	"\aicon_id\x18\x03 \x01(\tR\x06iconId\x12\x14\n" +
+	"\x05color\x18\x04 \x01(\tR\x05color\x12\x12\n" +
+	"\x04type\x18\x05 \x01(\tR\x04type\x12\x19\n" +
+	"\bi18n_key\x18\x06 \x01(\tR\ai18nKey\"P\n" +
+	"\x1cUpdateSystemCategoryResponse\x120\n" +
+	"\bcategory\x18\x01 \x01(\v2\x14.finance.v1.CategoryR\bcategory\">\n" +
+	"\x1bDeleteSystemCategoryRequest\x12\x1f\n" +
+	"\vcategory_id\x18\x01 \x01(\tR\n" +
+	"categoryId\"\x1e\n" +
+	"\x1cDeleteSystemCategoryResponse\"\xa9\x01\n" +
 	"\x17ListTransactionsRequest\x12\x14\n" +
 	"\x05month\x18\x01 \x01(\x05R\x05month\x12\x12\n" +
 	"\x04year\x18\x02 \x01(\x05R\x04year\x12\x1f\n" +
@@ -4381,14 +5357,24 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\vListWallets\x12\x1e.finance.v1.ListWalletsRequest\x1a\x1f.finance.v1.ListWalletsResponse\x12Q\n" +
 	"\fCreateWallet\x12\x1f.finance.v1.CreateWalletRequest\x1a .finance.v1.CreateWalletResponse\x12Q\n" +
 	"\fUpdateWallet\x12\x1f.finance.v1.UpdateWalletRequest\x1a .finance.v1.UpdateWalletResponse\x12Q\n" +
-	"\fDeleteWallet\x12\x1f.finance.v1.DeleteWalletRequest\x1a .finance.v1.DeleteWalletResponse2W\n" +
+	"\fDeleteWallet\x12\x1f.finance.v1.DeleteWalletRequest\x1a .finance.v1.DeleteWalletResponse2\xbe\x02\n" +
 	"\vIconService\x12H\n" +
-	"\tListIcons\x12\x1c.finance.v1.ListIconsRequest\x1a\x1d.finance.v1.ListIconsResponse2\xf5\x02\n" +
+	"\tListIcons\x12\x1c.finance.v1.ListIconsRequest\x1a\x1d.finance.v1.ListIconsResponse\x12K\n" +
+	"\n" +
+	"CreateIcon\x12\x1d.finance.v1.CreateIconRequest\x1a\x1e.finance.v1.CreateIconResponse\x12K\n" +
+	"\n" +
+	"UpdateIcon\x12\x1d.finance.v1.UpdateIconRequest\x1a\x1e.finance.v1.UpdateIconResponse\x12K\n" +
+	"\n" +
+	"DeleteIcon\x12\x1d.finance.v1.DeleteIconRequest\x1a\x1e.finance.v1.DeleteIconResponse2\xa1\x06\n" +
 	"\x0fCategoryService\x12W\n" +
 	"\x0eListCategories\x12!.finance.v1.ListCategoriesRequest\x1a\".finance.v1.ListCategoriesResponse\x12W\n" +
 	"\x0eCreateCategory\x12!.finance.v1.CreateCategoryRequest\x1a\".finance.v1.CreateCategoryResponse\x12W\n" +
 	"\x0eUpdateCategory\x12!.finance.v1.UpdateCategoryRequest\x1a\".finance.v1.UpdateCategoryResponse\x12W\n" +
-	"\x0eDeleteCategory\x12!.finance.v1.DeleteCategoryRequest\x1a\".finance.v1.DeleteCategoryResponse2\xec\x04\n" +
+	"\x0eDeleteCategory\x12!.finance.v1.DeleteCategoryRequest\x1a\".finance.v1.DeleteCategoryResponse\x12i\n" +
+	"\x14ListSystemCategories\x12'.finance.v1.ListSystemCategoriesRequest\x1a(.finance.v1.ListSystemCategoriesResponse\x12i\n" +
+	"\x14CreateSystemCategory\x12'.finance.v1.CreateSystemCategoryRequest\x1a(.finance.v1.CreateSystemCategoryResponse\x12i\n" +
+	"\x14UpdateSystemCategory\x12'.finance.v1.UpdateSystemCategoryRequest\x1a(.finance.v1.UpdateSystemCategoryResponse\x12i\n" +
+	"\x14DeleteSystemCategory\x12'.finance.v1.DeleteSystemCategoryRequest\x1a(.finance.v1.DeleteSystemCategoryResponse2\xec\x04\n" +
 	"\x12TransactionService\x12]\n" +
 	"\x10ListTransactions\x12#.finance.v1.ListTransactionsRequest\x1a$.finance.v1.ListTransactionsResponse\x12`\n" +
 	"\x11CreateTransaction\x12$.finance.v1.CreateTransactionRequest\x1a%.finance.v1.CreateTransactionResponse\x12`\n" +
@@ -4433,7 +5419,7 @@ func file_finance_v1_finance_proto_rawDescGZIP() []byte {
 	return file_finance_v1_finance_proto_rawDescData
 }
 
-var file_finance_v1_finance_proto_msgTypes = make([]protoimpl.MessageInfo, 69)
+var file_finance_v1_finance_proto_msgTypes = make([]protoimpl.MessageInfo, 83)
 var file_finance_v1_finance_proto_goTypes = []any{
 	(*Wallet)(nil),                       // 0: finance.v1.Wallet
 	(*Icon)(nil),                         // 1: finance.v1.Icon
@@ -4456,147 +5442,182 @@ var file_finance_v1_finance_proto_goTypes = []any{
 	(*DeleteWalletResponse)(nil),         // 18: finance.v1.DeleteWalletResponse
 	(*ListIconsRequest)(nil),             // 19: finance.v1.ListIconsRequest
 	(*ListIconsResponse)(nil),            // 20: finance.v1.ListIconsResponse
-	(*ListCategoriesRequest)(nil),        // 21: finance.v1.ListCategoriesRequest
-	(*ListCategoriesResponse)(nil),       // 22: finance.v1.ListCategoriesResponse
-	(*CreateCategoryRequest)(nil),        // 23: finance.v1.CreateCategoryRequest
-	(*CreateCategoryResponse)(nil),       // 24: finance.v1.CreateCategoryResponse
-	(*UpdateCategoryRequest)(nil),        // 25: finance.v1.UpdateCategoryRequest
-	(*UpdateCategoryResponse)(nil),       // 26: finance.v1.UpdateCategoryResponse
-	(*DeleteCategoryRequest)(nil),        // 27: finance.v1.DeleteCategoryRequest
-	(*DeleteCategoryResponse)(nil),       // 28: finance.v1.DeleteCategoryResponse
-	(*ListTransactionsRequest)(nil),      // 29: finance.v1.ListTransactionsRequest
-	(*ListTransactionsResponse)(nil),     // 30: finance.v1.ListTransactionsResponse
-	(*CreateTransactionRequest)(nil),     // 31: finance.v1.CreateTransactionRequest
-	(*CreateTransactionResponse)(nil),    // 32: finance.v1.CreateTransactionResponse
-	(*UpdateTransactionRequest)(nil),     // 33: finance.v1.UpdateTransactionRequest
-	(*UpdateTransactionResponse)(nil),    // 34: finance.v1.UpdateTransactionResponse
-	(*DeleteTransactionRequest)(nil),     // 35: finance.v1.DeleteTransactionRequest
-	(*DeleteTransactionResponse)(nil),    // 36: finance.v1.DeleteTransactionResponse
-	(*GetLatestTransactionRequest)(nil),  // 37: finance.v1.GetLatestTransactionRequest
-	(*GetLatestTransactionResponse)(nil), // 38: finance.v1.GetLatestTransactionResponse
-	(*GetFirstTransactionRequest)(nil),   // 39: finance.v1.GetFirstTransactionRequest
-	(*GetFirstTransactionResponse)(nil),  // 40: finance.v1.GetFirstTransactionResponse
-	(*SetBudgetRequest)(nil),             // 41: finance.v1.SetBudgetRequest
-	(*SetBudgetResponse)(nil),            // 42: finance.v1.SetBudgetResponse
-	(*DeleteBudgetRequest)(nil),          // 43: finance.v1.DeleteBudgetRequest
-	(*DeleteBudgetResponse)(nil),         // 44: finance.v1.DeleteBudgetResponse
-	(*ListBudgetsRequest)(nil),           // 45: finance.v1.ListBudgetsRequest
-	(*ListBudgetsResponse)(nil),          // 46: finance.v1.ListBudgetsResponse
-	(*ListGoalsRequest)(nil),             // 47: finance.v1.ListGoalsRequest
-	(*ListGoalsResponse)(nil),            // 48: finance.v1.ListGoalsResponse
-	(*CreateGoalRequest)(nil),            // 49: finance.v1.CreateGoalRequest
-	(*CreateGoalResponse)(nil),           // 50: finance.v1.CreateGoalResponse
-	(*UpdateGoalRequest)(nil),            // 51: finance.v1.UpdateGoalRequest
-	(*UpdateGoalResponse)(nil),           // 52: finance.v1.UpdateGoalResponse
-	(*DeleteGoalRequest)(nil),            // 53: finance.v1.DeleteGoalRequest
-	(*DeleteGoalResponse)(nil),           // 54: finance.v1.DeleteGoalResponse
-	(*GetMonthlySummaryRequest)(nil),     // 55: finance.v1.GetMonthlySummaryRequest
-	(*GetMonthlySummaryResponse)(nil),    // 56: finance.v1.GetMonthlySummaryResponse
-	(*GetMonthlyTrendRequest)(nil),       // 57: finance.v1.GetMonthlyTrendRequest
-	(*GetMonthlyTrendResponse)(nil),      // 58: finance.v1.GetMonthlyTrendResponse
-	(*CreateFamilyRequest)(nil),          // 59: finance.v1.CreateFamilyRequest
-	(*CreateFamilyResponse)(nil),         // 60: finance.v1.CreateFamilyResponse
-	(*GetFamilyRequest)(nil),             // 61: finance.v1.GetFamilyRequest
-	(*GetFamilyResponse)(nil),            // 62: finance.v1.GetFamilyResponse
-	(*AddFamilyMemberRequest)(nil),       // 63: finance.v1.AddFamilyMemberRequest
-	(*AddFamilyMemberResponse)(nil),      // 64: finance.v1.AddFamilyMemberResponse
-	(*RemoveFamilyMemberRequest)(nil),    // 65: finance.v1.RemoveFamilyMemberRequest
-	(*RemoveFamilyMemberResponse)(nil),   // 66: finance.v1.RemoveFamilyMemberResponse
-	(*LeaveFamilyRequest)(nil),           // 67: finance.v1.LeaveFamilyRequest
-	(*LeaveFamilyResponse)(nil),          // 68: finance.v1.LeaveFamilyResponse
+	(*CreateIconRequest)(nil),            // 21: finance.v1.CreateIconRequest
+	(*CreateIconResponse)(nil),           // 22: finance.v1.CreateIconResponse
+	(*UpdateIconRequest)(nil),            // 23: finance.v1.UpdateIconRequest
+	(*UpdateIconResponse)(nil),           // 24: finance.v1.UpdateIconResponse
+	(*DeleteIconRequest)(nil),            // 25: finance.v1.DeleteIconRequest
+	(*DeleteIconResponse)(nil),           // 26: finance.v1.DeleteIconResponse
+	(*ListCategoriesRequest)(nil),        // 27: finance.v1.ListCategoriesRequest
+	(*ListCategoriesResponse)(nil),       // 28: finance.v1.ListCategoriesResponse
+	(*CreateCategoryRequest)(nil),        // 29: finance.v1.CreateCategoryRequest
+	(*CreateCategoryResponse)(nil),       // 30: finance.v1.CreateCategoryResponse
+	(*UpdateCategoryRequest)(nil),        // 31: finance.v1.UpdateCategoryRequest
+	(*UpdateCategoryResponse)(nil),       // 32: finance.v1.UpdateCategoryResponse
+	(*DeleteCategoryRequest)(nil),        // 33: finance.v1.DeleteCategoryRequest
+	(*DeleteCategoryResponse)(nil),       // 34: finance.v1.DeleteCategoryResponse
+	(*ListSystemCategoriesRequest)(nil),  // 35: finance.v1.ListSystemCategoriesRequest
+	(*ListSystemCategoriesResponse)(nil), // 36: finance.v1.ListSystemCategoriesResponse
+	(*CreateSystemCategoryRequest)(nil),  // 37: finance.v1.CreateSystemCategoryRequest
+	(*CreateSystemCategoryResponse)(nil), // 38: finance.v1.CreateSystemCategoryResponse
+	(*UpdateSystemCategoryRequest)(nil),  // 39: finance.v1.UpdateSystemCategoryRequest
+	(*UpdateSystemCategoryResponse)(nil), // 40: finance.v1.UpdateSystemCategoryResponse
+	(*DeleteSystemCategoryRequest)(nil),  // 41: finance.v1.DeleteSystemCategoryRequest
+	(*DeleteSystemCategoryResponse)(nil), // 42: finance.v1.DeleteSystemCategoryResponse
+	(*ListTransactionsRequest)(nil),      // 43: finance.v1.ListTransactionsRequest
+	(*ListTransactionsResponse)(nil),     // 44: finance.v1.ListTransactionsResponse
+	(*CreateTransactionRequest)(nil),     // 45: finance.v1.CreateTransactionRequest
+	(*CreateTransactionResponse)(nil),    // 46: finance.v1.CreateTransactionResponse
+	(*UpdateTransactionRequest)(nil),     // 47: finance.v1.UpdateTransactionRequest
+	(*UpdateTransactionResponse)(nil),    // 48: finance.v1.UpdateTransactionResponse
+	(*DeleteTransactionRequest)(nil),     // 49: finance.v1.DeleteTransactionRequest
+	(*DeleteTransactionResponse)(nil),    // 50: finance.v1.DeleteTransactionResponse
+	(*GetLatestTransactionRequest)(nil),  // 51: finance.v1.GetLatestTransactionRequest
+	(*GetLatestTransactionResponse)(nil), // 52: finance.v1.GetLatestTransactionResponse
+	(*GetFirstTransactionRequest)(nil),   // 53: finance.v1.GetFirstTransactionRequest
+	(*GetFirstTransactionResponse)(nil),  // 54: finance.v1.GetFirstTransactionResponse
+	(*SetBudgetRequest)(nil),             // 55: finance.v1.SetBudgetRequest
+	(*SetBudgetResponse)(nil),            // 56: finance.v1.SetBudgetResponse
+	(*DeleteBudgetRequest)(nil),          // 57: finance.v1.DeleteBudgetRequest
+	(*DeleteBudgetResponse)(nil),         // 58: finance.v1.DeleteBudgetResponse
+	(*ListBudgetsRequest)(nil),           // 59: finance.v1.ListBudgetsRequest
+	(*ListBudgetsResponse)(nil),          // 60: finance.v1.ListBudgetsResponse
+	(*ListGoalsRequest)(nil),             // 61: finance.v1.ListGoalsRequest
+	(*ListGoalsResponse)(nil),            // 62: finance.v1.ListGoalsResponse
+	(*CreateGoalRequest)(nil),            // 63: finance.v1.CreateGoalRequest
+	(*CreateGoalResponse)(nil),           // 64: finance.v1.CreateGoalResponse
+	(*UpdateGoalRequest)(nil),            // 65: finance.v1.UpdateGoalRequest
+	(*UpdateGoalResponse)(nil),           // 66: finance.v1.UpdateGoalResponse
+	(*DeleteGoalRequest)(nil),            // 67: finance.v1.DeleteGoalRequest
+	(*DeleteGoalResponse)(nil),           // 68: finance.v1.DeleteGoalResponse
+	(*GetMonthlySummaryRequest)(nil),     // 69: finance.v1.GetMonthlySummaryRequest
+	(*GetMonthlySummaryResponse)(nil),    // 70: finance.v1.GetMonthlySummaryResponse
+	(*GetMonthlyTrendRequest)(nil),       // 71: finance.v1.GetMonthlyTrendRequest
+	(*GetMonthlyTrendResponse)(nil),      // 72: finance.v1.GetMonthlyTrendResponse
+	(*CreateFamilyRequest)(nil),          // 73: finance.v1.CreateFamilyRequest
+	(*CreateFamilyResponse)(nil),         // 74: finance.v1.CreateFamilyResponse
+	(*GetFamilyRequest)(nil),             // 75: finance.v1.GetFamilyRequest
+	(*GetFamilyResponse)(nil),            // 76: finance.v1.GetFamilyResponse
+	(*AddFamilyMemberRequest)(nil),       // 77: finance.v1.AddFamilyMemberRequest
+	(*AddFamilyMemberResponse)(nil),      // 78: finance.v1.AddFamilyMemberResponse
+	(*RemoveFamilyMemberRequest)(nil),    // 79: finance.v1.RemoveFamilyMemberRequest
+	(*RemoveFamilyMemberResponse)(nil),   // 80: finance.v1.RemoveFamilyMemberResponse
+	(*LeaveFamilyRequest)(nil),           // 81: finance.v1.LeaveFamilyRequest
+	(*LeaveFamilyResponse)(nil),          // 82: finance.v1.LeaveFamilyResponse
 }
 var file_finance_v1_finance_proto_depIdxs = []int32{
-	2,  // 0: finance.v1.Transaction.category:type_name -> finance.v1.Category
-	0,  // 1: finance.v1.Transaction.wallet:type_name -> finance.v1.Wallet
-	2,  // 2: finance.v1.Budget.category:type_name -> finance.v1.Category
-	7,  // 3: finance.v1.Family.members:type_name -> finance.v1.FamilyMember
-	8,  // 4: finance.v1.MonthlySummary.expense_breakdown:type_name -> finance.v1.CategoryBreakdown
-	8,  // 5: finance.v1.MonthlySummary.income_breakdown:type_name -> finance.v1.CategoryBreakdown
-	0,  // 6: finance.v1.ListWalletsResponse.wallets:type_name -> finance.v1.Wallet
-	0,  // 7: finance.v1.CreateWalletResponse.wallet:type_name -> finance.v1.Wallet
-	0,  // 8: finance.v1.UpdateWalletResponse.wallet:type_name -> finance.v1.Wallet
-	1,  // 9: finance.v1.ListIconsResponse.icons:type_name -> finance.v1.Icon
-	2,  // 10: finance.v1.ListCategoriesResponse.categories:type_name -> finance.v1.Category
-	2,  // 11: finance.v1.CreateCategoryResponse.category:type_name -> finance.v1.Category
-	2,  // 12: finance.v1.UpdateCategoryResponse.category:type_name -> finance.v1.Category
-	3,  // 13: finance.v1.ListTransactionsResponse.transactions:type_name -> finance.v1.Transaction
-	3,  // 14: finance.v1.CreateTransactionResponse.transaction:type_name -> finance.v1.Transaction
-	3,  // 15: finance.v1.UpdateTransactionResponse.transaction:type_name -> finance.v1.Transaction
-	3,  // 16: finance.v1.GetLatestTransactionResponse.transaction:type_name -> finance.v1.Transaction
-	3,  // 17: finance.v1.GetFirstTransactionResponse.transaction:type_name -> finance.v1.Transaction
-	4,  // 18: finance.v1.SetBudgetResponse.budget:type_name -> finance.v1.Budget
-	4,  // 19: finance.v1.ListBudgetsResponse.budgets:type_name -> finance.v1.Budget
-	5,  // 20: finance.v1.ListGoalsResponse.goals:type_name -> finance.v1.Goal
-	5,  // 21: finance.v1.CreateGoalResponse.goal:type_name -> finance.v1.Goal
-	5,  // 22: finance.v1.UpdateGoalResponse.goal:type_name -> finance.v1.Goal
-	9,  // 23: finance.v1.GetMonthlySummaryResponse.summary:type_name -> finance.v1.MonthlySummary
-	10, // 24: finance.v1.GetMonthlyTrendResponse.items:type_name -> finance.v1.MonthlyTrendItem
-	6,  // 25: finance.v1.CreateFamilyResponse.family:type_name -> finance.v1.Family
-	6,  // 26: finance.v1.GetFamilyResponse.family:type_name -> finance.v1.Family
-	7,  // 27: finance.v1.AddFamilyMemberResponse.member:type_name -> finance.v1.FamilyMember
-	11, // 28: finance.v1.WalletService.ListWallets:input_type -> finance.v1.ListWalletsRequest
-	13, // 29: finance.v1.WalletService.CreateWallet:input_type -> finance.v1.CreateWalletRequest
-	15, // 30: finance.v1.WalletService.UpdateWallet:input_type -> finance.v1.UpdateWalletRequest
-	17, // 31: finance.v1.WalletService.DeleteWallet:input_type -> finance.v1.DeleteWalletRequest
-	19, // 32: finance.v1.IconService.ListIcons:input_type -> finance.v1.ListIconsRequest
-	21, // 33: finance.v1.CategoryService.ListCategories:input_type -> finance.v1.ListCategoriesRequest
-	23, // 34: finance.v1.CategoryService.CreateCategory:input_type -> finance.v1.CreateCategoryRequest
-	25, // 35: finance.v1.CategoryService.UpdateCategory:input_type -> finance.v1.UpdateCategoryRequest
-	27, // 36: finance.v1.CategoryService.DeleteCategory:input_type -> finance.v1.DeleteCategoryRequest
-	29, // 37: finance.v1.TransactionService.ListTransactions:input_type -> finance.v1.ListTransactionsRequest
-	31, // 38: finance.v1.TransactionService.CreateTransaction:input_type -> finance.v1.CreateTransactionRequest
-	33, // 39: finance.v1.TransactionService.UpdateTransaction:input_type -> finance.v1.UpdateTransactionRequest
-	35, // 40: finance.v1.TransactionService.DeleteTransaction:input_type -> finance.v1.DeleteTransactionRequest
-	37, // 41: finance.v1.TransactionService.GetLatestTransaction:input_type -> finance.v1.GetLatestTransactionRequest
-	39, // 42: finance.v1.TransactionService.GetFirstTransaction:input_type -> finance.v1.GetFirstTransactionRequest
-	41, // 43: finance.v1.BudgetService.SetBudget:input_type -> finance.v1.SetBudgetRequest
-	43, // 44: finance.v1.BudgetService.DeleteBudget:input_type -> finance.v1.DeleteBudgetRequest
-	45, // 45: finance.v1.BudgetService.ListBudgets:input_type -> finance.v1.ListBudgetsRequest
-	47, // 46: finance.v1.GoalService.ListGoals:input_type -> finance.v1.ListGoalsRequest
-	49, // 47: finance.v1.GoalService.CreateGoal:input_type -> finance.v1.CreateGoalRequest
-	51, // 48: finance.v1.GoalService.UpdateGoal:input_type -> finance.v1.UpdateGoalRequest
-	53, // 49: finance.v1.GoalService.DeleteGoal:input_type -> finance.v1.DeleteGoalRequest
-	55, // 50: finance.v1.AnalyticsService.GetMonthlySummary:input_type -> finance.v1.GetMonthlySummaryRequest
-	57, // 51: finance.v1.AnalyticsService.GetMonthlyTrend:input_type -> finance.v1.GetMonthlyTrendRequest
-	59, // 52: finance.v1.FamilyService.CreateFamily:input_type -> finance.v1.CreateFamilyRequest
-	61, // 53: finance.v1.FamilyService.GetFamily:input_type -> finance.v1.GetFamilyRequest
-	63, // 54: finance.v1.FamilyService.AddFamilyMember:input_type -> finance.v1.AddFamilyMemberRequest
-	65, // 55: finance.v1.FamilyService.RemoveFamilyMember:input_type -> finance.v1.RemoveFamilyMemberRequest
-	67, // 56: finance.v1.FamilyService.LeaveFamily:input_type -> finance.v1.LeaveFamilyRequest
-	12, // 57: finance.v1.WalletService.ListWallets:output_type -> finance.v1.ListWalletsResponse
-	14, // 58: finance.v1.WalletService.CreateWallet:output_type -> finance.v1.CreateWalletResponse
-	16, // 59: finance.v1.WalletService.UpdateWallet:output_type -> finance.v1.UpdateWalletResponse
-	18, // 60: finance.v1.WalletService.DeleteWallet:output_type -> finance.v1.DeleteWalletResponse
-	20, // 61: finance.v1.IconService.ListIcons:output_type -> finance.v1.ListIconsResponse
-	22, // 62: finance.v1.CategoryService.ListCategories:output_type -> finance.v1.ListCategoriesResponse
-	24, // 63: finance.v1.CategoryService.CreateCategory:output_type -> finance.v1.CreateCategoryResponse
-	26, // 64: finance.v1.CategoryService.UpdateCategory:output_type -> finance.v1.UpdateCategoryResponse
-	28, // 65: finance.v1.CategoryService.DeleteCategory:output_type -> finance.v1.DeleteCategoryResponse
-	30, // 66: finance.v1.TransactionService.ListTransactions:output_type -> finance.v1.ListTransactionsResponse
-	32, // 67: finance.v1.TransactionService.CreateTransaction:output_type -> finance.v1.CreateTransactionResponse
-	34, // 68: finance.v1.TransactionService.UpdateTransaction:output_type -> finance.v1.UpdateTransactionResponse
-	36, // 69: finance.v1.TransactionService.DeleteTransaction:output_type -> finance.v1.DeleteTransactionResponse
-	38, // 70: finance.v1.TransactionService.GetLatestTransaction:output_type -> finance.v1.GetLatestTransactionResponse
-	40, // 71: finance.v1.TransactionService.GetFirstTransaction:output_type -> finance.v1.GetFirstTransactionResponse
-	42, // 72: finance.v1.BudgetService.SetBudget:output_type -> finance.v1.SetBudgetResponse
-	44, // 73: finance.v1.BudgetService.DeleteBudget:output_type -> finance.v1.DeleteBudgetResponse
-	46, // 74: finance.v1.BudgetService.ListBudgets:output_type -> finance.v1.ListBudgetsResponse
-	48, // 75: finance.v1.GoalService.ListGoals:output_type -> finance.v1.ListGoalsResponse
-	50, // 76: finance.v1.GoalService.CreateGoal:output_type -> finance.v1.CreateGoalResponse
-	52, // 77: finance.v1.GoalService.UpdateGoal:output_type -> finance.v1.UpdateGoalResponse
-	54, // 78: finance.v1.GoalService.DeleteGoal:output_type -> finance.v1.DeleteGoalResponse
-	56, // 79: finance.v1.AnalyticsService.GetMonthlySummary:output_type -> finance.v1.GetMonthlySummaryResponse
-	58, // 80: finance.v1.AnalyticsService.GetMonthlyTrend:output_type -> finance.v1.GetMonthlyTrendResponse
-	60, // 81: finance.v1.FamilyService.CreateFamily:output_type -> finance.v1.CreateFamilyResponse
-	62, // 82: finance.v1.FamilyService.GetFamily:output_type -> finance.v1.GetFamilyResponse
-	64, // 83: finance.v1.FamilyService.AddFamilyMember:output_type -> finance.v1.AddFamilyMemberResponse
-	66, // 84: finance.v1.FamilyService.RemoveFamilyMember:output_type -> finance.v1.RemoveFamilyMemberResponse
-	68, // 85: finance.v1.FamilyService.LeaveFamily:output_type -> finance.v1.LeaveFamilyResponse
-	57, // [57:86] is the sub-list for method output_type
-	28, // [28:57] is the sub-list for method input_type
-	28, // [28:28] is the sub-list for extension type_name
-	28, // [28:28] is the sub-list for extension extendee
-	0,  // [0:28] is the sub-list for field type_name
+	1,  // 0: finance.v1.Wallet.icon_info:type_name -> finance.v1.Icon
+	1,  // 1: finance.v1.Category.icon_info:type_name -> finance.v1.Icon
+	2,  // 2: finance.v1.Transaction.category:type_name -> finance.v1.Category
+	0,  // 3: finance.v1.Transaction.wallet:type_name -> finance.v1.Wallet
+	2,  // 4: finance.v1.Budget.category:type_name -> finance.v1.Category
+	7,  // 5: finance.v1.Family.members:type_name -> finance.v1.FamilyMember
+	8,  // 6: finance.v1.MonthlySummary.expense_breakdown:type_name -> finance.v1.CategoryBreakdown
+	8,  // 7: finance.v1.MonthlySummary.income_breakdown:type_name -> finance.v1.CategoryBreakdown
+	0,  // 8: finance.v1.ListWalletsResponse.wallets:type_name -> finance.v1.Wallet
+	0,  // 9: finance.v1.CreateWalletResponse.wallet:type_name -> finance.v1.Wallet
+	0,  // 10: finance.v1.UpdateWalletResponse.wallet:type_name -> finance.v1.Wallet
+	1,  // 11: finance.v1.ListIconsResponse.icons:type_name -> finance.v1.Icon
+	1,  // 12: finance.v1.CreateIconResponse.icon:type_name -> finance.v1.Icon
+	1,  // 13: finance.v1.UpdateIconResponse.icon:type_name -> finance.v1.Icon
+	2,  // 14: finance.v1.ListCategoriesResponse.categories:type_name -> finance.v1.Category
+	2,  // 15: finance.v1.CreateCategoryResponse.category:type_name -> finance.v1.Category
+	2,  // 16: finance.v1.UpdateCategoryResponse.category:type_name -> finance.v1.Category
+	2,  // 17: finance.v1.ListSystemCategoriesResponse.categories:type_name -> finance.v1.Category
+	2,  // 18: finance.v1.CreateSystemCategoryResponse.category:type_name -> finance.v1.Category
+	2,  // 19: finance.v1.UpdateSystemCategoryResponse.category:type_name -> finance.v1.Category
+	3,  // 20: finance.v1.ListTransactionsResponse.transactions:type_name -> finance.v1.Transaction
+	3,  // 21: finance.v1.CreateTransactionResponse.transaction:type_name -> finance.v1.Transaction
+	3,  // 22: finance.v1.UpdateTransactionResponse.transaction:type_name -> finance.v1.Transaction
+	3,  // 23: finance.v1.GetLatestTransactionResponse.transaction:type_name -> finance.v1.Transaction
+	3,  // 24: finance.v1.GetFirstTransactionResponse.transaction:type_name -> finance.v1.Transaction
+	4,  // 25: finance.v1.SetBudgetResponse.budget:type_name -> finance.v1.Budget
+	4,  // 26: finance.v1.ListBudgetsResponse.budgets:type_name -> finance.v1.Budget
+	5,  // 27: finance.v1.ListGoalsResponse.goals:type_name -> finance.v1.Goal
+	5,  // 28: finance.v1.CreateGoalResponse.goal:type_name -> finance.v1.Goal
+	5,  // 29: finance.v1.UpdateGoalResponse.goal:type_name -> finance.v1.Goal
+	9,  // 30: finance.v1.GetMonthlySummaryResponse.summary:type_name -> finance.v1.MonthlySummary
+	10, // 31: finance.v1.GetMonthlyTrendResponse.items:type_name -> finance.v1.MonthlyTrendItem
+	6,  // 32: finance.v1.CreateFamilyResponse.family:type_name -> finance.v1.Family
+	6,  // 33: finance.v1.GetFamilyResponse.family:type_name -> finance.v1.Family
+	7,  // 34: finance.v1.AddFamilyMemberResponse.member:type_name -> finance.v1.FamilyMember
+	11, // 35: finance.v1.WalletService.ListWallets:input_type -> finance.v1.ListWalletsRequest
+	13, // 36: finance.v1.WalletService.CreateWallet:input_type -> finance.v1.CreateWalletRequest
+	15, // 37: finance.v1.WalletService.UpdateWallet:input_type -> finance.v1.UpdateWalletRequest
+	17, // 38: finance.v1.WalletService.DeleteWallet:input_type -> finance.v1.DeleteWalletRequest
+	19, // 39: finance.v1.IconService.ListIcons:input_type -> finance.v1.ListIconsRequest
+	21, // 40: finance.v1.IconService.CreateIcon:input_type -> finance.v1.CreateIconRequest
+	23, // 41: finance.v1.IconService.UpdateIcon:input_type -> finance.v1.UpdateIconRequest
+	25, // 42: finance.v1.IconService.DeleteIcon:input_type -> finance.v1.DeleteIconRequest
+	27, // 43: finance.v1.CategoryService.ListCategories:input_type -> finance.v1.ListCategoriesRequest
+	29, // 44: finance.v1.CategoryService.CreateCategory:input_type -> finance.v1.CreateCategoryRequest
+	31, // 45: finance.v1.CategoryService.UpdateCategory:input_type -> finance.v1.UpdateCategoryRequest
+	33, // 46: finance.v1.CategoryService.DeleteCategory:input_type -> finance.v1.DeleteCategoryRequest
+	35, // 47: finance.v1.CategoryService.ListSystemCategories:input_type -> finance.v1.ListSystemCategoriesRequest
+	37, // 48: finance.v1.CategoryService.CreateSystemCategory:input_type -> finance.v1.CreateSystemCategoryRequest
+	39, // 49: finance.v1.CategoryService.UpdateSystemCategory:input_type -> finance.v1.UpdateSystemCategoryRequest
+	41, // 50: finance.v1.CategoryService.DeleteSystemCategory:input_type -> finance.v1.DeleteSystemCategoryRequest
+	43, // 51: finance.v1.TransactionService.ListTransactions:input_type -> finance.v1.ListTransactionsRequest
+	45, // 52: finance.v1.TransactionService.CreateTransaction:input_type -> finance.v1.CreateTransactionRequest
+	47, // 53: finance.v1.TransactionService.UpdateTransaction:input_type -> finance.v1.UpdateTransactionRequest
+	49, // 54: finance.v1.TransactionService.DeleteTransaction:input_type -> finance.v1.DeleteTransactionRequest
+	51, // 55: finance.v1.TransactionService.GetLatestTransaction:input_type -> finance.v1.GetLatestTransactionRequest
+	53, // 56: finance.v1.TransactionService.GetFirstTransaction:input_type -> finance.v1.GetFirstTransactionRequest
+	55, // 57: finance.v1.BudgetService.SetBudget:input_type -> finance.v1.SetBudgetRequest
+	57, // 58: finance.v1.BudgetService.DeleteBudget:input_type -> finance.v1.DeleteBudgetRequest
+	59, // 59: finance.v1.BudgetService.ListBudgets:input_type -> finance.v1.ListBudgetsRequest
+	61, // 60: finance.v1.GoalService.ListGoals:input_type -> finance.v1.ListGoalsRequest
+	63, // 61: finance.v1.GoalService.CreateGoal:input_type -> finance.v1.CreateGoalRequest
+	65, // 62: finance.v1.GoalService.UpdateGoal:input_type -> finance.v1.UpdateGoalRequest
+	67, // 63: finance.v1.GoalService.DeleteGoal:input_type -> finance.v1.DeleteGoalRequest
+	69, // 64: finance.v1.AnalyticsService.GetMonthlySummary:input_type -> finance.v1.GetMonthlySummaryRequest
+	71, // 65: finance.v1.AnalyticsService.GetMonthlyTrend:input_type -> finance.v1.GetMonthlyTrendRequest
+	73, // 66: finance.v1.FamilyService.CreateFamily:input_type -> finance.v1.CreateFamilyRequest
+	75, // 67: finance.v1.FamilyService.GetFamily:input_type -> finance.v1.GetFamilyRequest
+	77, // 68: finance.v1.FamilyService.AddFamilyMember:input_type -> finance.v1.AddFamilyMemberRequest
+	79, // 69: finance.v1.FamilyService.RemoveFamilyMember:input_type -> finance.v1.RemoveFamilyMemberRequest
+	81, // 70: finance.v1.FamilyService.LeaveFamily:input_type -> finance.v1.LeaveFamilyRequest
+	12, // 71: finance.v1.WalletService.ListWallets:output_type -> finance.v1.ListWalletsResponse
+	14, // 72: finance.v1.WalletService.CreateWallet:output_type -> finance.v1.CreateWalletResponse
+	16, // 73: finance.v1.WalletService.UpdateWallet:output_type -> finance.v1.UpdateWalletResponse
+	18, // 74: finance.v1.WalletService.DeleteWallet:output_type -> finance.v1.DeleteWalletResponse
+	20, // 75: finance.v1.IconService.ListIcons:output_type -> finance.v1.ListIconsResponse
+	22, // 76: finance.v1.IconService.CreateIcon:output_type -> finance.v1.CreateIconResponse
+	24, // 77: finance.v1.IconService.UpdateIcon:output_type -> finance.v1.UpdateIconResponse
+	26, // 78: finance.v1.IconService.DeleteIcon:output_type -> finance.v1.DeleteIconResponse
+	28, // 79: finance.v1.CategoryService.ListCategories:output_type -> finance.v1.ListCategoriesResponse
+	30, // 80: finance.v1.CategoryService.CreateCategory:output_type -> finance.v1.CreateCategoryResponse
+	32, // 81: finance.v1.CategoryService.UpdateCategory:output_type -> finance.v1.UpdateCategoryResponse
+	34, // 82: finance.v1.CategoryService.DeleteCategory:output_type -> finance.v1.DeleteCategoryResponse
+	36, // 83: finance.v1.CategoryService.ListSystemCategories:output_type -> finance.v1.ListSystemCategoriesResponse
+	38, // 84: finance.v1.CategoryService.CreateSystemCategory:output_type -> finance.v1.CreateSystemCategoryResponse
+	40, // 85: finance.v1.CategoryService.UpdateSystemCategory:output_type -> finance.v1.UpdateSystemCategoryResponse
+	42, // 86: finance.v1.CategoryService.DeleteSystemCategory:output_type -> finance.v1.DeleteSystemCategoryResponse
+	44, // 87: finance.v1.TransactionService.ListTransactions:output_type -> finance.v1.ListTransactionsResponse
+	46, // 88: finance.v1.TransactionService.CreateTransaction:output_type -> finance.v1.CreateTransactionResponse
+	48, // 89: finance.v1.TransactionService.UpdateTransaction:output_type -> finance.v1.UpdateTransactionResponse
+	50, // 90: finance.v1.TransactionService.DeleteTransaction:output_type -> finance.v1.DeleteTransactionResponse
+	52, // 91: finance.v1.TransactionService.GetLatestTransaction:output_type -> finance.v1.GetLatestTransactionResponse
+	54, // 92: finance.v1.TransactionService.GetFirstTransaction:output_type -> finance.v1.GetFirstTransactionResponse
+	56, // 93: finance.v1.BudgetService.SetBudget:output_type -> finance.v1.SetBudgetResponse
+	58, // 94: finance.v1.BudgetService.DeleteBudget:output_type -> finance.v1.DeleteBudgetResponse
+	60, // 95: finance.v1.BudgetService.ListBudgets:output_type -> finance.v1.ListBudgetsResponse
+	62, // 96: finance.v1.GoalService.ListGoals:output_type -> finance.v1.ListGoalsResponse
+	64, // 97: finance.v1.GoalService.CreateGoal:output_type -> finance.v1.CreateGoalResponse
+	66, // 98: finance.v1.GoalService.UpdateGoal:output_type -> finance.v1.UpdateGoalResponse
+	68, // 99: finance.v1.GoalService.DeleteGoal:output_type -> finance.v1.DeleteGoalResponse
+	70, // 100: finance.v1.AnalyticsService.GetMonthlySummary:output_type -> finance.v1.GetMonthlySummaryResponse
+	72, // 101: finance.v1.AnalyticsService.GetMonthlyTrend:output_type -> finance.v1.GetMonthlyTrendResponse
+	74, // 102: finance.v1.FamilyService.CreateFamily:output_type -> finance.v1.CreateFamilyResponse
+	76, // 103: finance.v1.FamilyService.GetFamily:output_type -> finance.v1.GetFamilyResponse
+	78, // 104: finance.v1.FamilyService.AddFamilyMember:output_type -> finance.v1.AddFamilyMemberResponse
+	80, // 105: finance.v1.FamilyService.RemoveFamilyMember:output_type -> finance.v1.RemoveFamilyMemberResponse
+	82, // 106: finance.v1.FamilyService.LeaveFamily:output_type -> finance.v1.LeaveFamilyResponse
+	71, // [71:107] is the sub-list for method output_type
+	35, // [35:71] is the sub-list for method input_type
+	35, // [35:35] is the sub-list for extension type_name
+	35, // [35:35] is the sub-list for extension extendee
+	0,  // [0:35] is the sub-list for field type_name
 }
 
 func init() { file_finance_v1_finance_proto_init() }
@@ -4604,15 +5625,22 @@ func file_finance_v1_finance_proto_init() {
 	if File_finance_v1_finance_proto != nil {
 		return
 	}
+	file_finance_v1_finance_proto_msgTypes[0].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[2].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[13].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[15].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[27].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[29].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[31].OneofWrappers = []any{}
-	file_finance_v1_finance_proto_msgTypes[33].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[45].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[47].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finance_v1_finance_proto_rawDesc), len(file_finance_v1_finance_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   69,
+			NumMessages:   83,
 			NumExtensions: 0,
 			NumServices:   8,
 		},

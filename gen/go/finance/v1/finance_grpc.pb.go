@@ -235,7 +235,10 @@ var WalletService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	IconService_ListIcons_FullMethodName = "/finance.v1.IconService/ListIcons"
+	IconService_ListIcons_FullMethodName  = "/finance.v1.IconService/ListIcons"
+	IconService_CreateIcon_FullMethodName = "/finance.v1.IconService/CreateIcon"
+	IconService_UpdateIcon_FullMethodName = "/finance.v1.IconService/UpdateIcon"
+	IconService_DeleteIcon_FullMethodName = "/finance.v1.IconService/DeleteIcon"
 )
 
 // IconServiceClient is the client API for IconService service.
@@ -243,6 +246,9 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type IconServiceClient interface {
 	ListIcons(ctx context.Context, in *ListIconsRequest, opts ...grpc.CallOption) (*ListIconsResponse, error)
+	CreateIcon(ctx context.Context, in *CreateIconRequest, opts ...grpc.CallOption) (*CreateIconResponse, error)
+	UpdateIcon(ctx context.Context, in *UpdateIconRequest, opts ...grpc.CallOption) (*UpdateIconResponse, error)
+	DeleteIcon(ctx context.Context, in *DeleteIconRequest, opts ...grpc.CallOption) (*DeleteIconResponse, error)
 }
 
 type iconServiceClient struct {
@@ -263,11 +269,44 @@ func (c *iconServiceClient) ListIcons(ctx context.Context, in *ListIconsRequest,
 	return out, nil
 }
 
+func (c *iconServiceClient) CreateIcon(ctx context.Context, in *CreateIconRequest, opts ...grpc.CallOption) (*CreateIconResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateIconResponse)
+	err := c.cc.Invoke(ctx, IconService_CreateIcon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iconServiceClient) UpdateIcon(ctx context.Context, in *UpdateIconRequest, opts ...grpc.CallOption) (*UpdateIconResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateIconResponse)
+	err := c.cc.Invoke(ctx, IconService_UpdateIcon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *iconServiceClient) DeleteIcon(ctx context.Context, in *DeleteIconRequest, opts ...grpc.CallOption) (*DeleteIconResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteIconResponse)
+	err := c.cc.Invoke(ctx, IconService_DeleteIcon_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IconServiceServer is the server API for IconService service.
 // All implementations must embed UnimplementedIconServiceServer
 // for forward compatibility.
 type IconServiceServer interface {
 	ListIcons(context.Context, *ListIconsRequest) (*ListIconsResponse, error)
+	CreateIcon(context.Context, *CreateIconRequest) (*CreateIconResponse, error)
+	UpdateIcon(context.Context, *UpdateIconRequest) (*UpdateIconResponse, error)
+	DeleteIcon(context.Context, *DeleteIconRequest) (*DeleteIconResponse, error)
 	mustEmbedUnimplementedIconServiceServer()
 }
 
@@ -280,6 +319,15 @@ type UnimplementedIconServiceServer struct{}
 
 func (UnimplementedIconServiceServer) ListIcons(context.Context, *ListIconsRequest) (*ListIconsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListIcons not implemented")
+}
+func (UnimplementedIconServiceServer) CreateIcon(context.Context, *CreateIconRequest) (*CreateIconResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateIcon not implemented")
+}
+func (UnimplementedIconServiceServer) UpdateIcon(context.Context, *UpdateIconRequest) (*UpdateIconResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateIcon not implemented")
+}
+func (UnimplementedIconServiceServer) DeleteIcon(context.Context, *DeleteIconRequest) (*DeleteIconResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteIcon not implemented")
 }
 func (UnimplementedIconServiceServer) mustEmbedUnimplementedIconServiceServer() {}
 func (UnimplementedIconServiceServer) testEmbeddedByValue()                     {}
@@ -320,6 +368,60 @@ func _IconService_ListIcons_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IconService_CreateIcon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateIconRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IconServiceServer).CreateIcon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IconService_CreateIcon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IconServiceServer).CreateIcon(ctx, req.(*CreateIconRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IconService_UpdateIcon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateIconRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IconServiceServer).UpdateIcon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IconService_UpdateIcon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IconServiceServer).UpdateIcon(ctx, req.(*UpdateIconRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IconService_DeleteIcon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteIconRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IconServiceServer).DeleteIcon(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IconService_DeleteIcon_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IconServiceServer).DeleteIcon(ctx, req.(*DeleteIconRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IconService_ServiceDesc is the grpc.ServiceDesc for IconService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -331,16 +433,32 @@ var IconService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "ListIcons",
 			Handler:    _IconService_ListIcons_Handler,
 		},
+		{
+			MethodName: "CreateIcon",
+			Handler:    _IconService_CreateIcon_Handler,
+		},
+		{
+			MethodName: "UpdateIcon",
+			Handler:    _IconService_UpdateIcon_Handler,
+		},
+		{
+			MethodName: "DeleteIcon",
+			Handler:    _IconService_DeleteIcon_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "finance/v1/finance.proto",
 }
 
 const (
-	CategoryService_ListCategories_FullMethodName = "/finance.v1.CategoryService/ListCategories"
-	CategoryService_CreateCategory_FullMethodName = "/finance.v1.CategoryService/CreateCategory"
-	CategoryService_UpdateCategory_FullMethodName = "/finance.v1.CategoryService/UpdateCategory"
-	CategoryService_DeleteCategory_FullMethodName = "/finance.v1.CategoryService/DeleteCategory"
+	CategoryService_ListCategories_FullMethodName       = "/finance.v1.CategoryService/ListCategories"
+	CategoryService_CreateCategory_FullMethodName       = "/finance.v1.CategoryService/CreateCategory"
+	CategoryService_UpdateCategory_FullMethodName       = "/finance.v1.CategoryService/UpdateCategory"
+	CategoryService_DeleteCategory_FullMethodName       = "/finance.v1.CategoryService/DeleteCategory"
+	CategoryService_ListSystemCategories_FullMethodName = "/finance.v1.CategoryService/ListSystemCategories"
+	CategoryService_CreateSystemCategory_FullMethodName = "/finance.v1.CategoryService/CreateSystemCategory"
+	CategoryService_UpdateSystemCategory_FullMethodName = "/finance.v1.CategoryService/UpdateSystemCategory"
+	CategoryService_DeleteSystemCategory_FullMethodName = "/finance.v1.CategoryService/DeleteSystemCategory"
 )
 
 // CategoryServiceClient is the client API for CategoryService service.
@@ -351,6 +469,11 @@ type CategoryServiceClient interface {
 	CreateCategory(ctx context.Context, in *CreateCategoryRequest, opts ...grpc.CallOption) (*CreateCategoryResponse, error)
 	UpdateCategory(ctx context.Context, in *UpdateCategoryRequest, opts ...grpc.CallOption) (*UpdateCategoryResponse, error)
 	DeleteCategory(ctx context.Context, in *DeleteCategoryRequest, opts ...grpc.CallOption) (*DeleteCategoryResponse, error)
+	// Admin RPCs — require finance_admin permission at the gateway level
+	ListSystemCategories(ctx context.Context, in *ListSystemCategoriesRequest, opts ...grpc.CallOption) (*ListSystemCategoriesResponse, error)
+	CreateSystemCategory(ctx context.Context, in *CreateSystemCategoryRequest, opts ...grpc.CallOption) (*CreateSystemCategoryResponse, error)
+	UpdateSystemCategory(ctx context.Context, in *UpdateSystemCategoryRequest, opts ...grpc.CallOption) (*UpdateSystemCategoryResponse, error)
+	DeleteSystemCategory(ctx context.Context, in *DeleteSystemCategoryRequest, opts ...grpc.CallOption) (*DeleteSystemCategoryResponse, error)
 }
 
 type categoryServiceClient struct {
@@ -401,6 +524,46 @@ func (c *categoryServiceClient) DeleteCategory(ctx context.Context, in *DeleteCa
 	return out, nil
 }
 
+func (c *categoryServiceClient) ListSystemCategories(ctx context.Context, in *ListSystemCategoriesRequest, opts ...grpc.CallOption) (*ListSystemCategoriesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSystemCategoriesResponse)
+	err := c.cc.Invoke(ctx, CategoryService_ListSystemCategories_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *categoryServiceClient) CreateSystemCategory(ctx context.Context, in *CreateSystemCategoryRequest, opts ...grpc.CallOption) (*CreateSystemCategoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateSystemCategoryResponse)
+	err := c.cc.Invoke(ctx, CategoryService_CreateSystemCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *categoryServiceClient) UpdateSystemCategory(ctx context.Context, in *UpdateSystemCategoryRequest, opts ...grpc.CallOption) (*UpdateSystemCategoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateSystemCategoryResponse)
+	err := c.cc.Invoke(ctx, CategoryService_UpdateSystemCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *categoryServiceClient) DeleteSystemCategory(ctx context.Context, in *DeleteSystemCategoryRequest, opts ...grpc.CallOption) (*DeleteSystemCategoryResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteSystemCategoryResponse)
+	err := c.cc.Invoke(ctx, CategoryService_DeleteSystemCategory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CategoryServiceServer is the server API for CategoryService service.
 // All implementations must embed UnimplementedCategoryServiceServer
 // for forward compatibility.
@@ -409,6 +572,11 @@ type CategoryServiceServer interface {
 	CreateCategory(context.Context, *CreateCategoryRequest) (*CreateCategoryResponse, error)
 	UpdateCategory(context.Context, *UpdateCategoryRequest) (*UpdateCategoryResponse, error)
 	DeleteCategory(context.Context, *DeleteCategoryRequest) (*DeleteCategoryResponse, error)
+	// Admin RPCs — require finance_admin permission at the gateway level
+	ListSystemCategories(context.Context, *ListSystemCategoriesRequest) (*ListSystemCategoriesResponse, error)
+	CreateSystemCategory(context.Context, *CreateSystemCategoryRequest) (*CreateSystemCategoryResponse, error)
+	UpdateSystemCategory(context.Context, *UpdateSystemCategoryRequest) (*UpdateSystemCategoryResponse, error)
+	DeleteSystemCategory(context.Context, *DeleteSystemCategoryRequest) (*DeleteSystemCategoryResponse, error)
 	mustEmbedUnimplementedCategoryServiceServer()
 }
 
@@ -430,6 +598,18 @@ func (UnimplementedCategoryServiceServer) UpdateCategory(context.Context, *Updat
 }
 func (UnimplementedCategoryServiceServer) DeleteCategory(context.Context, *DeleteCategoryRequest) (*DeleteCategoryResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteCategory not implemented")
+}
+func (UnimplementedCategoryServiceServer) ListSystemCategories(context.Context, *ListSystemCategoriesRequest) (*ListSystemCategoriesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListSystemCategories not implemented")
+}
+func (UnimplementedCategoryServiceServer) CreateSystemCategory(context.Context, *CreateSystemCategoryRequest) (*CreateSystemCategoryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateSystemCategory not implemented")
+}
+func (UnimplementedCategoryServiceServer) UpdateSystemCategory(context.Context, *UpdateSystemCategoryRequest) (*UpdateSystemCategoryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateSystemCategory not implemented")
+}
+func (UnimplementedCategoryServiceServer) DeleteSystemCategory(context.Context, *DeleteSystemCategoryRequest) (*DeleteSystemCategoryResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteSystemCategory not implemented")
 }
 func (UnimplementedCategoryServiceServer) mustEmbedUnimplementedCategoryServiceServer() {}
 func (UnimplementedCategoryServiceServer) testEmbeddedByValue()                         {}
@@ -524,6 +704,78 @@ func _CategoryService_DeleteCategory_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CategoryService_ListSystemCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSystemCategoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CategoryServiceServer).ListSystemCategories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CategoryService_ListSystemCategories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CategoryServiceServer).ListSystemCategories(ctx, req.(*ListSystemCategoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CategoryService_CreateSystemCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateSystemCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CategoryServiceServer).CreateSystemCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CategoryService_CreateSystemCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CategoryServiceServer).CreateSystemCategory(ctx, req.(*CreateSystemCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CategoryService_UpdateSystemCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSystemCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CategoryServiceServer).UpdateSystemCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CategoryService_UpdateSystemCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CategoryServiceServer).UpdateSystemCategory(ctx, req.(*UpdateSystemCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CategoryService_DeleteSystemCategory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSystemCategoryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CategoryServiceServer).DeleteSystemCategory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CategoryService_DeleteSystemCategory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CategoryServiceServer).DeleteSystemCategory(ctx, req.(*DeleteSystemCategoryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CategoryService_ServiceDesc is the grpc.ServiceDesc for CategoryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -546,6 +798,22 @@ var CategoryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteCategory",
 			Handler:    _CategoryService_DeleteCategory_Handler,
+		},
+		{
+			MethodName: "ListSystemCategories",
+			Handler:    _CategoryService_ListSystemCategories_Handler,
+		},
+		{
+			MethodName: "CreateSystemCategory",
+			Handler:    _CategoryService_CreateSystemCategory_Handler,
+		},
+		{
+			MethodName: "UpdateSystemCategory",
+			Handler:    _CategoryService_UpdateSystemCategory_Handler,
+		},
+		{
+			MethodName: "DeleteSystemCategory",
+			Handler:    _CategoryService_DeleteSystemCategory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
