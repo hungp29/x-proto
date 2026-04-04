@@ -35,6 +35,12 @@ message Icon {
   string value    = 3;
 }
 
+enum TransactionStatus {
+  TRANSACTION_STATUS_UNSPECIFIED = 0;
+  TRANSACTION_STATUS_POSTED = 1;
+  TRANSACTION_STATUS_SCHEDULED = 2;
+}
+
 message Category {
   string id        = 1;
   string user_id   = 2; // empty = system default or family category
@@ -66,6 +72,52 @@ message Transaction {
   Wallet   wallet   = 12;
   // Optional link to a savings/debt-payoff goal
   string goal_id = 13;
+  TransactionStatus status = 14;
+  string execute_at = 15; // RFC3339 nanoseconds, UTC; when the row becomes due
+  // Credit / transfer metadata (empty when not applicable)
+  string subtype    = 16; // purchase | payment | refund | fee | interest | adjustment
+  string transfer_id = 17;
+  string transfer_leg = 18; // out | in for paired transfer rows
+  // Linked refund: points to the original purchase row (empty for normal rows)
+  string reference_transaction_id = 19;
+  // Set only when the client supplied an idempotency key on create (empty otherwise)
+  string idempotency_key = 20;
+  // Populated when the row was closed into an immutable credit statement snapshot.
+  optional string statement_id = 21;
+  // True when statement_id references a closed credit statement (balance edits become adjustments).
+  bool belongs_to_closed_statement = 22;
+  // Credit-card trả góp: scheduled/purchase legs reference the plan; empty when not installment-related.
+  optional string installment_id = 23;
+  optional int32 installment_seq = 24;
+  // True when this posted purchase was converted into an installment plan.
+  bool is_converted_to_installment = 25;
+  // Engine-created rows (installment reversal, installment payments).
+  bool is_system_generated = 26;
+  // installment_adjustment | installment_payment | empty for user rows
+  string system_type = 27;
+}
+
+message TransactionPermissions {
+  bool can_edit = 1;
+  bool can_delete = 2;
+  // Empty when mutable. Otherwise: IN_STATEMENT | INSTALLMENT_ADJUSTMENT | SYSTEM_GENERATED
+  string reason = 3;
+}
+
+message CreditInstallment {
+  string id                         = 1;
+  string user_id                    = 2;
+  string wallet_id                  = 3;
+  string original_transaction_id    = 4;
+  string total_amount               = 5;
+  int32  months                     = 6;
+  string monthly_amount             = 7;
+  string interest_rate              = 8;
+  string fee                        = 9;
+  string start_date                 = 10; // YYYY-MM-DD
+  string created_at                 = 11;
+  int32  scheduled_remaining        = 12;
+  int32  posted_legs                = 13;
 }
 
 message Budget {
@@ -199,6 +251,8 @@ service WalletService {
   rpc CreateWallet (CreateWalletRequest) returns (CreateWalletResponse);
   rpc UpdateWallet (UpdateWalletRequest) returns (UpdateWalletResponse);
   rpc DeleteWallet (DeleteWalletRequest) returns (DeleteWalletResponse);
+  rpc ListCreditStatements (ListCreditStatementsRequest) returns (ListCreditStatementsResponse);
+  rpc MarkStatementPaid    (MarkStatementPaidRequest)    returns (MarkStatementPaidResponse);
 }
 
 // ── IconService ───────────────────────────────────────────────────────────────
@@ -351,6 +405,8 @@ message ListTransactionsRequest {
   string wallet_id = 7;
   // Optional: "mine" = only wallets owned by caller; "shared" = only other members' non-private family wallets; empty = all visible.
   string wallet_scope = 8;
+  // Filter by posting state. UNSPECIFIED (0) = only posted (default / backward compatible).
+  TransactionStatus transaction_status = 9;
 }
 
 message ListTransactionsResponse {
@@ -366,10 +422,34 @@ message CreateTransactionRequest {
   string note             = 5;
   string transaction_date = 6; // YYYY-MM-DD
   optional string goal_id          = 7; // optional
+  // IANA timezone for classifying "today" vs future and for execute_at (e.g. Asia/Ho_Chi_Minh). Empty = UTC.
+  string user_timezone = 10;
+  string subtype = 11; // optional; credit_card: purchase, payment, refund, fee, interest
+  // Credit-card refund: must reference the original purchase; use with type=income, subtype=refund
+  string reference_transaction_id = 12;
+  // Optional; duplicate (user, key) returns the existing posted refund (same response body)
+  string idempotency_key = 13;
 }
 
 message CreateTransactionResponse {
   Transaction transaction = 1;
+  // True when a credit-card insert dated in a closed cycle was posted as a current-cycle adjustment.
+  bool applied_as_balance_adjustment = 2;
+}
+
+message GetRefundStatusRequest {
+  string transaction_id = 1; // original purchase row
+}
+
+message GetRefundStatusResponse {
+  // Absolute purchase amount (decimal string); "0" if not an eligible original
+  string original_amount = 1;
+  // Sum of posted linked refunds (income + refund + reference = this id)
+  string refunded_amount = 2;
+  // true when original is a credit-card purchase and refunded_amount < original_amount
+  bool can_refund = 3;
+  // original_amount - refunded_amount (decimal string)
+  string remaining_amount = 4;
 }
 
 message UpdateTransactionRequest {
@@ -381,10 +461,15 @@ message UpdateTransactionRequest {
   string note             = 6;
   string transaction_date = 7;
   optional string goal_id          = 8; // optional; empty string clears the link
+  string user_timezone = 9; // IANA; empty = UTC
+  string subtype = 10;
 }
 
 message UpdateTransactionResponse {
   Transaction transaction = 1;
+  // Present when the balance effect was applied as a new adjustment row (closed statement).
+  Transaction adjustment_transaction = 2;
+  bool applied_as_adjustment = 3;
 }
 
 message DeleteTransactionRequest {
@@ -392,6 +477,14 @@ message DeleteTransactionRequest {
 }
 
 message DeleteTransactionResponse {}
+
+message GetTransactionRequest {
+  string transaction_id = 1;
+}
+
+message GetTransactionResponse {
+  Transaction transaction = 1;
+}
 
 message GetLatestTransactionRequest {
   string wallet_id = 1; // optional; highest priority
@@ -413,13 +506,116 @@ message GetFirstTransactionResponse {
   Transaction transaction = 1; // null/empty when no transactions exist
 }
 
+message TransferFundsRequest {
+  string from_wallet_id   = 1;
+  string to_wallet_id     = 2;
+  string amount           = 3; // positive decimal string
+  string note             = 4;
+  string transaction_date = 5; // YYYY-MM-DD
+  string user_timezone    = 6; // IANA; empty = UTC
+}
+
+message TransferFundsResponse {
+  string transfer_id     = 1;
+  Transaction from_entry = 2;
+  Transaction to_entry = 3;
+}
+
+message ConvertPurchaseToInstallmentRequest {
+  string transaction_id = 1;
+  int32  months           = 2;
+  string user_timezone    = 3; // IANA; empty = UTC
+}
+
+message ConvertPurchaseToInstallmentResponse {
+  CreditInstallment plan                 = 1;
+  Transaction adjustment_transaction     = 2;
+}
+
+message ListCreditInstallmentsRequest {
+  string wallet_id = 1;
+}
+
+message ListCreditInstallmentsResponse {
+  repeated CreditInstallment installments = 1;
+}
+
+message GetTransactionPermissionsRequest {
+  string transaction_id = 1;
+}
+
+message GetTransactionPermissionsResponse {
+  TransactionPermissions permissions = 1;
+}
+
+message UpdateCreditInstallmentRequest {
+  string installment_id = 1;
+  string total_amount     = 2;
+  int32  months           = 3;
+  string user_timezone    = 4; // IANA; empty = UTC
+}
+
+message UpdateCreditInstallmentResponse {
+  CreditInstallment plan = 1;
+}
+
+message DeleteCreditInstallmentRequest {
+  string installment_id = 1;
+}
+
+message DeleteCreditInstallmentResponse {}
+
 service TransactionService {
   rpc ListTransactions     (ListTransactionsRequest)     returns (ListTransactionsResponse);
   rpc CreateTransaction    (CreateTransactionRequest)    returns (CreateTransactionResponse);
   rpc UpdateTransaction    (UpdateTransactionRequest)    returns (UpdateTransactionResponse);
   rpc DeleteTransaction    (DeleteTransactionRequest)    returns (DeleteTransactionResponse);
+  rpc GetTransaction       (GetTransactionRequest)         returns (GetTransactionResponse);
+  rpc GetTransactionPermissions (GetTransactionPermissionsRequest) returns (GetTransactionPermissionsResponse);
   rpc GetLatestTransaction (GetLatestTransactionRequest) returns (GetLatestTransactionResponse);
   rpc GetFirstTransaction  (GetFirstTransactionRequest)  returns (GetFirstTransactionResponse);
+  rpc TransferFunds        (TransferFundsRequest)         returns (TransferFundsResponse);
+  rpc GetRefundStatus      (GetRefundStatusRequest)       returns (GetRefundStatusResponse);
+  rpc ConvertPurchaseToInstallment (ConvertPurchaseToInstallmentRequest) returns (ConvertPurchaseToInstallmentResponse);
+  rpc ListCreditInstallments       (ListCreditInstallmentsRequest)       returns (ListCreditInstallmentsResponse);
+  rpc UpdateCreditInstallment (UpdateCreditInstallmentRequest) returns (UpdateCreditInstallmentResponse);
+  rpc DeleteCreditInstallment (DeleteCreditInstallmentRequest) returns (DeleteCreditInstallmentResponse);
+}
+
+// ── Credit card statements ────────────────────────────────────────────────────
+
+message CreditStatement {
+  string id                = 1;
+  string wallet_id         = 2;
+  string cycle_start       = 3; // YYYY-MM-DD
+  string cycle_end         = 4;
+  string due_date          = 5;
+  string total_spent       = 6;
+  string total_payment     = 7;
+  string previous_balance  = 8;
+  string new_balance       = 9;
+  string minimum_payment   = 10;
+  string remaining_balance = 11;
+  bool   is_paid           = 12;
+  string paid_at           = 13; // RFC3339 or empty
+  string created_at        = 14;
+  bool   is_closed         = 15; // immutable snapshot; never recompute totals
+}
+
+message ListCreditStatementsRequest {
+  string wallet_id = 1;
+}
+
+message ListCreditStatementsResponse {
+  repeated CreditStatement statements = 1;
+}
+
+message MarkStatementPaidRequest {
+  string statement_id = 1;
+}
+
+message MarkStatementPaidResponse {
+  CreditStatement statement = 1;
 }
 
 // ── BudgetService ─────────────────────────────────────────────────────────────
