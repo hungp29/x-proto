@@ -551,6 +551,7 @@ message GetTransactionPermissionsResponse {
 message RecommendCategoriesRequest {
   string type      = 1; // expense | income
   string timestamp = 2; // RFC3339; empty = server time (UTC)
+  string amount    = 3;
 }
 
 message CategoryRecommendation {
