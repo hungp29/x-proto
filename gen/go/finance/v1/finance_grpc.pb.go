@@ -911,6 +911,7 @@ const (
 	TransactionService_ListCreditInstallments_FullMethodName       = "/finance.v1.TransactionService/ListCreditInstallments"
 	TransactionService_UpdateCreditInstallment_FullMethodName      = "/finance.v1.TransactionService/UpdateCreditInstallment"
 	TransactionService_DeleteCreditInstallment_FullMethodName      = "/finance.v1.TransactionService/DeleteCreditInstallment"
+	TransactionService_RecommendCategories_FullMethodName          = "/finance.v1.TransactionService/RecommendCategories"
 )
 
 // TransactionServiceClient is the client API for TransactionService service.
@@ -931,6 +932,8 @@ type TransactionServiceClient interface {
 	ListCreditInstallments(ctx context.Context, in *ListCreditInstallmentsRequest, opts ...grpc.CallOption) (*ListCreditInstallmentsResponse, error)
 	UpdateCreditInstallment(ctx context.Context, in *UpdateCreditInstallmentRequest, opts ...grpc.CallOption) (*UpdateCreditInstallmentResponse, error)
 	DeleteCreditInstallment(ctx context.Context, in *DeleteCreditInstallmentRequest, opts ...grpc.CallOption) (*DeleteCreditInstallmentResponse, error)
+	// Real-time category recommendation based on hour, day-of-week, recency, and global usage.
+	RecommendCategories(ctx context.Context, in *RecommendCategoriesRequest, opts ...grpc.CallOption) (*RecommendCategoriesResponse, error)
 }
 
 type transactionServiceClient struct {
@@ -1081,6 +1084,16 @@ func (c *transactionServiceClient) DeleteCreditInstallment(ctx context.Context, 
 	return out, nil
 }
 
+func (c *transactionServiceClient) RecommendCategories(ctx context.Context, in *RecommendCategoriesRequest, opts ...grpc.CallOption) (*RecommendCategoriesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RecommendCategoriesResponse)
+	err := c.cc.Invoke(ctx, TransactionService_RecommendCategories_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TransactionServiceServer is the server API for TransactionService service.
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility.
@@ -1099,6 +1112,8 @@ type TransactionServiceServer interface {
 	ListCreditInstallments(context.Context, *ListCreditInstallmentsRequest) (*ListCreditInstallmentsResponse, error)
 	UpdateCreditInstallment(context.Context, *UpdateCreditInstallmentRequest) (*UpdateCreditInstallmentResponse, error)
 	DeleteCreditInstallment(context.Context, *DeleteCreditInstallmentRequest) (*DeleteCreditInstallmentResponse, error)
+	// Real-time category recommendation based on hour, day-of-week, recency, and global usage.
+	RecommendCategories(context.Context, *RecommendCategoriesRequest) (*RecommendCategoriesResponse, error)
 	mustEmbedUnimplementedTransactionServiceServer()
 }
 
@@ -1150,6 +1165,9 @@ func (UnimplementedTransactionServiceServer) UpdateCreditInstallment(context.Con
 }
 func (UnimplementedTransactionServiceServer) DeleteCreditInstallment(context.Context, *DeleteCreditInstallmentRequest) (*DeleteCreditInstallmentResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteCreditInstallment not implemented")
+}
+func (UnimplementedTransactionServiceServer) RecommendCategories(context.Context, *RecommendCategoriesRequest) (*RecommendCategoriesResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RecommendCategories not implemented")
 }
 func (UnimplementedTransactionServiceServer) mustEmbedUnimplementedTransactionServiceServer() {}
 func (UnimplementedTransactionServiceServer) testEmbeddedByValue()                            {}
@@ -1424,6 +1442,24 @@ func _TransactionService_DeleteCreditInstallment_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TransactionService_RecommendCategories_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RecommendCategoriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).RecommendCategories(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_RecommendCategories_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).RecommendCategories(ctx, req.(*RecommendCategoriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TransactionService_ServiceDesc is the grpc.ServiceDesc for TransactionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1486,6 +1522,10 @@ var TransactionService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteCreditInstallment",
 			Handler:    _TransactionService_DeleteCreditInstallment_Handler,
+		},
+		{
+			MethodName: "RecommendCategories",
+			Handler:    _TransactionService_RecommendCategories_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
