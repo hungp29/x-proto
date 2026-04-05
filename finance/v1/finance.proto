@@ -548,6 +548,20 @@ message GetTransactionPermissionsResponse {
   TransactionPermissions permissions = 1;
 }
 
+message RecommendCategoriesRequest {
+  string type      = 1; // expense | income
+  string timestamp = 2; // RFC3339; empty = server time (UTC)
+}
+
+message CategoryRecommendation {
+  string category_id = 1;
+  double confidence  = 2; // 0..1 relative to top result
+}
+
+message RecommendCategoriesResponse {
+  repeated CategoryRecommendation recommendations = 1;
+}
+
 message UpdateCreditInstallmentRequest {
   string installment_id = 1;
   string total_amount     = 2;
@@ -580,6 +594,8 @@ service TransactionService {
   rpc ListCreditInstallments       (ListCreditInstallmentsRequest)       returns (ListCreditInstallmentsResponse);
   rpc UpdateCreditInstallment (UpdateCreditInstallmentRequest) returns (UpdateCreditInstallmentResponse);
   rpc DeleteCreditInstallment (DeleteCreditInstallmentRequest) returns (DeleteCreditInstallmentResponse);
+  // Real-time category recommendation based on hour, day-of-week, recency, and global usage.
+  rpc RecommendCategories (RecommendCategoriesRequest) returns (RecommendCategoriesResponse);
 }
 
 // ── Credit card statements ────────────────────────────────────────────────────
