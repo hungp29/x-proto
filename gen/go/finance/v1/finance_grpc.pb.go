@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	WalletService_ListWallets_FullMethodName  = "/finance.v1.WalletService/ListWallets"
-	WalletService_CreateWallet_FullMethodName = "/finance.v1.WalletService/CreateWallet"
-	WalletService_UpdateWallet_FullMethodName = "/finance.v1.WalletService/UpdateWallet"
-	WalletService_DeleteWallet_FullMethodName = "/finance.v1.WalletService/DeleteWallet"
+	WalletService_ListWallets_FullMethodName          = "/finance.v1.WalletService/ListWallets"
+	WalletService_CreateWallet_FullMethodName         = "/finance.v1.WalletService/CreateWallet"
+	WalletService_UpdateWallet_FullMethodName         = "/finance.v1.WalletService/UpdateWallet"
+	WalletService_DeleteWallet_FullMethodName         = "/finance.v1.WalletService/DeleteWallet"
+	WalletService_ListCreditStatements_FullMethodName = "/finance.v1.WalletService/ListCreditStatements"
+	WalletService_MarkStatementPaid_FullMethodName    = "/finance.v1.WalletService/MarkStatementPaid"
 )
 
 // WalletServiceClient is the client API for WalletService service.
@@ -33,6 +35,8 @@ type WalletServiceClient interface {
 	CreateWallet(ctx context.Context, in *CreateWalletRequest, opts ...grpc.CallOption) (*CreateWalletResponse, error)
 	UpdateWallet(ctx context.Context, in *UpdateWalletRequest, opts ...grpc.CallOption) (*UpdateWalletResponse, error)
 	DeleteWallet(ctx context.Context, in *DeleteWalletRequest, opts ...grpc.CallOption) (*DeleteWalletResponse, error)
+	ListCreditStatements(ctx context.Context, in *ListCreditStatementsRequest, opts ...grpc.CallOption) (*ListCreditStatementsResponse, error)
+	MarkStatementPaid(ctx context.Context, in *MarkStatementPaidRequest, opts ...grpc.CallOption) (*MarkStatementPaidResponse, error)
 }
 
 type walletServiceClient struct {
@@ -83,6 +87,26 @@ func (c *walletServiceClient) DeleteWallet(ctx context.Context, in *DeleteWallet
 	return out, nil
 }
 
+func (c *walletServiceClient) ListCreditStatements(ctx context.Context, in *ListCreditStatementsRequest, opts ...grpc.CallOption) (*ListCreditStatementsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCreditStatementsResponse)
+	err := c.cc.Invoke(ctx, WalletService_ListCreditStatements_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *walletServiceClient) MarkStatementPaid(ctx context.Context, in *MarkStatementPaidRequest, opts ...grpc.CallOption) (*MarkStatementPaidResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MarkStatementPaidResponse)
+	err := c.cc.Invoke(ctx, WalletService_MarkStatementPaid_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // WalletServiceServer is the server API for WalletService service.
 // All implementations must embed UnimplementedWalletServiceServer
 // for forward compatibility.
@@ -91,6 +115,8 @@ type WalletServiceServer interface {
 	CreateWallet(context.Context, *CreateWalletRequest) (*CreateWalletResponse, error)
 	UpdateWallet(context.Context, *UpdateWalletRequest) (*UpdateWalletResponse, error)
 	DeleteWallet(context.Context, *DeleteWalletRequest) (*DeleteWalletResponse, error)
+	ListCreditStatements(context.Context, *ListCreditStatementsRequest) (*ListCreditStatementsResponse, error)
+	MarkStatementPaid(context.Context, *MarkStatementPaidRequest) (*MarkStatementPaidResponse, error)
 	mustEmbedUnimplementedWalletServiceServer()
 }
 
@@ -112,6 +138,12 @@ func (UnimplementedWalletServiceServer) UpdateWallet(context.Context, *UpdateWal
 }
 func (UnimplementedWalletServiceServer) DeleteWallet(context.Context, *DeleteWalletRequest) (*DeleteWalletResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteWallet not implemented")
+}
+func (UnimplementedWalletServiceServer) ListCreditStatements(context.Context, *ListCreditStatementsRequest) (*ListCreditStatementsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListCreditStatements not implemented")
+}
+func (UnimplementedWalletServiceServer) MarkStatementPaid(context.Context, *MarkStatementPaidRequest) (*MarkStatementPaidResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method MarkStatementPaid not implemented")
 }
 func (UnimplementedWalletServiceServer) mustEmbedUnimplementedWalletServiceServer() {}
 func (UnimplementedWalletServiceServer) testEmbeddedByValue()                       {}
@@ -206,6 +238,42 @@ func _WalletService_DeleteWallet_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _WalletService_ListCreditStatements_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCreditStatementsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WalletServiceServer).ListCreditStatements(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WalletService_ListCreditStatements_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WalletServiceServer).ListCreditStatements(ctx, req.(*ListCreditStatementsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WalletService_MarkStatementPaid_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MarkStatementPaidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WalletServiceServer).MarkStatementPaid(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WalletService_MarkStatementPaid_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WalletServiceServer).MarkStatementPaid(ctx, req.(*MarkStatementPaidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // WalletService_ServiceDesc is the grpc.ServiceDesc for WalletService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +296,14 @@ var WalletService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteWallet",
 			Handler:    _WalletService_DeleteWallet_Handler,
+		},
+		{
+			MethodName: "ListCreditStatements",
+			Handler:    _WalletService_ListCreditStatements_Handler,
+		},
+		{
+			MethodName: "MarkStatementPaid",
+			Handler:    _WalletService_MarkStatementPaid_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -821,12 +897,20 @@ var CategoryService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	TransactionService_ListTransactions_FullMethodName     = "/finance.v1.TransactionService/ListTransactions"
-	TransactionService_CreateTransaction_FullMethodName    = "/finance.v1.TransactionService/CreateTransaction"
-	TransactionService_UpdateTransaction_FullMethodName    = "/finance.v1.TransactionService/UpdateTransaction"
-	TransactionService_DeleteTransaction_FullMethodName    = "/finance.v1.TransactionService/DeleteTransaction"
-	TransactionService_GetLatestTransaction_FullMethodName = "/finance.v1.TransactionService/GetLatestTransaction"
-	TransactionService_GetFirstTransaction_FullMethodName  = "/finance.v1.TransactionService/GetFirstTransaction"
+	TransactionService_ListTransactions_FullMethodName             = "/finance.v1.TransactionService/ListTransactions"
+	TransactionService_CreateTransaction_FullMethodName            = "/finance.v1.TransactionService/CreateTransaction"
+	TransactionService_UpdateTransaction_FullMethodName            = "/finance.v1.TransactionService/UpdateTransaction"
+	TransactionService_DeleteTransaction_FullMethodName            = "/finance.v1.TransactionService/DeleteTransaction"
+	TransactionService_GetTransaction_FullMethodName               = "/finance.v1.TransactionService/GetTransaction"
+	TransactionService_GetTransactionPermissions_FullMethodName    = "/finance.v1.TransactionService/GetTransactionPermissions"
+	TransactionService_GetLatestTransaction_FullMethodName         = "/finance.v1.TransactionService/GetLatestTransaction"
+	TransactionService_GetFirstTransaction_FullMethodName          = "/finance.v1.TransactionService/GetFirstTransaction"
+	TransactionService_TransferFunds_FullMethodName                = "/finance.v1.TransactionService/TransferFunds"
+	TransactionService_GetRefundStatus_FullMethodName              = "/finance.v1.TransactionService/GetRefundStatus"
+	TransactionService_ConvertPurchaseToInstallment_FullMethodName = "/finance.v1.TransactionService/ConvertPurchaseToInstallment"
+	TransactionService_ListCreditInstallments_FullMethodName       = "/finance.v1.TransactionService/ListCreditInstallments"
+	TransactionService_UpdateCreditInstallment_FullMethodName      = "/finance.v1.TransactionService/UpdateCreditInstallment"
+	TransactionService_DeleteCreditInstallment_FullMethodName      = "/finance.v1.TransactionService/DeleteCreditInstallment"
 )
 
 // TransactionServiceClient is the client API for TransactionService service.
@@ -837,8 +921,16 @@ type TransactionServiceClient interface {
 	CreateTransaction(ctx context.Context, in *CreateTransactionRequest, opts ...grpc.CallOption) (*CreateTransactionResponse, error)
 	UpdateTransaction(ctx context.Context, in *UpdateTransactionRequest, opts ...grpc.CallOption) (*UpdateTransactionResponse, error)
 	DeleteTransaction(ctx context.Context, in *DeleteTransactionRequest, opts ...grpc.CallOption) (*DeleteTransactionResponse, error)
+	GetTransaction(ctx context.Context, in *GetTransactionRequest, opts ...grpc.CallOption) (*GetTransactionResponse, error)
+	GetTransactionPermissions(ctx context.Context, in *GetTransactionPermissionsRequest, opts ...grpc.CallOption) (*GetTransactionPermissionsResponse, error)
 	GetLatestTransaction(ctx context.Context, in *GetLatestTransactionRequest, opts ...grpc.CallOption) (*GetLatestTransactionResponse, error)
 	GetFirstTransaction(ctx context.Context, in *GetFirstTransactionRequest, opts ...grpc.CallOption) (*GetFirstTransactionResponse, error)
+	TransferFunds(ctx context.Context, in *TransferFundsRequest, opts ...grpc.CallOption) (*TransferFundsResponse, error)
+	GetRefundStatus(ctx context.Context, in *GetRefundStatusRequest, opts ...grpc.CallOption) (*GetRefundStatusResponse, error)
+	ConvertPurchaseToInstallment(ctx context.Context, in *ConvertPurchaseToInstallmentRequest, opts ...grpc.CallOption) (*ConvertPurchaseToInstallmentResponse, error)
+	ListCreditInstallments(ctx context.Context, in *ListCreditInstallmentsRequest, opts ...grpc.CallOption) (*ListCreditInstallmentsResponse, error)
+	UpdateCreditInstallment(ctx context.Context, in *UpdateCreditInstallmentRequest, opts ...grpc.CallOption) (*UpdateCreditInstallmentResponse, error)
+	DeleteCreditInstallment(ctx context.Context, in *DeleteCreditInstallmentRequest, opts ...grpc.CallOption) (*DeleteCreditInstallmentResponse, error)
 }
 
 type transactionServiceClient struct {
@@ -889,6 +981,26 @@ func (c *transactionServiceClient) DeleteTransaction(ctx context.Context, in *De
 	return out, nil
 }
 
+func (c *transactionServiceClient) GetTransaction(ctx context.Context, in *GetTransactionRequest, opts ...grpc.CallOption) (*GetTransactionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTransactionResponse)
+	err := c.cc.Invoke(ctx, TransactionService_GetTransaction_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionServiceClient) GetTransactionPermissions(ctx context.Context, in *GetTransactionPermissionsRequest, opts ...grpc.CallOption) (*GetTransactionPermissionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTransactionPermissionsResponse)
+	err := c.cc.Invoke(ctx, TransactionService_GetTransactionPermissions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *transactionServiceClient) GetLatestTransaction(ctx context.Context, in *GetLatestTransactionRequest, opts ...grpc.CallOption) (*GetLatestTransactionResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetLatestTransactionResponse)
@@ -909,6 +1021,66 @@ func (c *transactionServiceClient) GetFirstTransaction(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *transactionServiceClient) TransferFunds(ctx context.Context, in *TransferFundsRequest, opts ...grpc.CallOption) (*TransferFundsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TransferFundsResponse)
+	err := c.cc.Invoke(ctx, TransactionService_TransferFunds_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionServiceClient) GetRefundStatus(ctx context.Context, in *GetRefundStatusRequest, opts ...grpc.CallOption) (*GetRefundStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRefundStatusResponse)
+	err := c.cc.Invoke(ctx, TransactionService_GetRefundStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionServiceClient) ConvertPurchaseToInstallment(ctx context.Context, in *ConvertPurchaseToInstallmentRequest, opts ...grpc.CallOption) (*ConvertPurchaseToInstallmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConvertPurchaseToInstallmentResponse)
+	err := c.cc.Invoke(ctx, TransactionService_ConvertPurchaseToInstallment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionServiceClient) ListCreditInstallments(ctx context.Context, in *ListCreditInstallmentsRequest, opts ...grpc.CallOption) (*ListCreditInstallmentsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListCreditInstallmentsResponse)
+	err := c.cc.Invoke(ctx, TransactionService_ListCreditInstallments_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionServiceClient) UpdateCreditInstallment(ctx context.Context, in *UpdateCreditInstallmentRequest, opts ...grpc.CallOption) (*UpdateCreditInstallmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateCreditInstallmentResponse)
+	err := c.cc.Invoke(ctx, TransactionService_UpdateCreditInstallment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *transactionServiceClient) DeleteCreditInstallment(ctx context.Context, in *DeleteCreditInstallmentRequest, opts ...grpc.CallOption) (*DeleteCreditInstallmentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteCreditInstallmentResponse)
+	err := c.cc.Invoke(ctx, TransactionService_DeleteCreditInstallment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TransactionServiceServer is the server API for TransactionService service.
 // All implementations must embed UnimplementedTransactionServiceServer
 // for forward compatibility.
@@ -917,8 +1089,16 @@ type TransactionServiceServer interface {
 	CreateTransaction(context.Context, *CreateTransactionRequest) (*CreateTransactionResponse, error)
 	UpdateTransaction(context.Context, *UpdateTransactionRequest) (*UpdateTransactionResponse, error)
 	DeleteTransaction(context.Context, *DeleteTransactionRequest) (*DeleteTransactionResponse, error)
+	GetTransaction(context.Context, *GetTransactionRequest) (*GetTransactionResponse, error)
+	GetTransactionPermissions(context.Context, *GetTransactionPermissionsRequest) (*GetTransactionPermissionsResponse, error)
 	GetLatestTransaction(context.Context, *GetLatestTransactionRequest) (*GetLatestTransactionResponse, error)
 	GetFirstTransaction(context.Context, *GetFirstTransactionRequest) (*GetFirstTransactionResponse, error)
+	TransferFunds(context.Context, *TransferFundsRequest) (*TransferFundsResponse, error)
+	GetRefundStatus(context.Context, *GetRefundStatusRequest) (*GetRefundStatusResponse, error)
+	ConvertPurchaseToInstallment(context.Context, *ConvertPurchaseToInstallmentRequest) (*ConvertPurchaseToInstallmentResponse, error)
+	ListCreditInstallments(context.Context, *ListCreditInstallmentsRequest) (*ListCreditInstallmentsResponse, error)
+	UpdateCreditInstallment(context.Context, *UpdateCreditInstallmentRequest) (*UpdateCreditInstallmentResponse, error)
+	DeleteCreditInstallment(context.Context, *DeleteCreditInstallmentRequest) (*DeleteCreditInstallmentResponse, error)
 	mustEmbedUnimplementedTransactionServiceServer()
 }
 
@@ -941,11 +1121,35 @@ func (UnimplementedTransactionServiceServer) UpdateTransaction(context.Context, 
 func (UnimplementedTransactionServiceServer) DeleteTransaction(context.Context, *DeleteTransactionRequest) (*DeleteTransactionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteTransaction not implemented")
 }
+func (UnimplementedTransactionServiceServer) GetTransaction(context.Context, *GetTransactionRequest) (*GetTransactionResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTransaction not implemented")
+}
+func (UnimplementedTransactionServiceServer) GetTransactionPermissions(context.Context, *GetTransactionPermissionsRequest) (*GetTransactionPermissionsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetTransactionPermissions not implemented")
+}
 func (UnimplementedTransactionServiceServer) GetLatestTransaction(context.Context, *GetLatestTransactionRequest) (*GetLatestTransactionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetLatestTransaction not implemented")
 }
 func (UnimplementedTransactionServiceServer) GetFirstTransaction(context.Context, *GetFirstTransactionRequest) (*GetFirstTransactionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetFirstTransaction not implemented")
+}
+func (UnimplementedTransactionServiceServer) TransferFunds(context.Context, *TransferFundsRequest) (*TransferFundsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method TransferFunds not implemented")
+}
+func (UnimplementedTransactionServiceServer) GetRefundStatus(context.Context, *GetRefundStatusRequest) (*GetRefundStatusResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetRefundStatus not implemented")
+}
+func (UnimplementedTransactionServiceServer) ConvertPurchaseToInstallment(context.Context, *ConvertPurchaseToInstallmentRequest) (*ConvertPurchaseToInstallmentResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ConvertPurchaseToInstallment not implemented")
+}
+func (UnimplementedTransactionServiceServer) ListCreditInstallments(context.Context, *ListCreditInstallmentsRequest) (*ListCreditInstallmentsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListCreditInstallments not implemented")
+}
+func (UnimplementedTransactionServiceServer) UpdateCreditInstallment(context.Context, *UpdateCreditInstallmentRequest) (*UpdateCreditInstallmentResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateCreditInstallment not implemented")
+}
+func (UnimplementedTransactionServiceServer) DeleteCreditInstallment(context.Context, *DeleteCreditInstallmentRequest) (*DeleteCreditInstallmentResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteCreditInstallment not implemented")
 }
 func (UnimplementedTransactionServiceServer) mustEmbedUnimplementedTransactionServiceServer() {}
 func (UnimplementedTransactionServiceServer) testEmbeddedByValue()                            {}
@@ -1040,6 +1244,42 @@ func _TransactionService_DeleteTransaction_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TransactionService_GetTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).GetTransaction(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_GetTransaction_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).GetTransaction(ctx, req.(*GetTransactionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TransactionService_GetTransactionPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTransactionPermissionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).GetTransactionPermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_GetTransactionPermissions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).GetTransactionPermissions(ctx, req.(*GetTransactionPermissionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _TransactionService_GetLatestTransaction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetLatestTransactionRequest)
 	if err := dec(in); err != nil {
@@ -1076,6 +1316,114 @@ func _TransactionService_GetFirstTransaction_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TransactionService_TransferFunds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferFundsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).TransferFunds(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_TransferFunds_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).TransferFunds(ctx, req.(*TransferFundsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TransactionService_GetRefundStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRefundStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).GetRefundStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_GetRefundStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).GetRefundStatus(ctx, req.(*GetRefundStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TransactionService_ConvertPurchaseToInstallment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConvertPurchaseToInstallmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).ConvertPurchaseToInstallment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_ConvertPurchaseToInstallment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).ConvertPurchaseToInstallment(ctx, req.(*ConvertPurchaseToInstallmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TransactionService_ListCreditInstallments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListCreditInstallmentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).ListCreditInstallments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_ListCreditInstallments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).ListCreditInstallments(ctx, req.(*ListCreditInstallmentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TransactionService_UpdateCreditInstallment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCreditInstallmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).UpdateCreditInstallment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_UpdateCreditInstallment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).UpdateCreditInstallment(ctx, req.(*UpdateCreditInstallmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TransactionService_DeleteCreditInstallment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCreditInstallmentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TransactionServiceServer).DeleteCreditInstallment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TransactionService_DeleteCreditInstallment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TransactionServiceServer).DeleteCreditInstallment(ctx, req.(*DeleteCreditInstallmentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TransactionService_ServiceDesc is the grpc.ServiceDesc for TransactionService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1100,12 +1448,44 @@ var TransactionService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TransactionService_DeleteTransaction_Handler,
 		},
 		{
+			MethodName: "GetTransaction",
+			Handler:    _TransactionService_GetTransaction_Handler,
+		},
+		{
+			MethodName: "GetTransactionPermissions",
+			Handler:    _TransactionService_GetTransactionPermissions_Handler,
+		},
+		{
 			MethodName: "GetLatestTransaction",
 			Handler:    _TransactionService_GetLatestTransaction_Handler,
 		},
 		{
 			MethodName: "GetFirstTransaction",
 			Handler:    _TransactionService_GetFirstTransaction_Handler,
+		},
+		{
+			MethodName: "TransferFunds",
+			Handler:    _TransactionService_TransferFunds_Handler,
+		},
+		{
+			MethodName: "GetRefundStatus",
+			Handler:    _TransactionService_GetRefundStatus_Handler,
+		},
+		{
+			MethodName: "ConvertPurchaseToInstallment",
+			Handler:    _TransactionService_ConvertPurchaseToInstallment_Handler,
+		},
+		{
+			MethodName: "ListCreditInstallments",
+			Handler:    _TransactionService_ListCreditInstallments_Handler,
+		},
+		{
+			MethodName: "UpdateCreditInstallment",
+			Handler:    _TransactionService_UpdateCreditInstallment_Handler,
+		},
+		{
+			MethodName: "DeleteCreditInstallment",
+			Handler:    _TransactionService_DeleteCreditInstallment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
