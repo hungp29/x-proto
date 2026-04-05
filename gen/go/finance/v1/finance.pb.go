@@ -4722,6 +4722,7 @@ type RecommendCategoriesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Type          string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`           // expense | income
 	Timestamp     string                 `protobuf:"bytes,2,opt,name=timestamp,proto3" json:"timestamp,omitempty"` // RFC3339; empty = server time (UTC)
+	Amount        string                 `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -4766,6 +4767,13 @@ func (x *RecommendCategoriesRequest) GetType() string {
 func (x *RecommendCategoriesRequest) GetTimestamp() string {
 	if x != nil {
 		return x.Timestamp
+	}
+	return ""
+}
+
+func (x *RecommendCategoriesRequest) GetAmount() string {
+	if x != nil {
+		return x.Amount
 	}
 	return ""
 }
@@ -7159,10 +7167,11 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	" GetTransactionPermissionsRequest\x12%\n" +
 	"\x0etransaction_id\x18\x01 \x01(\tR\rtransactionId\"i\n" +
 	"!GetTransactionPermissionsResponse\x12D\n" +
-	"\vpermissions\x18\x01 \x01(\v2\".finance.v1.TransactionPermissionsR\vpermissions\"N\n" +
+	"\vpermissions\x18\x01 \x01(\v2\".finance.v1.TransactionPermissionsR\vpermissions\"f\n" +
 	"\x1aRecommendCategoriesRequest\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12\x1c\n" +
-	"\ttimestamp\x18\x02 \x01(\tR\ttimestamp\"Y\n" +
+	"\ttimestamp\x18\x02 \x01(\tR\ttimestamp\x12\x16\n" +
+	"\x06amount\x18\x03 \x01(\tR\x06amount\"Y\n" +
 	"\x16CategoryRecommendation\x12\x1f\n" +
 	"\vcategory_id\x18\x01 \x01(\tR\n" +
 	"categoryId\x12\x1e\n" +
