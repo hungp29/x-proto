@@ -671,6 +671,14 @@ service BudgetService {
 
 // ── GoalService ───────────────────────────────────────────────────────────────
 
+message GoalAllocation {
+  string id         = 1;
+  string goal_id    = 2;
+  string wallet_id  = 3;
+  string amount     = 4;
+  string created_at = 5;
+}
+
 message ListGoalsRequest {}
 
 message ListGoalsResponse {
@@ -678,12 +686,11 @@ message ListGoalsResponse {
 }
 
 message CreateGoalRequest {
-  string name           = 1;
-  string type           = 2;
-  string target_amount  = 3;
-  string current_amount = 4;
-  string deadline       = 5;
-  string note           = 6;
+  string name          = 1;
+  string type          = 2;
+  string target_amount = 3;
+  string deadline      = 4;
+  string note          = 5;
 }
 
 message CreateGoalResponse {
@@ -691,13 +698,12 @@ message CreateGoalResponse {
 }
 
 message UpdateGoalRequest {
-  string goal_id        = 1;
-  string name           = 2;
-  string target_amount  = 3;
-  string current_amount = 4;
-  string deadline       = 5;
-  string note           = 6;
-  bool   is_completed   = 7;
+  string goal_id       = 1;
+  string name          = 2;
+  string target_amount = 3;
+  string deadline      = 4;
+  string note          = 5;
+  bool   is_completed  = 6;
 }
 
 message UpdateGoalResponse {
@@ -710,11 +716,94 @@ message DeleteGoalRequest {
 
 message DeleteGoalResponse {}
 
+message AllocateToGoalRequest {
+  string goal_id   = 1;
+  string wallet_id = 2;
+  string amount    = 3;
+}
+
+message AllocateToGoalResponse {
+  GoalAllocation allocation = 1;
+  string current_amount     = 2;
+}
+
+message GetGoalAllocationsRequest {
+  string goal_id = 1;
+}
+
+message WalletAllocatedTotal {
+  string wallet_id        = 1;
+  string total_allocated  = 2;
+}
+
+message GetGoalAllocationsResponse {
+  repeated GoalAllocation allocations          = 1;
+  string current_amount                        = 2;
+  // Total allocated across ALL goals per wallet (for available-balance display).
+  repeated WalletAllocatedTotal wallet_totals  = 3;
+}
+
+message DeleteGoalAllocationRequest {
+  string goal_id       = 1;
+  string allocation_id = 2;
+}
+
+message DeleteGoalAllocationResponse {
+  string current_amount = 1;
+}
+
+// ── Debt payments ─────────────────────────────────────────────────────────────
+
+message DebtPayment {
+  string id             = 1;
+  string goal_id        = 2;
+  string wallet_id      = 3;
+  string amount         = 4;
+  string created_at     = 5;
+  string transaction_id = 6;
+}
+
+message PayDebtRequest {
+  string goal_id        = 1;
+  string wallet_id      = 2;
+  string amount         = 3;
+  string user_timezone  = 4;
+}
+
+message PayDebtResponse {
+  DebtPayment payment     = 1;
+  string      paid_amount = 2;
+}
+
+message GetDebtPaymentsRequest {
+  string goal_id = 1;
+}
+
+message GetDebtPaymentsResponse {
+  repeated DebtPayment payments   = 1;
+  string               paid_amount = 2;
+}
+
+message DeleteDebtPaymentRequest {
+  string goal_id    = 1;
+  string payment_id = 2;
+}
+
+message DeleteDebtPaymentResponse {
+  string paid_amount = 1;
+}
+
 service GoalService {
-  rpc ListGoals  (ListGoalsRequest)  returns (ListGoalsResponse);
-  rpc CreateGoal (CreateGoalRequest) returns (CreateGoalResponse);
-  rpc UpdateGoal (UpdateGoalRequest) returns (UpdateGoalResponse);
-  rpc DeleteGoal (DeleteGoalRequest) returns (DeleteGoalResponse);
+  rpc ListGoals              (ListGoalsRequest)              returns (ListGoalsResponse);
+  rpc CreateGoal             (CreateGoalRequest)             returns (CreateGoalResponse);
+  rpc UpdateGoal             (UpdateGoalRequest)             returns (UpdateGoalResponse);
+  rpc DeleteGoal             (DeleteGoalRequest)             returns (DeleteGoalResponse);
+  rpc AllocateToGoal         (AllocateToGoalRequest)         returns (AllocateToGoalResponse);
+  rpc GetGoalAllocations     (GetGoalAllocationsRequest)     returns (GetGoalAllocationsResponse);
+  rpc DeleteGoalAllocation   (DeleteGoalAllocationRequest)   returns (DeleteGoalAllocationResponse);
+  rpc PayDebt                (PayDebtRequest)                returns (PayDebtResponse);
+  rpc GetDebtPayments        (GetDebtPaymentsRequest)        returns (GetDebtPaymentsResponse);
+  rpc DeleteDebtPayment      (DeleteDebtPaymentRequest)      returns (DeleteDebtPaymentResponse);
 }
 
 // ── AnalyticsService ──────────────────────────────────────────────────────────
