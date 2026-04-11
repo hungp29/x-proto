@@ -75,7 +75,7 @@ message Transaction {
   TransactionStatus status = 14;
   string execute_at = 15; // RFC3339 nanoseconds, UTC; when the row becomes due
   // Credit / transfer metadata (empty when not applicable)
-  string subtype    = 16; // purchase | payment | refund | fee | interest | adjustment
+  string subtype    = 16; // purchase | payment | refund | fee | interest | adjustment | bill (household bill pay from x-bill)
   string transfer_id = 17;
   string transfer_leg = 18; // out | in for paired transfer rows
   // Linked refund: points to the original purchase row (empty for normal rows)
@@ -424,7 +424,7 @@ message CreateTransactionRequest {
   optional string goal_id          = 7; // optional
   // IANA timezone for classifying "today" vs future and for execute_at (e.g. Asia/Ho_Chi_Minh). Empty = UTC.
   string user_timezone = 10;
-  string subtype = 11; // optional; credit_card: purchase, payment, refund, fee, interest
+  string subtype = 11; // optional; credit_card: purchase, payment, refund, fee, interest; bill pay: bill
   // Credit-card refund: must reference the original purchase; use with type=income, subtype=refund
   string reference_transaction_id = 12;
   // Optional; duplicate (user, key) returns the existing posted refund (same response body)

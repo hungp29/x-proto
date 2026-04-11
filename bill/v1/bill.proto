@@ -1,0 +1,227 @@
+syntax = "proto3";
+
+package bill.v1;
+
+option go_package = "github.com/hungp29/x-proto/gen/go/bill/v1;billv1";
+
+// BillService manages recurring household bills (gRPC-only; HTTP is exposed via API gateway).
+service BillService {
+  rpc CreateBill(CreateBillRequest) returns (CreateBillResponse);
+  rpc GetBill(GetBillRequest) returns (GetBillResponse);
+  rpc UpdateBill(UpdateBillRequest) returns (UpdateBillResponse);
+  rpc DeleteBill(DeleteBillRequest) returns (DeleteBillResponse);
+  rpc ListBills(ListBillsRequest) returns (ListBillsResponse);
+  rpc ListBillInstances(ListBillInstancesRequest) returns (ListBillInstancesResponse);
+  rpc AddManualItems(AddManualItemsRequest) returns (AddManualItemsResponse);
+  rpc PayBill(PayBillRequest) returns (PayBillResponse);
+  rpc UpdateBillItem(UpdateBillItemRequest) returns (UpdateBillItemResponse);
+  rpc DeleteBillInstance(DeleteBillInstanceRequest) returns (DeleteBillInstanceResponse);
+  rpc SkipBillInstance(SkipBillInstanceRequest) returns (SkipBillInstanceResponse);
+  // Count instances linked to a finance transaction (same user). Used by x-finance for edit/delete permissions.
+  rpc CountBillInstancesByTransactionId(CountBillInstancesByTransactionIdRequest) returns (CountBillInstancesByTransactionIdResponse);
+  // Clears transaction_id and sets status back to PENDING for PAID instances tied to this transaction (e.g. finance delete).
+  rpc RevertBillInstancesForDeletedTransaction(RevertBillInstancesForDeletedTransactionRequest) returns (RevertBillInstancesForDeletedTransactionResponse);
+}
+
+message BillItemTemplateInput {
+  string name = 1;
+  string default_unit_price = 2; // decimal string
+  bool is_required = 3;
+  string id = 4; // optional: existing template when updating a bill
+  string default_quantity = 5; // optional decimal string; MANUAL_BREAKDOWN line default qty
+}
+
+message BillItemTemplateDetail {
+  string id = 1;
+  string name = 2;
+  string default_unit_price = 3;
+  bool is_required = 4;
+  string default_quantity = 5; // optional
+}
+
+message CreateBillRequest {
+  string name = 1;
+  string type = 2; // FIXED | integration | MANUAL_BREAKDOWN
+  reserved 3; // was category_id
+  string wallet_id = 4;
+  string schedule_json = 5; // JSON object per bill-system.md
+  reserved 6, 7; // was provider, api_config_json
+  string fixed_amount = 8; // decimal string; required semantics for FIXED in service layer
+  repeated BillItemTemplateInput item_templates = 9;
+  string start_date = 10; // YYYY-MM-DD
+  string end_date = 11;   // YYYY-MM-DD, optional
+  string icon_id = 12;    // finance_icons.id (optional)
+  int32 due_in_days = 13; // days from issue_date to due_date when instance is generated (default 0)
+  string currency = 14; // ISO 4217 (e.g. VND, USD)
+  string integration_payload_id = 15; // user_integration_payloads.id when type = integration
+}
+
+message CreateBillResponse {
+  Bill bill = 1;
+}
+
+message GetBillRequest {
+  string bill_id = 1;
+}
+
+message GetBillResponse {
+  Bill bill = 1;
+  repeated BillItemTemplateDetail item_templates = 2;
+}
+
+message UpdateBillRequest {
+  string bill_id = 1;
+  string name = 2;
+  string type = 3;
+  reserved 4; // was category_id
+  string wallet_id = 5;
+  string schedule_json = 6;
+  reserved 7, 8; // was provider, api_config_json
+  string fixed_amount = 9;
+  repeated BillItemTemplateInput item_templates = 10;
+  string start_date = 11;
+  string end_date = 12;
+  string icon_id = 13;
+  int32 due_in_days = 14;
+  string currency = 15;
+  string integration_payload_id = 16; // when type = integration
+}
+
+message UpdateBillResponse {
+  Bill bill = 1;
+}
+
+message DeleteBillRequest {
+  string bill_id = 1;
+}
+
+message DeleteBillResponse {}
+
+message Bill {
+  string id = 1;
+  string user_id = 2;
+  string name = 3;
+  string type = 4;
+  reserved 5; // was category_id
+  string wallet_id = 6;
+  string schedule_json = 7;
+  reserved 8, 9; // was provider, api_config_json
+  string fixed_amount = 10;
+  bool is_active = 11;
+  string start_date = 12;
+  string end_date = 13;
+  string created_at = 14;
+  string updated_at = 15;
+  string icon_id = 16;
+  // True when this bill has at least one instance in BLUEPRINT (worker-generated, not yet opened for pay/edit).
+  bool has_blueprint_instance = 17;
+  int32 due_in_days = 18;
+  string currency = 19; // ISO 4217
+  string integration_payload_id = 20;
+}
+
+message ListBillsRequest {
+  bool active_only = 1;
+}
+
+message ListBillsResponse {
+  repeated Bill bills = 1;
+}
+
+message BillInstanceItem {
+  string id = 1;
+  string name = 2;
+  string unit_price = 3;
+  string quantity = 4;
+  string amount = 5; // unit_price * quantity
+}
+
+message BillInstance {
+  string id = 1;
+  string bill_id = 2;
+  string due_date = 3; // YYYY-MM-DD
+  string status = 4;
+  string total_amount = 5;
+  string meta_json = 6;
+  string transaction_id = 7;
+  string created_at = 8;
+  string updated_at = 9;
+  string issue_date = 10; // YYYY-MM-DD; worker sets to run date
+  repeated BillInstanceItem items = 11;
+}
+
+message ListBillInstancesRequest {
+  string status = 1; // empty = all
+  string from_due_date = 2;
+  string to_due_date = 3;
+  string bill_id = 4; // empty = all bills for the user
+}
+
+message ListBillInstancesResponse {
+  repeated BillInstance instances = 1;
+}
+
+message ManualLineItem {
+  string name = 1;
+  string unit_price = 2;
+  string quantity = 3;
+  string template_id = 4;
+}
+
+message AddManualItemsRequest {
+  string bill_instance_id = 1;
+  repeated ManualLineItem items = 2;
+}
+
+message AddManualItemsResponse {}
+
+message PayBillRequest {
+  string bill_instance_id = 1;
+  // IANA timezone forwarded to finance CreateTransaction (e.g. Asia/Ho_Chi_Minh).
+  string user_timezone = 2;
+  // Optional; when set, charges this wallet instead of the bill template default.
+  string wallet_id = 3;
+}
+
+message PayBillResponse {
+  string transaction_id = 1;
+  string status = 2;
+}
+
+message UpdateBillItemRequest {
+  string bill_item_id = 1;
+  string quantity = 2; // decimal string
+}
+
+message UpdateBillItemResponse {
+  BillInstanceItem item = 1;
+  string instance_total_amount = 2; // bill_instances.total_amount after trigger
+}
+
+message DeleteBillInstanceRequest {
+  string bill_instance_id = 1;
+}
+
+message DeleteBillInstanceResponse {}
+
+message SkipBillInstanceRequest {
+  string bill_instance_id = 1;
+}
+
+message SkipBillInstanceResponse {}
+
+message CountBillInstancesByTransactionIdRequest {
+  string transaction_id = 1;
+}
+
+message CountBillInstancesByTransactionIdResponse {
+  int32 count = 1;
+}
+
+message RevertBillInstancesForDeletedTransactionRequest {
+  string transaction_id = 1;
+}
+
+message RevertBillInstancesForDeletedTransactionResponse {
+  int32 reverted_count = 1;
+}

@@ -331,7 +331,7 @@ message ListPermissionsResponse {
 //   app.word.anki_deck_name → arbitrary string
 //
 // The caller's user_id is resolved from the auth context in x-gatekeeper
-// (x-user-id gRPC metadata), so it does not appear in these messages.
+// (user_id gRPC metadata), so it does not appear in these messages.
 
 message GetSettingsRequest {}
 
@@ -349,6 +349,150 @@ message UpdateSettingsRequest {
 message UpdateSettingsResponse {
   // Full settings map after the update.
   map<string, string> settings = 1;
+}
+
+// ── IntegrationProvider (third-party token / login templates) ───────────────
+
+// One field in the JSON body template for the integration HTTP call.
+message IntegrationPayloadField {
+  string field_name = 1;
+  string field_value = 2;
+  bool fill_later = 3;
+  string description = 4;
+}
+
+message IntegrationProvider {
+  string id = 1;
+  string provider = 2;
+  string icon_id = 3; // empty when unset
+  string type = 4; // e.g. "bill"
+  string url = 5;
+  string method = 6; // GET, POST, PUT, PATCH, DELETE; default POST
+  repeated IntegrationPayloadField payload_fields = 7;
+  string created_at = 8;
+  string updated_at = 9;
+  // e.g. application/json, application/x-www-form-urlencoded
+  string content_type = 10;
+  // Stable lowercase key for server-side adapter routing (e.g. "nozza"); not the display name.
+  string provider_key = 11;
+}
+
+message ListIntegrationProvidersRequest {
+  optional string type = 1; // empty = all types
+}
+
+message ListIntegrationProvidersResponse {
+  repeated IntegrationProvider providers = 1;
+}
+
+// Search by provider name substring (case-insensitive) and/or exact type.
+// At least one of provider or type must be non-empty.
+message SearchIntegrationProvidersRequest {
+  optional string provider = 1; // substring match; empty = no name filter
+  optional string type = 2; // exact match, e.g. "bill"; empty = all types
+}
+
+message SearchIntegrationProvidersResponse {
+  repeated IntegrationProvider providers = 1;
+}
+
+message GetIntegrationProviderRequest {
+  string id = 1;
+}
+
+message GetIntegrationProviderResponse {
+  IntegrationProvider provider = 1;
+}
+
+message CreateIntegrationProviderRequest {
+  string provider = 1;
+  optional string icon_id = 2;
+  string type = 3;
+  string url = 4;
+  string method = 5; // empty = POST
+  repeated IntegrationPayloadField payload_fields = 6;
+  string content_type = 7; // empty = application/json
+  string provider_key = 8; // required: stable key a-z, 0-9, underscores
+}
+
+message CreateIntegrationProviderResponse {
+  IntegrationProvider provider = 1;
+}
+
+message UpdateIntegrationProviderRequest {
+  string id = 1;
+  string provider = 2;
+  optional string icon_id = 3;
+  string type = 4;
+  string url = 5;
+  string method = 6;
+  repeated IntegrationPayloadField payload_fields = 7;
+  string content_type = 8;
+  string provider_key = 9;
+}
+
+message UpdateIntegrationProviderResponse {
+  IntegrationProvider provider = 1;
+}
+
+message DeleteIntegrationProviderRequest {
+  string id = 1;
+}
+
+message DeleteIntegrationProviderResponse {}
+
+// User-supplied values for integration payload fields (encrypted at rest by x-identity).
+message UserIntegrationFieldEntry {
+  string field_name = 1;
+  string field_value = 2;
+}
+
+message CreateUserIntegrationPayloadRequest {
+  string integration_provider_id = 1;
+  repeated UserIntegrationFieldEntry entries = 2;
+}
+
+message CreateUserIntegrationPayloadResponse {
+  string id = 1;
+}
+
+// Returns a bill-type integration template for building client-side or gateway HTTP calls.
+message GetUserIntegrationProviderRequest {
+  string id = 1;
+}
+
+message GetUserIntegrationProviderResponse {
+  IntegrationProvider provider = 1;
+}
+
+// Resolves which integration provider a user's encrypted bill payload belongs to.
+// Does not return ciphertext or field values.
+message GetUserIntegrationPayloadProviderRequest {
+  string integration_payload_id = 1;
+}
+
+message GetUserIntegrationPayloadProviderResponse {
+  // Integration provider (template) id.
+  string integration_provider_id = 1;
+  // Display name (admin "provider" field).
+  string name = 2;
+  // Optional finance_icons id for UI; secrets are never returned.
+  optional string icon_id = 3;
+  // Stable key for bill worker adapter routing (integration_providers.provider_key).
+  string provider_key = 4;
+}
+
+// Decrypts the user's stored payload for this row, calls the provider's HTTP template, and returns the upstream response.
+message InvokeUserIntegrationPayloadRequest {
+  string integration_payload_id = 1;
+}
+
+message InvokeUserIntegrationPayloadResponse {
+  int32 http_status = 1;
+  // Raw upstream response body (often JSON containing tokens).
+  string response_body = 2;
+  // Same stable key as GetUserIntegrationPayloadProvider (for callers that skip the separate resolve RPC).
+  string provider_key = 3;
 }
 
 // ── Services ──────────────────────────────────────────────────────────────────
@@ -408,8 +552,23 @@ service PermissionService {
 }
 
 // SettingsService: get and update per-user settings.
-// The caller's user_id is resolved from gRPC metadata (x-user-id) set by x-gatekeeper.
+// The caller's user_id is resolved from gRPC metadata (user_id) set by x-gatekeeper.
 service SettingsService {
   rpc GetSettings    (GetSettingsRequest)    returns (GetSettingsResponse);
   rpc UpdateSettings (UpdateSettingsRequest) returns (UpdateSettingsResponse);
+}
+
+// IntegrationService: CRUD for global integration provider definitions (admin),
+// plus bill user flows (payload encryption, template read for type=bill).
+service IntegrationService {
+  rpc ListIntegrationProviders   (ListIntegrationProvidersRequest)   returns (ListIntegrationProvidersResponse);
+  rpc SearchIntegrationProviders (SearchIntegrationProvidersRequest) returns (SearchIntegrationProvidersResponse);
+  rpc GetIntegrationProvider     (GetIntegrationProviderRequest)     returns (GetIntegrationProviderResponse);
+  rpc CreateIntegrationProvider  (CreateIntegrationProviderRequest)  returns (CreateIntegrationProviderResponse);
+  rpc UpdateIntegrationProvider    (UpdateIntegrationProviderRequest)    returns (UpdateIntegrationProviderResponse);
+  rpc DeleteIntegrationProvider    (DeleteIntegrationProviderRequest)    returns (DeleteIntegrationProviderResponse);
+  rpc GetUserIntegrationProvider (GetUserIntegrationProviderRequest) returns (GetUserIntegrationProviderResponse);
+  rpc CreateUserIntegrationPayload (CreateUserIntegrationPayloadRequest) returns (CreateUserIntegrationPayloadResponse);
+  rpc GetUserIntegrationPayloadProvider (GetUserIntegrationPayloadProviderRequest) returns (GetUserIntegrationPayloadProviderResponse);
+  rpc InvokeUserIntegrationPayload (InvokeUserIntegrationPayloadRequest) returns (InvokeUserIntegrationPayloadResponse);
 }
