@@ -1586,7 +1586,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
 // SettingsService: get and update per-user settings.
-// The caller's user_id is resolved from gRPC metadata (x-user-id) set by x-gatekeeper.
+// The caller's user_id is resolved from gRPC metadata (user_id) set by x-gatekeeper.
 type SettingsServiceClient interface {
 	GetSettings(ctx context.Context, in *GetSettingsRequest, opts ...grpc.CallOption) (*GetSettingsResponse, error)
 	UpdateSettings(ctx context.Context, in *UpdateSettingsRequest, opts ...grpc.CallOption) (*UpdateSettingsResponse, error)
@@ -1625,7 +1625,7 @@ func (c *settingsServiceClient) UpdateSettings(ctx context.Context, in *UpdateSe
 // for forward compatibility.
 //
 // SettingsService: get and update per-user settings.
-// The caller's user_id is resolved from gRPC metadata (x-user-id) set by x-gatekeeper.
+// The caller's user_id is resolved from gRPC metadata (user_id) set by x-gatekeeper.
 type SettingsServiceServer interface {
 	GetSettings(context.Context, *GetSettingsRequest) (*GetSettingsResponse, error)
 	UpdateSettings(context.Context, *UpdateSettingsRequest) (*UpdateSettingsResponse, error)
@@ -1716,6 +1716,456 @@ var SettingsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateSettings",
 			Handler:    _SettingsService_UpdateSettings_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "identity/v1/identity.proto",
+}
+
+const (
+	IntegrationService_ListIntegrationProviders_FullMethodName          = "/identity.v1.IntegrationService/ListIntegrationProviders"
+	IntegrationService_SearchIntegrationProviders_FullMethodName        = "/identity.v1.IntegrationService/SearchIntegrationProviders"
+	IntegrationService_GetIntegrationProvider_FullMethodName            = "/identity.v1.IntegrationService/GetIntegrationProvider"
+	IntegrationService_CreateIntegrationProvider_FullMethodName         = "/identity.v1.IntegrationService/CreateIntegrationProvider"
+	IntegrationService_UpdateIntegrationProvider_FullMethodName         = "/identity.v1.IntegrationService/UpdateIntegrationProvider"
+	IntegrationService_DeleteIntegrationProvider_FullMethodName         = "/identity.v1.IntegrationService/DeleteIntegrationProvider"
+	IntegrationService_GetUserIntegrationProvider_FullMethodName        = "/identity.v1.IntegrationService/GetUserIntegrationProvider"
+	IntegrationService_CreateUserIntegrationPayload_FullMethodName      = "/identity.v1.IntegrationService/CreateUserIntegrationPayload"
+	IntegrationService_GetUserIntegrationPayloadProvider_FullMethodName = "/identity.v1.IntegrationService/GetUserIntegrationPayloadProvider"
+	IntegrationService_InvokeUserIntegrationPayload_FullMethodName      = "/identity.v1.IntegrationService/InvokeUserIntegrationPayload"
+)
+
+// IntegrationServiceClient is the client API for IntegrationService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+//
+// IntegrationService: CRUD for global integration provider definitions (admin),
+// plus bill user flows (payload encryption, template read for type=bill).
+type IntegrationServiceClient interface {
+	ListIntegrationProviders(ctx context.Context, in *ListIntegrationProvidersRequest, opts ...grpc.CallOption) (*ListIntegrationProvidersResponse, error)
+	SearchIntegrationProviders(ctx context.Context, in *SearchIntegrationProvidersRequest, opts ...grpc.CallOption) (*SearchIntegrationProvidersResponse, error)
+	GetIntegrationProvider(ctx context.Context, in *GetIntegrationProviderRequest, opts ...grpc.CallOption) (*GetIntegrationProviderResponse, error)
+	CreateIntegrationProvider(ctx context.Context, in *CreateIntegrationProviderRequest, opts ...grpc.CallOption) (*CreateIntegrationProviderResponse, error)
+	UpdateIntegrationProvider(ctx context.Context, in *UpdateIntegrationProviderRequest, opts ...grpc.CallOption) (*UpdateIntegrationProviderResponse, error)
+	DeleteIntegrationProvider(ctx context.Context, in *DeleteIntegrationProviderRequest, opts ...grpc.CallOption) (*DeleteIntegrationProviderResponse, error)
+	GetUserIntegrationProvider(ctx context.Context, in *GetUserIntegrationProviderRequest, opts ...grpc.CallOption) (*GetUserIntegrationProviderResponse, error)
+	CreateUserIntegrationPayload(ctx context.Context, in *CreateUserIntegrationPayloadRequest, opts ...grpc.CallOption) (*CreateUserIntegrationPayloadResponse, error)
+	GetUserIntegrationPayloadProvider(ctx context.Context, in *GetUserIntegrationPayloadProviderRequest, opts ...grpc.CallOption) (*GetUserIntegrationPayloadProviderResponse, error)
+	InvokeUserIntegrationPayload(ctx context.Context, in *InvokeUserIntegrationPayloadRequest, opts ...grpc.CallOption) (*InvokeUserIntegrationPayloadResponse, error)
+}
+
+type integrationServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewIntegrationServiceClient(cc grpc.ClientConnInterface) IntegrationServiceClient {
+	return &integrationServiceClient{cc}
+}
+
+func (c *integrationServiceClient) ListIntegrationProviders(ctx context.Context, in *ListIntegrationProvidersRequest, opts ...grpc.CallOption) (*ListIntegrationProvidersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListIntegrationProvidersResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_ListIntegrationProviders_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) SearchIntegrationProviders(ctx context.Context, in *SearchIntegrationProvidersRequest, opts ...grpc.CallOption) (*SearchIntegrationProvidersResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchIntegrationProvidersResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_SearchIntegrationProviders_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) GetIntegrationProvider(ctx context.Context, in *GetIntegrationProviderRequest, opts ...grpc.CallOption) (*GetIntegrationProviderResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetIntegrationProviderResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_GetIntegrationProvider_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) CreateIntegrationProvider(ctx context.Context, in *CreateIntegrationProviderRequest, opts ...grpc.CallOption) (*CreateIntegrationProviderResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateIntegrationProviderResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_CreateIntegrationProvider_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) UpdateIntegrationProvider(ctx context.Context, in *UpdateIntegrationProviderRequest, opts ...grpc.CallOption) (*UpdateIntegrationProviderResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateIntegrationProviderResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_UpdateIntegrationProvider_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) DeleteIntegrationProvider(ctx context.Context, in *DeleteIntegrationProviderRequest, opts ...grpc.CallOption) (*DeleteIntegrationProviderResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteIntegrationProviderResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_DeleteIntegrationProvider_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) GetUserIntegrationProvider(ctx context.Context, in *GetUserIntegrationProviderRequest, opts ...grpc.CallOption) (*GetUserIntegrationProviderResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserIntegrationProviderResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_GetUserIntegrationProvider_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) CreateUserIntegrationPayload(ctx context.Context, in *CreateUserIntegrationPayloadRequest, opts ...grpc.CallOption) (*CreateUserIntegrationPayloadResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateUserIntegrationPayloadResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_CreateUserIntegrationPayload_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) GetUserIntegrationPayloadProvider(ctx context.Context, in *GetUserIntegrationPayloadProviderRequest, opts ...grpc.CallOption) (*GetUserIntegrationPayloadProviderResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserIntegrationPayloadProviderResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_GetUserIntegrationPayloadProvider_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *integrationServiceClient) InvokeUserIntegrationPayload(ctx context.Context, in *InvokeUserIntegrationPayloadRequest, opts ...grpc.CallOption) (*InvokeUserIntegrationPayloadResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InvokeUserIntegrationPayloadResponse)
+	err := c.cc.Invoke(ctx, IntegrationService_InvokeUserIntegrationPayload_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// IntegrationServiceServer is the server API for IntegrationService service.
+// All implementations must embed UnimplementedIntegrationServiceServer
+// for forward compatibility.
+//
+// IntegrationService: CRUD for global integration provider definitions (admin),
+// plus bill user flows (payload encryption, template read for type=bill).
+type IntegrationServiceServer interface {
+	ListIntegrationProviders(context.Context, *ListIntegrationProvidersRequest) (*ListIntegrationProvidersResponse, error)
+	SearchIntegrationProviders(context.Context, *SearchIntegrationProvidersRequest) (*SearchIntegrationProvidersResponse, error)
+	GetIntegrationProvider(context.Context, *GetIntegrationProviderRequest) (*GetIntegrationProviderResponse, error)
+	CreateIntegrationProvider(context.Context, *CreateIntegrationProviderRequest) (*CreateIntegrationProviderResponse, error)
+	UpdateIntegrationProvider(context.Context, *UpdateIntegrationProviderRequest) (*UpdateIntegrationProviderResponse, error)
+	DeleteIntegrationProvider(context.Context, *DeleteIntegrationProviderRequest) (*DeleteIntegrationProviderResponse, error)
+	GetUserIntegrationProvider(context.Context, *GetUserIntegrationProviderRequest) (*GetUserIntegrationProviderResponse, error)
+	CreateUserIntegrationPayload(context.Context, *CreateUserIntegrationPayloadRequest) (*CreateUserIntegrationPayloadResponse, error)
+	GetUserIntegrationPayloadProvider(context.Context, *GetUserIntegrationPayloadProviderRequest) (*GetUserIntegrationPayloadProviderResponse, error)
+	InvokeUserIntegrationPayload(context.Context, *InvokeUserIntegrationPayloadRequest) (*InvokeUserIntegrationPayloadResponse, error)
+	mustEmbedUnimplementedIntegrationServiceServer()
+}
+
+// UnimplementedIntegrationServiceServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedIntegrationServiceServer struct{}
+
+func (UnimplementedIntegrationServiceServer) ListIntegrationProviders(context.Context, *ListIntegrationProvidersRequest) (*ListIntegrationProvidersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListIntegrationProviders not implemented")
+}
+func (UnimplementedIntegrationServiceServer) SearchIntegrationProviders(context.Context, *SearchIntegrationProvidersRequest) (*SearchIntegrationProvidersResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SearchIntegrationProviders not implemented")
+}
+func (UnimplementedIntegrationServiceServer) GetIntegrationProvider(context.Context, *GetIntegrationProviderRequest) (*GetIntegrationProviderResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetIntegrationProvider not implemented")
+}
+func (UnimplementedIntegrationServiceServer) CreateIntegrationProvider(context.Context, *CreateIntegrationProviderRequest) (*CreateIntegrationProviderResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateIntegrationProvider not implemented")
+}
+func (UnimplementedIntegrationServiceServer) UpdateIntegrationProvider(context.Context, *UpdateIntegrationProviderRequest) (*UpdateIntegrationProviderResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateIntegrationProvider not implemented")
+}
+func (UnimplementedIntegrationServiceServer) DeleteIntegrationProvider(context.Context, *DeleteIntegrationProviderRequest) (*DeleteIntegrationProviderResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteIntegrationProvider not implemented")
+}
+func (UnimplementedIntegrationServiceServer) GetUserIntegrationProvider(context.Context, *GetUserIntegrationProviderRequest) (*GetUserIntegrationProviderResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserIntegrationProvider not implemented")
+}
+func (UnimplementedIntegrationServiceServer) CreateUserIntegrationPayload(context.Context, *CreateUserIntegrationPayloadRequest) (*CreateUserIntegrationPayloadResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CreateUserIntegrationPayload not implemented")
+}
+func (UnimplementedIntegrationServiceServer) GetUserIntegrationPayloadProvider(context.Context, *GetUserIntegrationPayloadProviderRequest) (*GetUserIntegrationPayloadProviderResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetUserIntegrationPayloadProvider not implemented")
+}
+func (UnimplementedIntegrationServiceServer) InvokeUserIntegrationPayload(context.Context, *InvokeUserIntegrationPayloadRequest) (*InvokeUserIntegrationPayloadResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method InvokeUserIntegrationPayload not implemented")
+}
+func (UnimplementedIntegrationServiceServer) mustEmbedUnimplementedIntegrationServiceServer() {}
+func (UnimplementedIntegrationServiceServer) testEmbeddedByValue()                            {}
+
+// UnsafeIntegrationServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to IntegrationServiceServer will
+// result in compilation errors.
+type UnsafeIntegrationServiceServer interface {
+	mustEmbedUnimplementedIntegrationServiceServer()
+}
+
+func RegisterIntegrationServiceServer(s grpc.ServiceRegistrar, srv IntegrationServiceServer) {
+	// If the following call panics, it indicates UnimplementedIntegrationServiceServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&IntegrationService_ServiceDesc, srv)
+}
+
+func _IntegrationService_ListIntegrationProviders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListIntegrationProvidersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).ListIntegrationProviders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_ListIntegrationProviders_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).ListIntegrationProviders(ctx, req.(*ListIntegrationProvidersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_SearchIntegrationProviders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchIntegrationProvidersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).SearchIntegrationProviders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_SearchIntegrationProviders_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).SearchIntegrationProviders(ctx, req.(*SearchIntegrationProvidersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_GetIntegrationProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetIntegrationProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).GetIntegrationProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_GetIntegrationProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).GetIntegrationProvider(ctx, req.(*GetIntegrationProviderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_CreateIntegrationProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateIntegrationProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).CreateIntegrationProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_CreateIntegrationProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).CreateIntegrationProvider(ctx, req.(*CreateIntegrationProviderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_UpdateIntegrationProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateIntegrationProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).UpdateIntegrationProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_UpdateIntegrationProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).UpdateIntegrationProvider(ctx, req.(*UpdateIntegrationProviderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_DeleteIntegrationProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteIntegrationProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).DeleteIntegrationProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_DeleteIntegrationProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).DeleteIntegrationProvider(ctx, req.(*DeleteIntegrationProviderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_GetUserIntegrationProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserIntegrationProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).GetUserIntegrationProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_GetUserIntegrationProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).GetUserIntegrationProvider(ctx, req.(*GetUserIntegrationProviderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_CreateUserIntegrationPayload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateUserIntegrationPayloadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).CreateUserIntegrationPayload(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_CreateUserIntegrationPayload_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).CreateUserIntegrationPayload(ctx, req.(*CreateUserIntegrationPayloadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_GetUserIntegrationPayloadProvider_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserIntegrationPayloadProviderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).GetUserIntegrationPayloadProvider(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_GetUserIntegrationPayloadProvider_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).GetUserIntegrationPayloadProvider(ctx, req.(*GetUserIntegrationPayloadProviderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _IntegrationService_InvokeUserIntegrationPayload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InvokeUserIntegrationPayloadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IntegrationServiceServer).InvokeUserIntegrationPayload(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IntegrationService_InvokeUserIntegrationPayload_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IntegrationServiceServer).InvokeUserIntegrationPayload(ctx, req.(*InvokeUserIntegrationPayloadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// IntegrationService_ServiceDesc is the grpc.ServiceDesc for IntegrationService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var IntegrationService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "identity.v1.IntegrationService",
+	HandlerType: (*IntegrationServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ListIntegrationProviders",
+			Handler:    _IntegrationService_ListIntegrationProviders_Handler,
+		},
+		{
+			MethodName: "SearchIntegrationProviders",
+			Handler:    _IntegrationService_SearchIntegrationProviders_Handler,
+		},
+		{
+			MethodName: "GetIntegrationProvider",
+			Handler:    _IntegrationService_GetIntegrationProvider_Handler,
+		},
+		{
+			MethodName: "CreateIntegrationProvider",
+			Handler:    _IntegrationService_CreateIntegrationProvider_Handler,
+		},
+		{
+			MethodName: "UpdateIntegrationProvider",
+			Handler:    _IntegrationService_UpdateIntegrationProvider_Handler,
+		},
+		{
+			MethodName: "DeleteIntegrationProvider",
+			Handler:    _IntegrationService_DeleteIntegrationProvider_Handler,
+		},
+		{
+			MethodName: "GetUserIntegrationProvider",
+			Handler:    _IntegrationService_GetUserIntegrationProvider_Handler,
+		},
+		{
+			MethodName: "CreateUserIntegrationPayload",
+			Handler:    _IntegrationService_CreateUserIntegrationPayload_Handler,
+		},
+		{
+			MethodName: "GetUserIntegrationPayloadProvider",
+			Handler:    _IntegrationService_GetUserIntegrationPayloadProvider_Handler,
+		},
+		{
+			MethodName: "InvokeUserIntegrationPayload",
+			Handler:    _IntegrationService_InvokeUserIntegrationPayload_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

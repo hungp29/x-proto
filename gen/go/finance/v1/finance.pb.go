@@ -455,7 +455,7 @@ type Transaction struct {
 	Status    TransactionStatus `protobuf:"varint,14,opt,name=status,proto3,enum=finance.v1.TransactionStatus" json:"status,omitempty"`
 	ExecuteAt string            `protobuf:"bytes,15,opt,name=execute_at,json=executeAt,proto3" json:"execute_at,omitempty"` // RFC3339 nanoseconds, UTC; when the row becomes due
 	// Credit / transfer metadata (empty when not applicable)
-	Subtype     string `protobuf:"bytes,16,opt,name=subtype,proto3" json:"subtype,omitempty"` // purchase | payment | refund | fee | interest | adjustment
+	Subtype     string `protobuf:"bytes,16,opt,name=subtype,proto3" json:"subtype,omitempty"` // purchase | payment | refund | fee | interest | adjustment | bill (household bill pay from x-bill)
 	TransferId  string `protobuf:"bytes,17,opt,name=transfer_id,json=transferId,proto3" json:"transfer_id,omitempty"`
 	TransferLeg string `protobuf:"bytes,18,opt,name=transfer_leg,json=transferLeg,proto3" json:"transfer_leg,omitempty"` // out | in for paired transfer rows
 	// Linked refund: points to the original purchase row (empty for normal rows)
@@ -3448,7 +3448,7 @@ type CreateTransactionRequest struct {
 	GoalId          *string                `protobuf:"bytes,7,opt,name=goal_id,json=goalId,proto3,oneof" json:"goal_id,omitempty"`                      // optional
 	// IANA timezone for classifying "today" vs future and for execute_at (e.g. Asia/Ho_Chi_Minh). Empty = UTC.
 	UserTimezone string `protobuf:"bytes,10,opt,name=user_timezone,json=userTimezone,proto3" json:"user_timezone,omitempty"`
-	Subtype      string `protobuf:"bytes,11,opt,name=subtype,proto3" json:"subtype,omitempty"` // optional; credit_card: purchase, payment, refund, fee, interest
+	Subtype      string `protobuf:"bytes,11,opt,name=subtype,proto3" json:"subtype,omitempty"` // optional; credit_card: purchase, payment, refund, fee, interest; bill pay: bill
 	// Credit-card refund: must reference the original purchase; use with type=income, subtype=refund
 	ReferenceTransactionId string `protobuf:"bytes,12,opt,name=reference_transaction_id,json=referenceTransactionId,proto3" json:"reference_transaction_id,omitempty"`
 	// Optional; duplicate (user, key) returns the existing posted refund (same response body)
