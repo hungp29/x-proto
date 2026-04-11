@@ -1711,10 +1711,16 @@ var BudgetService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	GoalService_ListGoals_FullMethodName  = "/finance.v1.GoalService/ListGoals"
-	GoalService_CreateGoal_FullMethodName = "/finance.v1.GoalService/CreateGoal"
-	GoalService_UpdateGoal_FullMethodName = "/finance.v1.GoalService/UpdateGoal"
-	GoalService_DeleteGoal_FullMethodName = "/finance.v1.GoalService/DeleteGoal"
+	GoalService_ListGoals_FullMethodName            = "/finance.v1.GoalService/ListGoals"
+	GoalService_CreateGoal_FullMethodName           = "/finance.v1.GoalService/CreateGoal"
+	GoalService_UpdateGoal_FullMethodName           = "/finance.v1.GoalService/UpdateGoal"
+	GoalService_DeleteGoal_FullMethodName           = "/finance.v1.GoalService/DeleteGoal"
+	GoalService_AllocateToGoal_FullMethodName       = "/finance.v1.GoalService/AllocateToGoal"
+	GoalService_GetGoalAllocations_FullMethodName   = "/finance.v1.GoalService/GetGoalAllocations"
+	GoalService_DeleteGoalAllocation_FullMethodName = "/finance.v1.GoalService/DeleteGoalAllocation"
+	GoalService_PayDebt_FullMethodName              = "/finance.v1.GoalService/PayDebt"
+	GoalService_GetDebtPayments_FullMethodName      = "/finance.v1.GoalService/GetDebtPayments"
+	GoalService_DeleteDebtPayment_FullMethodName    = "/finance.v1.GoalService/DeleteDebtPayment"
 )
 
 // GoalServiceClient is the client API for GoalService service.
@@ -1725,6 +1731,12 @@ type GoalServiceClient interface {
 	CreateGoal(ctx context.Context, in *CreateGoalRequest, opts ...grpc.CallOption) (*CreateGoalResponse, error)
 	UpdateGoal(ctx context.Context, in *UpdateGoalRequest, opts ...grpc.CallOption) (*UpdateGoalResponse, error)
 	DeleteGoal(ctx context.Context, in *DeleteGoalRequest, opts ...grpc.CallOption) (*DeleteGoalResponse, error)
+	AllocateToGoal(ctx context.Context, in *AllocateToGoalRequest, opts ...grpc.CallOption) (*AllocateToGoalResponse, error)
+	GetGoalAllocations(ctx context.Context, in *GetGoalAllocationsRequest, opts ...grpc.CallOption) (*GetGoalAllocationsResponse, error)
+	DeleteGoalAllocation(ctx context.Context, in *DeleteGoalAllocationRequest, opts ...grpc.CallOption) (*DeleteGoalAllocationResponse, error)
+	PayDebt(ctx context.Context, in *PayDebtRequest, opts ...grpc.CallOption) (*PayDebtResponse, error)
+	GetDebtPayments(ctx context.Context, in *GetDebtPaymentsRequest, opts ...grpc.CallOption) (*GetDebtPaymentsResponse, error)
+	DeleteDebtPayment(ctx context.Context, in *DeleteDebtPaymentRequest, opts ...grpc.CallOption) (*DeleteDebtPaymentResponse, error)
 }
 
 type goalServiceClient struct {
@@ -1775,6 +1787,66 @@ func (c *goalServiceClient) DeleteGoal(ctx context.Context, in *DeleteGoalReques
 	return out, nil
 }
 
+func (c *goalServiceClient) AllocateToGoal(ctx context.Context, in *AllocateToGoalRequest, opts ...grpc.CallOption) (*AllocateToGoalResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AllocateToGoalResponse)
+	err := c.cc.Invoke(ctx, GoalService_AllocateToGoal_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goalServiceClient) GetGoalAllocations(ctx context.Context, in *GetGoalAllocationsRequest, opts ...grpc.CallOption) (*GetGoalAllocationsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGoalAllocationsResponse)
+	err := c.cc.Invoke(ctx, GoalService_GetGoalAllocations_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goalServiceClient) DeleteGoalAllocation(ctx context.Context, in *DeleteGoalAllocationRequest, opts ...grpc.CallOption) (*DeleteGoalAllocationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteGoalAllocationResponse)
+	err := c.cc.Invoke(ctx, GoalService_DeleteGoalAllocation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goalServiceClient) PayDebt(ctx context.Context, in *PayDebtRequest, opts ...grpc.CallOption) (*PayDebtResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PayDebtResponse)
+	err := c.cc.Invoke(ctx, GoalService_PayDebt_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goalServiceClient) GetDebtPayments(ctx context.Context, in *GetDebtPaymentsRequest, opts ...grpc.CallOption) (*GetDebtPaymentsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDebtPaymentsResponse)
+	err := c.cc.Invoke(ctx, GoalService_GetDebtPayments_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *goalServiceClient) DeleteDebtPayment(ctx context.Context, in *DeleteDebtPaymentRequest, opts ...grpc.CallOption) (*DeleteDebtPaymentResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteDebtPaymentResponse)
+	err := c.cc.Invoke(ctx, GoalService_DeleteDebtPayment_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GoalServiceServer is the server API for GoalService service.
 // All implementations must embed UnimplementedGoalServiceServer
 // for forward compatibility.
@@ -1783,6 +1855,12 @@ type GoalServiceServer interface {
 	CreateGoal(context.Context, *CreateGoalRequest) (*CreateGoalResponse, error)
 	UpdateGoal(context.Context, *UpdateGoalRequest) (*UpdateGoalResponse, error)
 	DeleteGoal(context.Context, *DeleteGoalRequest) (*DeleteGoalResponse, error)
+	AllocateToGoal(context.Context, *AllocateToGoalRequest) (*AllocateToGoalResponse, error)
+	GetGoalAllocations(context.Context, *GetGoalAllocationsRequest) (*GetGoalAllocationsResponse, error)
+	DeleteGoalAllocation(context.Context, *DeleteGoalAllocationRequest) (*DeleteGoalAllocationResponse, error)
+	PayDebt(context.Context, *PayDebtRequest) (*PayDebtResponse, error)
+	GetDebtPayments(context.Context, *GetDebtPaymentsRequest) (*GetDebtPaymentsResponse, error)
+	DeleteDebtPayment(context.Context, *DeleteDebtPaymentRequest) (*DeleteDebtPaymentResponse, error)
 	mustEmbedUnimplementedGoalServiceServer()
 }
 
@@ -1804,6 +1882,24 @@ func (UnimplementedGoalServiceServer) UpdateGoal(context.Context, *UpdateGoalReq
 }
 func (UnimplementedGoalServiceServer) DeleteGoal(context.Context, *DeleteGoalRequest) (*DeleteGoalResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteGoal not implemented")
+}
+func (UnimplementedGoalServiceServer) AllocateToGoal(context.Context, *AllocateToGoalRequest) (*AllocateToGoalResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AllocateToGoal not implemented")
+}
+func (UnimplementedGoalServiceServer) GetGoalAllocations(context.Context, *GetGoalAllocationsRequest) (*GetGoalAllocationsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetGoalAllocations not implemented")
+}
+func (UnimplementedGoalServiceServer) DeleteGoalAllocation(context.Context, *DeleteGoalAllocationRequest) (*DeleteGoalAllocationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteGoalAllocation not implemented")
+}
+func (UnimplementedGoalServiceServer) PayDebt(context.Context, *PayDebtRequest) (*PayDebtResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PayDebt not implemented")
+}
+func (UnimplementedGoalServiceServer) GetDebtPayments(context.Context, *GetDebtPaymentsRequest) (*GetDebtPaymentsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetDebtPayments not implemented")
+}
+func (UnimplementedGoalServiceServer) DeleteDebtPayment(context.Context, *DeleteDebtPaymentRequest) (*DeleteDebtPaymentResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method DeleteDebtPayment not implemented")
 }
 func (UnimplementedGoalServiceServer) mustEmbedUnimplementedGoalServiceServer() {}
 func (UnimplementedGoalServiceServer) testEmbeddedByValue()                     {}
@@ -1898,6 +1994,114 @@ func _GoalService_DeleteGoal_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GoalService_AllocateToGoal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AllocateToGoalRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoalServiceServer).AllocateToGoal(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GoalService_AllocateToGoal_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoalServiceServer).AllocateToGoal(ctx, req.(*AllocateToGoalRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GoalService_GetGoalAllocations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGoalAllocationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoalServiceServer).GetGoalAllocations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GoalService_GetGoalAllocations_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoalServiceServer).GetGoalAllocations(ctx, req.(*GetGoalAllocationsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GoalService_DeleteGoalAllocation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteGoalAllocationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoalServiceServer).DeleteGoalAllocation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GoalService_DeleteGoalAllocation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoalServiceServer).DeleteGoalAllocation(ctx, req.(*DeleteGoalAllocationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GoalService_PayDebt_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PayDebtRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoalServiceServer).PayDebt(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GoalService_PayDebt_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoalServiceServer).PayDebt(ctx, req.(*PayDebtRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GoalService_GetDebtPayments_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDebtPaymentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoalServiceServer).GetDebtPayments(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GoalService_GetDebtPayments_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoalServiceServer).GetDebtPayments(ctx, req.(*GetDebtPaymentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GoalService_DeleteDebtPayment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteDebtPaymentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GoalServiceServer).DeleteDebtPayment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GoalService_DeleteDebtPayment_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GoalServiceServer).DeleteDebtPayment(ctx, req.(*DeleteDebtPaymentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GoalService_ServiceDesc is the grpc.ServiceDesc for GoalService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1920,6 +2124,30 @@ var GoalService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteGoal",
 			Handler:    _GoalService_DeleteGoal_Handler,
+		},
+		{
+			MethodName: "AllocateToGoal",
+			Handler:    _GoalService_AllocateToGoal_Handler,
+		},
+		{
+			MethodName: "GetGoalAllocations",
+			Handler:    _GoalService_GetGoalAllocations_Handler,
+		},
+		{
+			MethodName: "DeleteGoalAllocation",
+			Handler:    _GoalService_DeleteGoalAllocation_Handler,
+		},
+		{
+			MethodName: "PayDebt",
+			Handler:    _GoalService_PayDebt_Handler,
+		},
+		{
+			MethodName: "GetDebtPayments",
+			Handler:    _GoalService_GetDebtPayments_Handler,
+		},
+		{
+			MethodName: "DeleteDebtPayment",
+			Handler:    _GoalService_DeleteDebtPayment_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
