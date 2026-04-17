@@ -640,6 +640,94 @@ func (x *DeleteAppByIdResponse) GetSuccess() bool {
 	return false
 }
 
+type ListRolesByAppIdRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AppId         string                 `protobuf:"bytes,10,opt,name=app_id,json=appId,proto3" json:"app_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRolesByAppIdRequest) Reset() {
+	*x = ListRolesByAppIdRequest{}
+	mi := &file_app_v1_app_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRolesByAppIdRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRolesByAppIdRequest) ProtoMessage() {}
+
+func (x *ListRolesByAppIdRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_app_v1_app_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRolesByAppIdRequest.ProtoReflect.Descriptor instead.
+func (*ListRolesByAppIdRequest) Descriptor() ([]byte, []int) {
+	return file_app_v1_app_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ListRolesByAppIdRequest) GetAppId() string {
+	if x != nil {
+		return x.AppId
+	}
+	return ""
+}
+
+type ListRolesByAppIdResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Roles         []*v1.Role             `protobuf:"bytes,1,rep,name=roles,proto3" json:"roles,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListRolesByAppIdResponse) Reset() {
+	*x = ListRolesByAppIdResponse{}
+	mi := &file_app_v1_app_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListRolesByAppIdResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListRolesByAppIdResponse) ProtoMessage() {}
+
+func (x *ListRolesByAppIdResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_app_v1_app_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListRolesByAppIdResponse.ProtoReflect.Descriptor instead.
+func (*ListRolesByAppIdResponse) Descriptor() ([]byte, []int) {
+	return file_app_v1_app_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ListRolesByAppIdResponse) GetRoles() []*v1.Role {
+	if x != nil {
+		return x.Roles
+	}
+	return nil
+}
+
 type GrantUserAppAccessRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        string                 `protobuf:"bytes,10,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
@@ -651,7 +739,7 @@ type GrantUserAppAccessRequest struct {
 
 func (x *GrantUserAppAccessRequest) Reset() {
 	*x = GrantUserAppAccessRequest{}
-	mi := &file_app_v1_app_proto_msgTypes[12]
+	mi := &file_app_v1_app_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -663,7 +751,7 @@ func (x *GrantUserAppAccessRequest) String() string {
 func (*GrantUserAppAccessRequest) ProtoMessage() {}
 
 func (x *GrantUserAppAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[12]
+	mi := &file_app_v1_app_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -676,7 +764,7 @@ func (x *GrantUserAppAccessRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GrantUserAppAccessRequest.ProtoReflect.Descriptor instead.
 func (*GrantUserAppAccessRequest) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{12}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *GrantUserAppAccessRequest) GetUserId() string {
@@ -708,7 +796,7 @@ type GrantUserAppAccessResponse struct {
 
 func (x *GrantUserAppAccessResponse) Reset() {
 	*x = GrantUserAppAccessResponse{}
-	mi := &file_app_v1_app_proto_msgTypes[13]
+	mi := &file_app_v1_app_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -720,7 +808,7 @@ func (x *GrantUserAppAccessResponse) String() string {
 func (*GrantUserAppAccessResponse) ProtoMessage() {}
 
 func (x *GrantUserAppAccessResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[13]
+	mi := &file_app_v1_app_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -733,7 +821,7 @@ func (x *GrantUserAppAccessResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GrantUserAppAccessResponse.ProtoReflect.Descriptor instead.
 func (*GrantUserAppAccessResponse) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{13}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{15}
 }
 
 type RevokeUserAppAccessRequest struct {
@@ -746,7 +834,7 @@ type RevokeUserAppAccessRequest struct {
 
 func (x *RevokeUserAppAccessRequest) Reset() {
 	*x = RevokeUserAppAccessRequest{}
-	mi := &file_app_v1_app_proto_msgTypes[14]
+	mi := &file_app_v1_app_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -758,7 +846,7 @@ func (x *RevokeUserAppAccessRequest) String() string {
 func (*RevokeUserAppAccessRequest) ProtoMessage() {}
 
 func (x *RevokeUserAppAccessRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[14]
+	mi := &file_app_v1_app_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -771,7 +859,7 @@ func (x *RevokeUserAppAccessRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevokeUserAppAccessRequest.ProtoReflect.Descriptor instead.
 func (*RevokeUserAppAccessRequest) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{14}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *RevokeUserAppAccessRequest) GetUserId() string {
@@ -796,7 +884,7 @@ type RevokeUserAppAccessResponse struct {
 
 func (x *RevokeUserAppAccessResponse) Reset() {
 	*x = RevokeUserAppAccessResponse{}
-	mi := &file_app_v1_app_proto_msgTypes[15]
+	mi := &file_app_v1_app_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -808,7 +896,7 @@ func (x *RevokeUserAppAccessResponse) String() string {
 func (*RevokeUserAppAccessResponse) ProtoMessage() {}
 
 func (x *RevokeUserAppAccessResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[15]
+	mi := &file_app_v1_app_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -821,7 +909,7 @@ func (x *RevokeUserAppAccessResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RevokeUserAppAccessResponse.ProtoReflect.Descriptor instead.
 func (*RevokeUserAppAccessResponse) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{15}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{17}
 }
 
 type GetAppsByUserIdRequest struct {
@@ -833,7 +921,7 @@ type GetAppsByUserIdRequest struct {
 
 func (x *GetAppsByUserIdRequest) Reset() {
 	*x = GetAppsByUserIdRequest{}
-	mi := &file_app_v1_app_proto_msgTypes[16]
+	mi := &file_app_v1_app_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -845,7 +933,7 @@ func (x *GetAppsByUserIdRequest) String() string {
 func (*GetAppsByUserIdRequest) ProtoMessage() {}
 
 func (x *GetAppsByUserIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[16]
+	mi := &file_app_v1_app_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -858,7 +946,7 @@ func (x *GetAppsByUserIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAppsByUserIdRequest.ProtoReflect.Descriptor instead.
 func (*GetAppsByUserIdRequest) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{16}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *GetAppsByUserIdRequest) GetUserId() string {
@@ -877,7 +965,7 @@ type GetAppsByUserIdResponse struct {
 
 func (x *GetAppsByUserIdResponse) Reset() {
 	*x = GetAppsByUserIdResponse{}
-	mi := &file_app_v1_app_proto_msgTypes[17]
+	mi := &file_app_v1_app_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -889,7 +977,7 @@ func (x *GetAppsByUserIdResponse) String() string {
 func (*GetAppsByUserIdResponse) ProtoMessage() {}
 
 func (x *GetAppsByUserIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[17]
+	mi := &file_app_v1_app_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -902,7 +990,7 @@ func (x *GetAppsByUserIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAppsByUserIdResponse.ProtoReflect.Descriptor instead.
 func (*GetAppsByUserIdResponse) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{17}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *GetAppsByUserIdResponse) GetApps() []*v1.App {
@@ -922,7 +1010,7 @@ type ListUsersByAppIdRequest struct {
 
 func (x *ListUsersByAppIdRequest) Reset() {
 	*x = ListUsersByAppIdRequest{}
-	mi := &file_app_v1_app_proto_msgTypes[18]
+	mi := &file_app_v1_app_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -934,7 +1022,7 @@ func (x *ListUsersByAppIdRequest) String() string {
 func (*ListUsersByAppIdRequest) ProtoMessage() {}
 
 func (x *ListUsersByAppIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[18]
+	mi := &file_app_v1_app_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -947,7 +1035,7 @@ func (x *ListUsersByAppIdRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUsersByAppIdRequest.ProtoReflect.Descriptor instead.
 func (*ListUsersByAppIdRequest) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{18}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *ListUsersByAppIdRequest) GetAppId() string {
@@ -975,7 +1063,7 @@ type ListUsersByAppIdResponse struct {
 
 func (x *ListUsersByAppIdResponse) Reset() {
 	*x = ListUsersByAppIdResponse{}
-	mi := &file_app_v1_app_proto_msgTypes[19]
+	mi := &file_app_v1_app_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -987,7 +1075,7 @@ func (x *ListUsersByAppIdResponse) String() string {
 func (*ListUsersByAppIdResponse) ProtoMessage() {}
 
 func (x *ListUsersByAppIdResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_app_v1_app_proto_msgTypes[19]
+	mi := &file_app_v1_app_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1000,7 +1088,7 @@ func (x *ListUsersByAppIdResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListUsersByAppIdResponse.ProtoReflect.Descriptor instead.
 func (*ListUsersByAppIdResponse) Descriptor() ([]byte, []int) {
-	return file_app_v1_app_proto_rawDescGZIP(), []int{19}
+	return file_app_v1_app_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *ListUsersByAppIdResponse) GetUsers() []*v1.User {
@@ -1080,7 +1168,12 @@ const file_app_v1_app_proto_rawDesc = "" +
 	"\x06app_id\x18\n" +
 	" \x01(\tR\x05appId\"1\n" +
 	"\x15DeleteAppByIdResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\"j\n" +
+	"\asuccess\x18\x01 \x01(\bR\asuccess\"0\n" +
+	"\x17ListRolesByAppIdRequest\x12\x15\n" +
+	"\x06app_id\x18\n" +
+	" \x01(\tR\x05appId\"A\n" +
+	"\x18ListRolesByAppIdResponse\x12%\n" +
+	"\x05roles\x18\x01 \x03(\v2\x0f.common.v1.RoleR\x05roles\"j\n" +
 	"\x19GrantUserAppAccessRequest\x12\x17\n" +
 	"\auser_id\x18\n" +
 	" \x01(\tR\x06userId\x12\x15\n" +
@@ -1108,7 +1201,7 @@ const file_app_v1_app_proto_rawDesc = "" +
 	"\x05users\x18\x01 \x03(\v2\x0f.common.v1.UserR\x05users\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1f\n" +
 	"\vtotal_count\x18\x03 \x01(\x05R\n" +
-	"totalCount2\xaa\x03\n" +
+	"totalCount2\x81\x04\n" +
 	"\n" +
 	"AppService\x12=\n" +
 	"\bListApps\x12\x17.app.v1.ListAppsRequest\x1a\x18.app.v1.ListAppsResponse\x12@\n" +
@@ -1117,7 +1210,8 @@ const file_app_v1_app_proto_rawDesc = "" +
 	"GetAppById\x12\x19.app.v1.GetAppByIdRequest\x1a\x1a.app.v1.GetAppByIdResponse\x12F\n" +
 	"\vGetAppByKey\x12\x1a.app.v1.GetAppByKeyRequest\x1a\x1b.app.v1.GetAppByKeyResponse\x12@\n" +
 	"\tUpdateApp\x12\x18.app.v1.UpdateAppRequest\x1a\x19.app.v1.UpdateAppResponse\x12L\n" +
-	"\rDeleteAppById\x12\x1c.app.v1.DeleteAppByIdRequest\x1a\x1d.app.v1.DeleteAppByIdResponse2\xf8\x02\n" +
+	"\rDeleteAppById\x12\x1c.app.v1.DeleteAppByIdRequest\x1a\x1d.app.v1.DeleteAppByIdResponse\x12U\n" +
+	"\x10ListRolesByAppId\x12\x1f.app.v1.ListRolesByAppIdRequest\x1a .app.v1.ListRolesByAppIdResponse2\xf8\x02\n" +
 	"\x0eUserAppService\x12[\n" +
 	"\x12GrantUserAppAccess\x12!.app.v1.GrantUserAppAccessRequest\x1a\".app.v1.GrantUserAppAccessResponse\x12^\n" +
 	"\x13RevokeUserAppAccess\x12\".app.v1.RevokeUserAppAccessRequest\x1a#.app.v1.RevokeUserAppAccessResponse\x12R\n" +
@@ -1138,7 +1232,7 @@ func file_app_v1_app_proto_rawDescGZIP() []byte {
 	return file_app_v1_app_proto_rawDescData
 }
 
-var file_app_v1_app_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
+var file_app_v1_app_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_app_v1_app_proto_goTypes = []any{
 	(*ListAppsRequest)(nil),             // 0: app.v1.ListAppsRequest
 	(*ListAppsResponse)(nil),            // 1: app.v1.ListAppsResponse
@@ -1152,53 +1246,59 @@ var file_app_v1_app_proto_goTypes = []any{
 	(*UpdateAppResponse)(nil),           // 9: app.v1.UpdateAppResponse
 	(*DeleteAppByIdRequest)(nil),        // 10: app.v1.DeleteAppByIdRequest
 	(*DeleteAppByIdResponse)(nil),       // 11: app.v1.DeleteAppByIdResponse
-	(*GrantUserAppAccessRequest)(nil),   // 12: app.v1.GrantUserAppAccessRequest
-	(*GrantUserAppAccessResponse)(nil),  // 13: app.v1.GrantUserAppAccessResponse
-	(*RevokeUserAppAccessRequest)(nil),  // 14: app.v1.RevokeUserAppAccessRequest
-	(*RevokeUserAppAccessResponse)(nil), // 15: app.v1.RevokeUserAppAccessResponse
-	(*GetAppsByUserIdRequest)(nil),      // 16: app.v1.GetAppsByUserIdRequest
-	(*GetAppsByUserIdResponse)(nil),     // 17: app.v1.GetAppsByUserIdResponse
-	(*ListUsersByAppIdRequest)(nil),     // 18: app.v1.ListUsersByAppIdRequest
-	(*ListUsersByAppIdResponse)(nil),    // 19: app.v1.ListUsersByAppIdResponse
-	(*v1.Pagination)(nil),               // 20: common.v1.Pagination
-	(*v1.App)(nil),                      // 21: common.v1.App
-	(*v1.User)(nil),                     // 22: common.v1.User
+	(*ListRolesByAppIdRequest)(nil),     // 12: app.v1.ListRolesByAppIdRequest
+	(*ListRolesByAppIdResponse)(nil),    // 13: app.v1.ListRolesByAppIdResponse
+	(*GrantUserAppAccessRequest)(nil),   // 14: app.v1.GrantUserAppAccessRequest
+	(*GrantUserAppAccessResponse)(nil),  // 15: app.v1.GrantUserAppAccessResponse
+	(*RevokeUserAppAccessRequest)(nil),  // 16: app.v1.RevokeUserAppAccessRequest
+	(*RevokeUserAppAccessResponse)(nil), // 17: app.v1.RevokeUserAppAccessResponse
+	(*GetAppsByUserIdRequest)(nil),      // 18: app.v1.GetAppsByUserIdRequest
+	(*GetAppsByUserIdResponse)(nil),     // 19: app.v1.GetAppsByUserIdResponse
+	(*ListUsersByAppIdRequest)(nil),     // 20: app.v1.ListUsersByAppIdRequest
+	(*ListUsersByAppIdResponse)(nil),    // 21: app.v1.ListUsersByAppIdResponse
+	(*v1.Pagination)(nil),               // 22: common.v1.Pagination
+	(*v1.App)(nil),                      // 23: common.v1.App
+	(*v1.Role)(nil),                     // 24: common.v1.Role
+	(*v1.User)(nil),                     // 25: common.v1.User
 }
 var file_app_v1_app_proto_depIdxs = []int32{
-	20, // 0: app.v1.ListAppsRequest.pagination:type_name -> common.v1.Pagination
-	21, // 1: app.v1.ListAppsResponse.apps:type_name -> common.v1.App
-	21, // 2: app.v1.CreateAppResponse.app:type_name -> common.v1.App
-	21, // 3: app.v1.GetAppByIdResponse.app:type_name -> common.v1.App
-	21, // 4: app.v1.GetAppByKeyResponse.app:type_name -> common.v1.App
-	21, // 5: app.v1.UpdateAppResponse.app:type_name -> common.v1.App
-	21, // 6: app.v1.GetAppsByUserIdResponse.apps:type_name -> common.v1.App
-	20, // 7: app.v1.ListUsersByAppIdRequest.pagination:type_name -> common.v1.Pagination
-	22, // 8: app.v1.ListUsersByAppIdResponse.users:type_name -> common.v1.User
-	0,  // 9: app.v1.AppService.ListApps:input_type -> app.v1.ListAppsRequest
-	2,  // 10: app.v1.AppService.CreateApp:input_type -> app.v1.CreateAppRequest
-	4,  // 11: app.v1.AppService.GetAppById:input_type -> app.v1.GetAppByIdRequest
-	6,  // 12: app.v1.AppService.GetAppByKey:input_type -> app.v1.GetAppByKeyRequest
-	8,  // 13: app.v1.AppService.UpdateApp:input_type -> app.v1.UpdateAppRequest
-	10, // 14: app.v1.AppService.DeleteAppById:input_type -> app.v1.DeleteAppByIdRequest
-	12, // 15: app.v1.UserAppService.GrantUserAppAccess:input_type -> app.v1.GrantUserAppAccessRequest
-	14, // 16: app.v1.UserAppService.RevokeUserAppAccess:input_type -> app.v1.RevokeUserAppAccessRequest
-	16, // 17: app.v1.UserAppService.GetAppsByUserId:input_type -> app.v1.GetAppsByUserIdRequest
-	18, // 18: app.v1.UserAppService.ListUsersByAppId:input_type -> app.v1.ListUsersByAppIdRequest
-	1,  // 19: app.v1.AppService.ListApps:output_type -> app.v1.ListAppsResponse
-	3,  // 20: app.v1.AppService.CreateApp:output_type -> app.v1.CreateAppResponse
-	5,  // 21: app.v1.AppService.GetAppById:output_type -> app.v1.GetAppByIdResponse
-	7,  // 22: app.v1.AppService.GetAppByKey:output_type -> app.v1.GetAppByKeyResponse
-	9,  // 23: app.v1.AppService.UpdateApp:output_type -> app.v1.UpdateAppResponse
-	11, // 24: app.v1.AppService.DeleteAppById:output_type -> app.v1.DeleteAppByIdResponse
-	13, // 25: app.v1.UserAppService.GrantUserAppAccess:output_type -> app.v1.GrantUserAppAccessResponse
-	15, // 26: app.v1.UserAppService.RevokeUserAppAccess:output_type -> app.v1.RevokeUserAppAccessResponse
-	17, // 27: app.v1.UserAppService.GetAppsByUserId:output_type -> app.v1.GetAppsByUserIdResponse
-	19, // 28: app.v1.UserAppService.ListUsersByAppId:output_type -> app.v1.ListUsersByAppIdResponse
-	19, // [19:29] is the sub-list for method output_type
-	9,  // [9:19] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	22, // 0: app.v1.ListAppsRequest.pagination:type_name -> common.v1.Pagination
+	23, // 1: app.v1.ListAppsResponse.apps:type_name -> common.v1.App
+	23, // 2: app.v1.CreateAppResponse.app:type_name -> common.v1.App
+	23, // 3: app.v1.GetAppByIdResponse.app:type_name -> common.v1.App
+	23, // 4: app.v1.GetAppByKeyResponse.app:type_name -> common.v1.App
+	23, // 5: app.v1.UpdateAppResponse.app:type_name -> common.v1.App
+	24, // 6: app.v1.ListRolesByAppIdResponse.roles:type_name -> common.v1.Role
+	23, // 7: app.v1.GetAppsByUserIdResponse.apps:type_name -> common.v1.App
+	22, // 8: app.v1.ListUsersByAppIdRequest.pagination:type_name -> common.v1.Pagination
+	25, // 9: app.v1.ListUsersByAppIdResponse.users:type_name -> common.v1.User
+	0,  // 10: app.v1.AppService.ListApps:input_type -> app.v1.ListAppsRequest
+	2,  // 11: app.v1.AppService.CreateApp:input_type -> app.v1.CreateAppRequest
+	4,  // 12: app.v1.AppService.GetAppById:input_type -> app.v1.GetAppByIdRequest
+	6,  // 13: app.v1.AppService.GetAppByKey:input_type -> app.v1.GetAppByKeyRequest
+	8,  // 14: app.v1.AppService.UpdateApp:input_type -> app.v1.UpdateAppRequest
+	10, // 15: app.v1.AppService.DeleteAppById:input_type -> app.v1.DeleteAppByIdRequest
+	12, // 16: app.v1.AppService.ListRolesByAppId:input_type -> app.v1.ListRolesByAppIdRequest
+	14, // 17: app.v1.UserAppService.GrantUserAppAccess:input_type -> app.v1.GrantUserAppAccessRequest
+	16, // 18: app.v1.UserAppService.RevokeUserAppAccess:input_type -> app.v1.RevokeUserAppAccessRequest
+	18, // 19: app.v1.UserAppService.GetAppsByUserId:input_type -> app.v1.GetAppsByUserIdRequest
+	20, // 20: app.v1.UserAppService.ListUsersByAppId:input_type -> app.v1.ListUsersByAppIdRequest
+	1,  // 21: app.v1.AppService.ListApps:output_type -> app.v1.ListAppsResponse
+	3,  // 22: app.v1.AppService.CreateApp:output_type -> app.v1.CreateAppResponse
+	5,  // 23: app.v1.AppService.GetAppById:output_type -> app.v1.GetAppByIdResponse
+	7,  // 24: app.v1.AppService.GetAppByKey:output_type -> app.v1.GetAppByKeyResponse
+	9,  // 25: app.v1.AppService.UpdateApp:output_type -> app.v1.UpdateAppResponse
+	11, // 26: app.v1.AppService.DeleteAppById:output_type -> app.v1.DeleteAppByIdResponse
+	13, // 27: app.v1.AppService.ListRolesByAppId:output_type -> app.v1.ListRolesByAppIdResponse
+	15, // 28: app.v1.UserAppService.GrantUserAppAccess:output_type -> app.v1.GrantUserAppAccessResponse
+	17, // 29: app.v1.UserAppService.RevokeUserAppAccess:output_type -> app.v1.RevokeUserAppAccessResponse
+	19, // 30: app.v1.UserAppService.GetAppsByUserId:output_type -> app.v1.GetAppsByUserIdResponse
+	21, // 31: app.v1.UserAppService.ListUsersByAppId:output_type -> app.v1.ListUsersByAppIdResponse
+	21, // [21:32] is the sub-list for method output_type
+	10, // [10:21] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_app_v1_app_proto_init() }
@@ -1214,7 +1314,7 @@ func file_app_v1_app_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_app_v1_app_proto_rawDesc), len(file_app_v1_app_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   20,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

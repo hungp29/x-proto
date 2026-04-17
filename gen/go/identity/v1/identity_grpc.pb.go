@@ -19,11 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AuthService_Register_FullMethodName      = "/identity.v1.AuthService/Register"
-	AuthService_Login_FullMethodName         = "/identity.v1.AuthService/Login"
-	AuthService_Logout_FullMethodName        = "/identity.v1.AuthService/Logout"
-	AuthService_RefreshToken_FullMethodName  = "/identity.v1.AuthService/RefreshToken"
-	AuthService_ValidateToken_FullMethodName = "/identity.v1.AuthService/ValidateToken"
+	AuthService_Register_FullMethodName             = "/identity.v1.AuthService/Register"
+	AuthService_Login_FullMethodName                = "/identity.v1.AuthService/Login"
+	AuthService_Logout_FullMethodName               = "/identity.v1.AuthService/Logout"
+	AuthService_RefreshToken_FullMethodName         = "/identity.v1.AuthService/RefreshToken"
+	AuthService_ValidateToken_FullMethodName        = "/identity.v1.AuthService/ValidateToken"
+	AuthService_InviteUser_FullMethodName           = "/identity.v1.AuthService/InviteUser"
+	AuthService_SetPasswordWithToken_FullMethodName = "/identity.v1.AuthService/SetPasswordWithToken"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -37,6 +39,8 @@ type AuthServiceClient interface {
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
+	InviteUser(ctx context.Context, in *InviteUserRequest, opts ...grpc.CallOption) (*InviteUserResponse, error)
+	SetPasswordWithToken(ctx context.Context, in *SetPasswordWithTokenRequest, opts ...grpc.CallOption) (*SetPasswordWithTokenResponse, error)
 }
 
 type authServiceClient struct {
@@ -97,6 +101,26 @@ func (c *authServiceClient) ValidateToken(ctx context.Context, in *ValidateToken
 	return out, nil
 }
 
+func (c *authServiceClient) InviteUser(ctx context.Context, in *InviteUserRequest, opts ...grpc.CallOption) (*InviteUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InviteUserResponse)
+	err := c.cc.Invoke(ctx, AuthService_InviteUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) SetPasswordWithToken(ctx context.Context, in *SetPasswordWithTokenRequest, opts ...grpc.CallOption) (*SetPasswordWithTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetPasswordWithTokenResponse)
+	err := c.cc.Invoke(ctx, AuthService_SetPasswordWithToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -108,6 +132,8 @@ type AuthServiceServer interface {
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
+	InviteUser(context.Context, *InviteUserRequest) (*InviteUserResponse, error)
+	SetPasswordWithToken(context.Context, *SetPasswordWithTokenRequest) (*SetPasswordWithTokenResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -132,6 +158,12 @@ func (UnimplementedAuthServiceServer) RefreshToken(context.Context, *RefreshToke
 }
 func (UnimplementedAuthServiceServer) ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ValidateToken not implemented")
+}
+func (UnimplementedAuthServiceServer) InviteUser(context.Context, *InviteUserRequest) (*InviteUserResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method InviteUser not implemented")
+}
+func (UnimplementedAuthServiceServer) SetPasswordWithToken(context.Context, *SetPasswordWithTokenRequest) (*SetPasswordWithTokenResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetPasswordWithToken not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -244,6 +276,42 @@ func _AuthService_ValidateToken_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_InviteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InviteUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).InviteUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_InviteUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).InviteUser(ctx, req.(*InviteUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_SetPasswordWithToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetPasswordWithTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SetPasswordWithToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_SetPasswordWithToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SetPasswordWithToken(ctx, req.(*SetPasswordWithTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -270,6 +338,14 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ValidateToken",
 			Handler:    _AuthService_ValidateToken_Handler,
+		},
+		{
+			MethodName: "InviteUser",
+			Handler:    _AuthService_InviteUser_Handler,
+		},
+		{
+			MethodName: "SetPasswordWithToken",
+			Handler:    _AuthService_SetPasswordWithToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -804,6 +880,9 @@ const (
 	RoleService_AddPermissionsToRole_FullMethodName      = "/identity.v1.RoleService/AddPermissionsToRole"
 	RoleService_RemovePermissionsFromRole_FullMethodName = "/identity.v1.RoleService/RemovePermissionsFromRole"
 	RoleService_SetPermissionsForRole_FullMethodName     = "/identity.v1.RoleService/SetPermissionsForRole"
+	RoleService_ListRoleApps_FullMethodName              = "/identity.v1.RoleService/ListRoleApps"
+	RoleService_AddAppToRole_FullMethodName              = "/identity.v1.RoleService/AddAppToRole"
+	RoleService_RemoveAppFromRole_FullMethodName         = "/identity.v1.RoleService/RemoveAppFromRole"
 )
 
 // RoleServiceClient is the client API for RoleService service.
@@ -824,6 +903,10 @@ type RoleServiceClient interface {
 	AddPermissionsToRole(ctx context.Context, in *AddPermissionsToRoleRequest, opts ...grpc.CallOption) (*AddPermissionsToRoleResponse, error)
 	RemovePermissionsFromRole(ctx context.Context, in *RemovePermissionsFromRoleRequest, opts ...grpc.CallOption) (*RemovePermissionsFromRoleResponse, error)
 	SetPermissionsForRole(ctx context.Context, in *SetPermissionsForRoleRequest, opts ...grpc.CallOption) (*SetPermissionsForRoleResponse, error)
+	// role - app (non-public app access via role membership)
+	ListRoleApps(ctx context.Context, in *ListRoleAppsRequest, opts ...grpc.CallOption) (*ListRoleAppsResponse, error)
+	AddAppToRole(ctx context.Context, in *AddAppToRoleRequest, opts ...grpc.CallOption) (*AddAppToRoleResponse, error)
+	RemoveAppFromRole(ctx context.Context, in *RemoveAppFromRoleRequest, opts ...grpc.CallOption) (*RemoveAppFromRoleResponse, error)
 }
 
 type roleServiceClient struct {
@@ -944,6 +1027,36 @@ func (c *roleServiceClient) SetPermissionsForRole(ctx context.Context, in *SetPe
 	return out, nil
 }
 
+func (c *roleServiceClient) ListRoleApps(ctx context.Context, in *ListRoleAppsRequest, opts ...grpc.CallOption) (*ListRoleAppsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListRoleAppsResponse)
+	err := c.cc.Invoke(ctx, RoleService_ListRoleApps_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleServiceClient) AddAppToRole(ctx context.Context, in *AddAppToRoleRequest, opts ...grpc.CallOption) (*AddAppToRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddAppToRoleResponse)
+	err := c.cc.Invoke(ctx, RoleService_AddAppToRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleServiceClient) RemoveAppFromRole(ctx context.Context, in *RemoveAppFromRoleRequest, opts ...grpc.CallOption) (*RemoveAppFromRoleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveAppFromRoleResponse)
+	err := c.cc.Invoke(ctx, RoleService_RemoveAppFromRole_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RoleServiceServer is the server API for RoleService service.
 // All implementations must embed UnimplementedRoleServiceServer
 // for forward compatibility.
@@ -962,6 +1075,10 @@ type RoleServiceServer interface {
 	AddPermissionsToRole(context.Context, *AddPermissionsToRoleRequest) (*AddPermissionsToRoleResponse, error)
 	RemovePermissionsFromRole(context.Context, *RemovePermissionsFromRoleRequest) (*RemovePermissionsFromRoleResponse, error)
 	SetPermissionsForRole(context.Context, *SetPermissionsForRoleRequest) (*SetPermissionsForRoleResponse, error)
+	// role - app (non-public app access via role membership)
+	ListRoleApps(context.Context, *ListRoleAppsRequest) (*ListRoleAppsResponse, error)
+	AddAppToRole(context.Context, *AddAppToRoleRequest) (*AddAppToRoleResponse, error)
+	RemoveAppFromRole(context.Context, *RemoveAppFromRoleRequest) (*RemoveAppFromRoleResponse, error)
 	mustEmbedUnimplementedRoleServiceServer()
 }
 
@@ -1004,6 +1121,15 @@ func (UnimplementedRoleServiceServer) RemovePermissionsFromRole(context.Context,
 }
 func (UnimplementedRoleServiceServer) SetPermissionsForRole(context.Context, *SetPermissionsForRoleRequest) (*SetPermissionsForRoleResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetPermissionsForRole not implemented")
+}
+func (UnimplementedRoleServiceServer) ListRoleApps(context.Context, *ListRoleAppsRequest) (*ListRoleAppsResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListRoleApps not implemented")
+}
+func (UnimplementedRoleServiceServer) AddAppToRole(context.Context, *AddAppToRoleRequest) (*AddAppToRoleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method AddAppToRole not implemented")
+}
+func (UnimplementedRoleServiceServer) RemoveAppFromRole(context.Context, *RemoveAppFromRoleRequest) (*RemoveAppFromRoleResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RemoveAppFromRole not implemented")
 }
 func (UnimplementedRoleServiceServer) mustEmbedUnimplementedRoleServiceServer() {}
 func (UnimplementedRoleServiceServer) testEmbeddedByValue()                     {}
@@ -1224,6 +1350,60 @@ func _RoleService_SetPermissionsForRole_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RoleService_ListRoleApps_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRoleAppsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).ListRoleApps(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_ListRoleApps_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).ListRoleApps(ctx, req.(*ListRoleAppsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleService_AddAppToRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAppToRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).AddAppToRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_AddAppToRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).AddAppToRole(ctx, req.(*AddAppToRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleService_RemoveAppFromRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveAppFromRoleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).RemoveAppFromRole(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_RemoveAppFromRole_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).RemoveAppFromRole(ctx, req.(*RemoveAppFromRoleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RoleService_ServiceDesc is the grpc.ServiceDesc for RoleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1274,6 +1454,18 @@ var RoleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetPermissionsForRole",
 			Handler:    _RoleService_SetPermissionsForRole_Handler,
+		},
+		{
+			MethodName: "ListRoleApps",
+			Handler:    _RoleService_ListRoleApps_Handler,
+		},
+		{
+			MethodName: "AddAppToRole",
+			Handler:    _RoleService_AddAppToRole_Handler,
+		},
+		{
+			MethodName: "RemoveAppFromRole",
+			Handler:    _RoleService_RemoveAppFromRole_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

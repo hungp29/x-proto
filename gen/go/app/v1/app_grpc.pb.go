@@ -19,12 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AppService_ListApps_FullMethodName      = "/app.v1.AppService/ListApps"
-	AppService_CreateApp_FullMethodName     = "/app.v1.AppService/CreateApp"
-	AppService_GetAppById_FullMethodName    = "/app.v1.AppService/GetAppById"
-	AppService_GetAppByKey_FullMethodName   = "/app.v1.AppService/GetAppByKey"
-	AppService_UpdateApp_FullMethodName     = "/app.v1.AppService/UpdateApp"
-	AppService_DeleteAppById_FullMethodName = "/app.v1.AppService/DeleteAppById"
+	AppService_ListApps_FullMethodName         = "/app.v1.AppService/ListApps"
+	AppService_CreateApp_FullMethodName        = "/app.v1.AppService/CreateApp"
+	AppService_GetAppById_FullMethodName       = "/app.v1.AppService/GetAppById"
+	AppService_GetAppByKey_FullMethodName      = "/app.v1.AppService/GetAppByKey"
+	AppService_UpdateApp_FullMethodName        = "/app.v1.AppService/UpdateApp"
+	AppService_DeleteAppById_FullMethodName    = "/app.v1.AppService/DeleteAppById"
+	AppService_ListRolesByAppId_FullMethodName = "/app.v1.AppService/ListRolesByAppId"
 )
 
 // AppServiceClient is the client API for AppService service.
@@ -39,6 +40,7 @@ type AppServiceClient interface {
 	GetAppByKey(ctx context.Context, in *GetAppByKeyRequest, opts ...grpc.CallOption) (*GetAppByKeyResponse, error)
 	UpdateApp(ctx context.Context, in *UpdateAppRequest, opts ...grpc.CallOption) (*UpdateAppResponse, error)
 	DeleteAppById(ctx context.Context, in *DeleteAppByIdRequest, opts ...grpc.CallOption) (*DeleteAppByIdResponse, error)
+	ListRolesByAppId(ctx context.Context, in *ListRolesByAppIdRequest, opts ...grpc.CallOption) (*ListRolesByAppIdResponse, error)
 }
 
 type appServiceClient struct {
@@ -109,6 +111,16 @@ func (c *appServiceClient) DeleteAppById(ctx context.Context, in *DeleteAppByIdR
 	return out, nil
 }
 
+func (c *appServiceClient) ListRolesByAppId(ctx context.Context, in *ListRolesByAppIdRequest, opts ...grpc.CallOption) (*ListRolesByAppIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListRolesByAppIdResponse)
+	err := c.cc.Invoke(ctx, AppService_ListRolesByAppId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AppServiceServer is the server API for AppService service.
 // All implementations must embed UnimplementedAppServiceServer
 // for forward compatibility.
@@ -121,6 +133,7 @@ type AppServiceServer interface {
 	GetAppByKey(context.Context, *GetAppByKeyRequest) (*GetAppByKeyResponse, error)
 	UpdateApp(context.Context, *UpdateAppRequest) (*UpdateAppResponse, error)
 	DeleteAppById(context.Context, *DeleteAppByIdRequest) (*DeleteAppByIdResponse, error)
+	ListRolesByAppId(context.Context, *ListRolesByAppIdRequest) (*ListRolesByAppIdResponse, error)
 	mustEmbedUnimplementedAppServiceServer()
 }
 
@@ -148,6 +161,9 @@ func (UnimplementedAppServiceServer) UpdateApp(context.Context, *UpdateAppReques
 }
 func (UnimplementedAppServiceServer) DeleteAppById(context.Context, *DeleteAppByIdRequest) (*DeleteAppByIdResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method DeleteAppById not implemented")
+}
+func (UnimplementedAppServiceServer) ListRolesByAppId(context.Context, *ListRolesByAppIdRequest) (*ListRolesByAppIdResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ListRolesByAppId not implemented")
 }
 func (UnimplementedAppServiceServer) mustEmbedUnimplementedAppServiceServer() {}
 func (UnimplementedAppServiceServer) testEmbeddedByValue()                    {}
@@ -278,6 +294,24 @@ func _AppService_DeleteAppById_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AppService_ListRolesByAppId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListRolesByAppIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AppServiceServer).ListRolesByAppId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AppService_ListRolesByAppId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AppServiceServer).ListRolesByAppId(ctx, req.(*ListRolesByAppIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AppService_ServiceDesc is the grpc.ServiceDesc for AppService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -309,6 +343,10 @@ var AppService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "DeleteAppById",
 			Handler:    _AppService_DeleteAppById_Handler,
 		},
+		{
+			MethodName: "ListRolesByAppId",
+			Handler:    _AppService_ListRolesByAppId_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "app/v1/app.proto",
@@ -329,6 +367,7 @@ const (
 type UserAppServiceClient interface {
 	GrantUserAppAccess(ctx context.Context, in *GrantUserAppAccessRequest, opts ...grpc.CallOption) (*GrantUserAppAccessResponse, error)
 	RevokeUserAppAccess(ctx context.Context, in *RevokeUserAppAccessRequest, opts ...grpc.CallOption) (*RevokeUserAppAccessResponse, error)
+	// Returns apps granted in user_apps plus apps assigned to any of the user's active roles (role_apps + user_roles).
 	GetAppsByUserId(ctx context.Context, in *GetAppsByUserIdRequest, opts ...grpc.CallOption) (*GetAppsByUserIdResponse, error)
 	ListUsersByAppId(ctx context.Context, in *ListUsersByAppIdRequest, opts ...grpc.CallOption) (*ListUsersByAppIdResponse, error)
 }
@@ -389,6 +428,7 @@ func (c *userAppServiceClient) ListUsersByAppId(ctx context.Context, in *ListUse
 type UserAppServiceServer interface {
 	GrantUserAppAccess(context.Context, *GrantUserAppAccessRequest) (*GrantUserAppAccessResponse, error)
 	RevokeUserAppAccess(context.Context, *RevokeUserAppAccessRequest) (*RevokeUserAppAccessResponse, error)
+	// Returns apps granted in user_apps plus apps assigned to any of the user's active roles (role_apps + user_roles).
 	GetAppsByUserId(context.Context, *GetAppsByUserIdRequest) (*GetAppsByUserIdResponse, error)
 	ListUsersByAppId(context.Context, *ListUsersByAppIdRequest) (*ListUsersByAppIdResponse, error)
 	mustEmbedUnimplementedUserAppServiceServer()
