@@ -56,6 +56,24 @@ message ValidateTokenResponse {
   repeated string roles   = 3;
 }
 
+// InviteUser creates an account without a password and emails a link to set one (admin flow).
+message InviteUserRequest {
+  string email = 1;
+  string name  = 2;
+}
+
+message InviteUserResponse {
+  common.v1.User user = 1;
+}
+
+// SetPasswordWithToken completes invite or password-reset using the token from email (public).
+message SetPasswordWithTokenRequest {
+  string token        = 1;
+  string new_password = 2;
+}
+
+message SetPasswordWithTokenResponse {}
+
 // ── AuthzService messages ─────────────────────────────────────────────────────
 
 message CheckPermissionRequest {
@@ -256,6 +274,32 @@ message SetPermissionsForRoleRequest {
 }
 
 message SetPermissionsForRoleResponse {
+  bool success = 1;
+}
+
+message ListRoleAppsRequest {
+  string role_id = 10;
+}
+
+message ListRoleAppsResponse {
+  repeated common.v1.App apps = 1;
+}
+
+message AddAppToRoleRequest {
+  string role_id = 10;
+  string app_id  = 20;
+}
+
+message AddAppToRoleResponse {
+  bool success = 1;
+}
+
+message RemoveAppFromRoleRequest {
+  string role_id = 10;
+  string app_id  = 20;
+}
+
+message RemoveAppFromRoleResponse {
   bool success = 1;
 }
 
@@ -504,6 +548,8 @@ service AuthService {
   rpc Logout       (LogoutRequest)        returns (LogoutResponse);
   rpc RefreshToken (RefreshTokenRequest)  returns (RefreshTokenResponse);
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+  rpc InviteUser   (InviteUserRequest)    returns (InviteUserResponse);
+  rpc SetPasswordWithToken (SetPasswordWithTokenRequest) returns (SetPasswordWithTokenResponse);
 }
 
 // AuthzService handles authorization: permission checks and role management.
@@ -539,6 +585,11 @@ service RoleService {
   rpc AddPermissionsToRole      (AddPermissionsToRoleRequest)      returns (AddPermissionsToRoleResponse);
   rpc RemovePermissionsFromRole (RemovePermissionsFromRoleRequest) returns (RemovePermissionsFromRoleResponse);
   rpc SetPermissionsForRole     (SetPermissionsForRoleRequest)     returns (SetPermissionsForRoleResponse);
+
+  // role - app (non-public app access via role membership)
+  rpc ListRoleApps    (ListRoleAppsRequest)    returns (ListRoleAppsResponse);
+  rpc AddAppToRole    (AddAppToRoleRequest)    returns (AddAppToRoleResponse);
+  rpc RemoveAppFromRole (RemoveAppFromRoleRequest) returns (RemoveAppFromRoleResponse);
 }
 
 // PermissionService: create, get permission

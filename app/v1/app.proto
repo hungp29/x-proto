@@ -71,6 +71,14 @@ message DeleteAppByIdResponse {
   bool success = 1;
 }
 
+message ListRolesByAppIdRequest {
+  string app_id = 10;
+}
+
+message ListRolesByAppIdResponse {
+  repeated common.v1.Role roles = 1;
+}
+
 // ── UserAppService messages ────────────────────────────────────────────────────
 
 message GrantUserAppAccessRequest {
@@ -117,12 +125,14 @@ service AppService {
   rpc GetAppByKey   (GetAppByKeyRequest)   returns (GetAppByKeyResponse);
   rpc UpdateApp     (UpdateAppRequest)     returns (UpdateAppResponse);
   rpc DeleteAppById (DeleteAppByIdRequest) returns (DeleteAppByIdResponse);
+  rpc ListRolesByAppId (ListRolesByAppIdRequest) returns (ListRolesByAppIdResponse);
 }
 
 // UserAppService: manage user - app access grants.
 service UserAppService {
   rpc GrantUserAppAccess  (GrantUserAppAccessRequest)  returns (GrantUserAppAccessResponse);
   rpc RevokeUserAppAccess (RevokeUserAppAccessRequest) returns (RevokeUserAppAccessResponse);
+  // Returns apps granted in user_apps plus apps assigned to any of the user's active roles (role_apps + user_roles).
   rpc GetAppsByUserId     (GetAppsByUserIdRequest)     returns (GetAppsByUserIdResponse);
   rpc ListUsersByAppId    (ListUsersByAppIdRequest)    returns (ListUsersByAppIdResponse);
 }
