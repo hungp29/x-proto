@@ -5,6 +5,12 @@ Protocol buffer definitions shared across x-* services.
 ## Layout
 
 - `word/v1/` — x-word gRPC API (WordService: GetWord, GetWords, Ping, Health).
+- `app/v1`
+- `bill/v1`
+- `common/v1`
+- `finance/v1`
+- `identity/v1`
+- `noti/v1`
 - `gen/go/` — **Generated Go code** (`.pb.go`, `_grpc.pb.go`), committed by CI (see below).
 
 ## CI: push proto → generate → auto-commit
