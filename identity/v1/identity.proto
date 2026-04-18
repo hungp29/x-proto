@@ -74,6 +74,63 @@ message SetPasswordWithTokenRequest {
 
 message SetPasswordWithTokenResponse {}
 
+// ── Current-user profile (user_id from gRPC metadata) ──────────────────────────
+
+message GetMyProfileRequest {}
+
+message GetMyProfileResponse {
+  common.v1.User user = 1;
+  // When set, a verification OTP was sent to this address; email field is still the current login email.
+  optional string pending_email_change = 2;
+}
+
+message UpdateMyNameRequest {
+  string name = 1;
+}
+
+message UpdateMyNameResponse {
+  common.v1.User user = 1;
+}
+
+message StartEmailChangeRequest {
+  string new_email = 1;
+}
+
+message StartEmailChangeResponse {}
+
+message CompleteEmailChangeRequest {
+  string otp = 1;
+}
+
+message CompleteEmailChangeResponse {
+  common.v1.User user = 1;
+}
+
+message ChangeMyPasswordRequest {
+  string current_password = 1;
+  string new_password     = 2;
+}
+
+message ChangeMyPasswordResponse {}
+
+// Raw avatar image from the API gateway; identity persists it as a file named `user_id` under IDENTITY_AVATAR_STORAGE_PATH.
+message SetMyAvatarRequest {
+  bytes image = 1;
+  // e.g. image/png, image/jpeg; may be used for Content-Type when serving the file.
+  string content_type = 2;
+}
+
+message SetMyAvatarResponse {
+  common.v1.User user = 1;
+}
+
+message GetMyAvatarRequest {}
+
+message GetMyAvatarResponse {
+  bytes content = 1;
+  string content_type = 2;
+}
+
 // ── AuthzService messages ─────────────────────────────────────────────────────
 
 message CheckPermissionRequest {
@@ -550,6 +607,15 @@ service AuthService {
   rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
   rpc InviteUser   (InviteUserRequest)    returns (InviteUserResponse);
   rpc SetPasswordWithToken (SetPasswordWithTokenRequest) returns (SetPasswordWithTokenResponse);
+
+  // Self-service profile (caller user_id from gRPC metadata).
+  rpc GetMyProfile            (GetMyProfileRequest)            returns (GetMyProfileResponse);
+  rpc UpdateMyName            (UpdateMyNameRequest)            returns (UpdateMyNameResponse);
+  rpc StartEmailChange        (StartEmailChangeRequest)        returns (StartEmailChangeResponse);
+  rpc CompleteEmailChange     (CompleteEmailChangeRequest)     returns (CompleteEmailChangeResponse);
+  rpc ChangeMyPassword        (ChangeMyPasswordRequest)        returns (ChangeMyPasswordResponse);
+  rpc SetMyAvatar             (SetMyAvatarRequest)             returns (SetMyAvatarResponse);
+  rpc GetMyAvatar             (GetMyAvatarRequest)             returns (GetMyAvatarResponse);
 }
 
 // AuthzService handles authorization: permission checks and role management.

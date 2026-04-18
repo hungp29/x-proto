@@ -12,6 +12,8 @@ message User {
   string name           = 3;
   bool   email_verified = 4;
   bool   locked         = 5;
+  // When set, the user has a custom avatar stored by x-identity as file `{user_id}` under IDENTITY_AVATAR_STORAGE_PATH (value matches user id).
+  string avatar_filename = 6;
 }
 
 message TokenPair {
