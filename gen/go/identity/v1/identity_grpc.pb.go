@@ -26,6 +26,13 @@ const (
 	AuthService_ValidateToken_FullMethodName        = "/identity.v1.AuthService/ValidateToken"
 	AuthService_InviteUser_FullMethodName           = "/identity.v1.AuthService/InviteUser"
 	AuthService_SetPasswordWithToken_FullMethodName = "/identity.v1.AuthService/SetPasswordWithToken"
+	AuthService_GetMyProfile_FullMethodName         = "/identity.v1.AuthService/GetMyProfile"
+	AuthService_UpdateMyName_FullMethodName         = "/identity.v1.AuthService/UpdateMyName"
+	AuthService_StartEmailChange_FullMethodName     = "/identity.v1.AuthService/StartEmailChange"
+	AuthService_CompleteEmailChange_FullMethodName  = "/identity.v1.AuthService/CompleteEmailChange"
+	AuthService_ChangeMyPassword_FullMethodName     = "/identity.v1.AuthService/ChangeMyPassword"
+	AuthService_SetMyAvatar_FullMethodName          = "/identity.v1.AuthService/SetMyAvatar"
+	AuthService_GetMyAvatar_FullMethodName          = "/identity.v1.AuthService/GetMyAvatar"
 )
 
 // AuthServiceClient is the client API for AuthService service.
@@ -41,6 +48,14 @@ type AuthServiceClient interface {
 	ValidateToken(ctx context.Context, in *ValidateTokenRequest, opts ...grpc.CallOption) (*ValidateTokenResponse, error)
 	InviteUser(ctx context.Context, in *InviteUserRequest, opts ...grpc.CallOption) (*InviteUserResponse, error)
 	SetPasswordWithToken(ctx context.Context, in *SetPasswordWithTokenRequest, opts ...grpc.CallOption) (*SetPasswordWithTokenResponse, error)
+	// Self-service profile (caller user_id from gRPC metadata).
+	GetMyProfile(ctx context.Context, in *GetMyProfileRequest, opts ...grpc.CallOption) (*GetMyProfileResponse, error)
+	UpdateMyName(ctx context.Context, in *UpdateMyNameRequest, opts ...grpc.CallOption) (*UpdateMyNameResponse, error)
+	StartEmailChange(ctx context.Context, in *StartEmailChangeRequest, opts ...grpc.CallOption) (*StartEmailChangeResponse, error)
+	CompleteEmailChange(ctx context.Context, in *CompleteEmailChangeRequest, opts ...grpc.CallOption) (*CompleteEmailChangeResponse, error)
+	ChangeMyPassword(ctx context.Context, in *ChangeMyPasswordRequest, opts ...grpc.CallOption) (*ChangeMyPasswordResponse, error)
+	SetMyAvatar(ctx context.Context, in *SetMyAvatarRequest, opts ...grpc.CallOption) (*SetMyAvatarResponse, error)
+	GetMyAvatar(ctx context.Context, in *GetMyAvatarRequest, opts ...grpc.CallOption) (*GetMyAvatarResponse, error)
 }
 
 type authServiceClient struct {
@@ -121,6 +136,76 @@ func (c *authServiceClient) SetPasswordWithToken(ctx context.Context, in *SetPas
 	return out, nil
 }
 
+func (c *authServiceClient) GetMyProfile(ctx context.Context, in *GetMyProfileRequest, opts ...grpc.CallOption) (*GetMyProfileResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMyProfileResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetMyProfile_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) UpdateMyName(ctx context.Context, in *UpdateMyNameRequest, opts ...grpc.CallOption) (*UpdateMyNameResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateMyNameResponse)
+	err := c.cc.Invoke(ctx, AuthService_UpdateMyName_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) StartEmailChange(ctx context.Context, in *StartEmailChangeRequest, opts ...grpc.CallOption) (*StartEmailChangeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(StartEmailChangeResponse)
+	err := c.cc.Invoke(ctx, AuthService_StartEmailChange_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) CompleteEmailChange(ctx context.Context, in *CompleteEmailChangeRequest, opts ...grpc.CallOption) (*CompleteEmailChangeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CompleteEmailChangeResponse)
+	err := c.cc.Invoke(ctx, AuthService_CompleteEmailChange_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) ChangeMyPassword(ctx context.Context, in *ChangeMyPasswordRequest, opts ...grpc.CallOption) (*ChangeMyPasswordResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ChangeMyPasswordResponse)
+	err := c.cc.Invoke(ctx, AuthService_ChangeMyPassword_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) SetMyAvatar(ctx context.Context, in *SetMyAvatarRequest, opts ...grpc.CallOption) (*SetMyAvatarResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetMyAvatarResponse)
+	err := c.cc.Invoke(ctx, AuthService_SetMyAvatar_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authServiceClient) GetMyAvatar(ctx context.Context, in *GetMyAvatarRequest, opts ...grpc.CallOption) (*GetMyAvatarResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMyAvatarResponse)
+	err := c.cc.Invoke(ctx, AuthService_GetMyAvatar_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AuthServiceServer is the server API for AuthService service.
 // All implementations must embed UnimplementedAuthServiceServer
 // for forward compatibility.
@@ -134,6 +219,14 @@ type AuthServiceServer interface {
 	ValidateToken(context.Context, *ValidateTokenRequest) (*ValidateTokenResponse, error)
 	InviteUser(context.Context, *InviteUserRequest) (*InviteUserResponse, error)
 	SetPasswordWithToken(context.Context, *SetPasswordWithTokenRequest) (*SetPasswordWithTokenResponse, error)
+	// Self-service profile (caller user_id from gRPC metadata).
+	GetMyProfile(context.Context, *GetMyProfileRequest) (*GetMyProfileResponse, error)
+	UpdateMyName(context.Context, *UpdateMyNameRequest) (*UpdateMyNameResponse, error)
+	StartEmailChange(context.Context, *StartEmailChangeRequest) (*StartEmailChangeResponse, error)
+	CompleteEmailChange(context.Context, *CompleteEmailChangeRequest) (*CompleteEmailChangeResponse, error)
+	ChangeMyPassword(context.Context, *ChangeMyPasswordRequest) (*ChangeMyPasswordResponse, error)
+	SetMyAvatar(context.Context, *SetMyAvatarRequest) (*SetMyAvatarResponse, error)
+	GetMyAvatar(context.Context, *GetMyAvatarRequest) (*GetMyAvatarResponse, error)
 	mustEmbedUnimplementedAuthServiceServer()
 }
 
@@ -164,6 +257,27 @@ func (UnimplementedAuthServiceServer) InviteUser(context.Context, *InviteUserReq
 }
 func (UnimplementedAuthServiceServer) SetPasswordWithToken(context.Context, *SetPasswordWithTokenRequest) (*SetPasswordWithTokenResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method SetPasswordWithToken not implemented")
+}
+func (UnimplementedAuthServiceServer) GetMyProfile(context.Context, *GetMyProfileRequest) (*GetMyProfileResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMyProfile not implemented")
+}
+func (UnimplementedAuthServiceServer) UpdateMyName(context.Context, *UpdateMyNameRequest) (*UpdateMyNameResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateMyName not implemented")
+}
+func (UnimplementedAuthServiceServer) StartEmailChange(context.Context, *StartEmailChangeRequest) (*StartEmailChangeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method StartEmailChange not implemented")
+}
+func (UnimplementedAuthServiceServer) CompleteEmailChange(context.Context, *CompleteEmailChangeRequest) (*CompleteEmailChangeResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method CompleteEmailChange not implemented")
+}
+func (UnimplementedAuthServiceServer) ChangeMyPassword(context.Context, *ChangeMyPasswordRequest) (*ChangeMyPasswordResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method ChangeMyPassword not implemented")
+}
+func (UnimplementedAuthServiceServer) SetMyAvatar(context.Context, *SetMyAvatarRequest) (*SetMyAvatarResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method SetMyAvatar not implemented")
+}
+func (UnimplementedAuthServiceServer) GetMyAvatar(context.Context, *GetMyAvatarRequest) (*GetMyAvatarResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetMyAvatar not implemented")
 }
 func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
 func (UnimplementedAuthServiceServer) testEmbeddedByValue()                     {}
@@ -312,6 +426,132 @@ func _AuthService_SetPasswordWithToken_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthService_GetMyProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMyProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetMyProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetMyProfile_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetMyProfile(ctx, req.(*GetMyProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_UpdateMyName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMyNameRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).UpdateMyName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_UpdateMyName_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).UpdateMyName(ctx, req.(*UpdateMyNameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_StartEmailChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(StartEmailChangeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).StartEmailChange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_StartEmailChange_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).StartEmailChange(ctx, req.(*StartEmailChangeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_CompleteEmailChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompleteEmailChangeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).CompleteEmailChange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_CompleteEmailChange_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).CompleteEmailChange(ctx, req.(*CompleteEmailChangeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_ChangeMyPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeMyPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).ChangeMyPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_ChangeMyPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).ChangeMyPassword(ctx, req.(*ChangeMyPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_SetMyAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetMyAvatarRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).SetMyAvatar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_SetMyAvatar_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).SetMyAvatar(ctx, req.(*SetMyAvatarRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthService_GetMyAvatar_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMyAvatarRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServiceServer).GetMyAvatar(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AuthService_GetMyAvatar_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServiceServer).GetMyAvatar(ctx, req.(*GetMyAvatarRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -346,6 +586,34 @@ var AuthService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetPasswordWithToken",
 			Handler:    _AuthService_SetPasswordWithToken_Handler,
+		},
+		{
+			MethodName: "GetMyProfile",
+			Handler:    _AuthService_GetMyProfile_Handler,
+		},
+		{
+			MethodName: "UpdateMyName",
+			Handler:    _AuthService_UpdateMyName_Handler,
+		},
+		{
+			MethodName: "StartEmailChange",
+			Handler:    _AuthService_StartEmailChange_Handler,
+		},
+		{
+			MethodName: "CompleteEmailChange",
+			Handler:    _AuthService_CompleteEmailChange_Handler,
+		},
+		{
+			MethodName: "ChangeMyPassword",
+			Handler:    _AuthService_ChangeMyPassword_Handler,
+		},
+		{
+			MethodName: "SetMyAvatar",
+			Handler:    _AuthService_SetMyAvatar_Handler,
+		},
+		{
+			MethodName: "GetMyAvatar",
+			Handler:    _AuthService_GetMyAvatar_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

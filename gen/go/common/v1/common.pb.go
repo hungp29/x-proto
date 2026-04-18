@@ -28,8 +28,10 @@ type User struct {
 	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 	EmailVerified bool                   `protobuf:"varint,4,opt,name=email_verified,json=emailVerified,proto3" json:"email_verified,omitempty"`
 	Locked        bool                   `protobuf:"varint,5,opt,name=locked,proto3" json:"locked,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	// When set, the user has a custom avatar stored by x-identity as file `{user_id}` under IDENTITY_AVATAR_STORAGE_PATH (value matches user id).
+	AvatarFilename string `protobuf:"bytes,6,opt,name=avatar_filename,json=avatarFilename,proto3" json:"avatar_filename,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *User) Reset() {
@@ -95,6 +97,13 @@ func (x *User) GetLocked() bool {
 		return x.Locked
 	}
 	return false
+}
+
+func (x *User) GetAvatarFilename() string {
+	if x != nil {
+		return x.AvatarFilename
+	}
+	return ""
 }
 
 type TokenPair struct {
@@ -425,13 +434,14 @@ var File_common_v1_common_proto protoreflect.FileDescriptor
 
 const file_common_v1_common_proto_rawDesc = "" +
 	"\n" +
-	"\x16common/v1/common.proto\x12\tcommon.v1\"\x7f\n" +
+	"\x16common/v1/common.proto\x12\tcommon.v1\"\xa8\x01\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
 	"\x04name\x18\x03 \x01(\tR\x04name\x12%\n" +
 	"\x0eemail_verified\x18\x04 \x01(\bR\remailVerified\x12\x16\n" +
-	"\x06locked\x18\x05 \x01(\bR\x06locked\"\x8a\x01\n" +
+	"\x06locked\x18\x05 \x01(\bR\x06locked\x12'\n" +
+	"\x0favatar_filename\x18\x06 \x01(\tR\x0eavatarFilename\"\x8a\x01\n" +
 	"\tTokenPair\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12#\n" +
 	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\x125\n" +
