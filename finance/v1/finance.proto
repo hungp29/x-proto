@@ -858,7 +858,32 @@ message AddFamilyMemberRequest {
 }
 
 message AddFamilyMemberResponse {
+  // Member is unset when the invite is pending email acceptance.
   FamilyMember member = 1;
+  bool invitation_sent = 2;
+}
+
+message GetFamilyInvitationRequest {
+  string token = 1;
+}
+
+message FamilyInvitationPreview {
+  string family_id   = 1;
+  string family_name = 2;
+  string inviter_name = 3;
+}
+
+message GetFamilyInvitationResponse {
+  FamilyInvitationPreview invitation = 1;
+}
+
+message RespondFamilyInvitationRequest {
+  string token = 1;
+  bool accept = 2;
+}
+
+message RespondFamilyInvitationResponse {
+  FamilyMember member = 1; // set when accept is true
 }
 
 message RemoveFamilyMemberRequest {
@@ -872,9 +897,11 @@ message LeaveFamilyRequest {}
 message LeaveFamilyResponse {}
 
 service FamilyService {
-  rpc CreateFamily       (CreateFamilyRequest)       returns (CreateFamilyResponse);
-  rpc GetFamily          (GetFamilyRequest)           returns (GetFamilyResponse);
-  rpc AddFamilyMember    (AddFamilyMemberRequest)     returns (AddFamilyMemberResponse);
-  rpc RemoveFamilyMember (RemoveFamilyMemberRequest)  returns (RemoveFamilyMemberResponse);
-  rpc LeaveFamily        (LeaveFamilyRequest)         returns (LeaveFamilyResponse);
+  rpc CreateFamily            (CreateFamilyRequest)            returns (CreateFamilyResponse);
+  rpc GetFamily               (GetFamilyRequest)               returns (GetFamilyResponse);
+  rpc AddFamilyMember         (AddFamilyMemberRequest)         returns (AddFamilyMemberResponse);
+  rpc GetFamilyInvitation     (GetFamilyInvitationRequest)     returns (GetFamilyInvitationResponse);
+  rpc RespondFamilyInvitation (RespondFamilyInvitationRequest) returns (RespondFamilyInvitationResponse);
+  rpc RemoveFamilyMember      (RemoveFamilyMemberRequest)      returns (RemoveFamilyMemberResponse);
+  rpc LeaveFamily             (LeaveFamilyRequest)             returns (LeaveFamilyResponse);
 }
