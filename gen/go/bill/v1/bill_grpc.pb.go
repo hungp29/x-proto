@@ -32,6 +32,7 @@ const (
 	BillService_SkipBillInstance_FullMethodName                         = "/bill.v1.BillService/SkipBillInstance"
 	BillService_CountBillInstancesByTransactionId_FullMethodName        = "/bill.v1.BillService/CountBillInstancesByTransactionId"
 	BillService_RevertBillInstancesForDeletedTransaction_FullMethodName = "/bill.v1.BillService/RevertBillInstancesForDeletedTransaction"
+	BillService_PredictBillMonth_FullMethodName                         = "/bill.v1.BillService/PredictBillMonth"
 )
 
 // BillServiceClient is the client API for BillService service.
@@ -55,6 +56,8 @@ type BillServiceClient interface {
 	CountBillInstancesByTransactionId(ctx context.Context, in *CountBillInstancesByTransactionIdRequest, opts ...grpc.CallOption) (*CountBillInstancesByTransactionIdResponse, error)
 	// Clears transaction_id and sets status back to PENDING for PAID instances tied to this transaction (e.g. finance delete).
 	RevertBillInstancesForDeletedTransaction(ctx context.Context, in *RevertBillInstancesForDeletedTransactionRequest, opts ...grpc.CallOption) (*RevertBillInstancesForDeletedTransactionResponse, error)
+	// Predicts expected spend for a calendar month (FIXED, MANUAL_BREAKDOWN avg of last 3 PAID, or INTEGRATION adapters).
+	PredictBillMonth(ctx context.Context, in *PredictBillMonthRequest, opts ...grpc.CallOption) (*PredictBillMonthResponse, error)
 }
 
 type billServiceClient struct {
@@ -195,6 +198,16 @@ func (c *billServiceClient) RevertBillInstancesForDeletedTransaction(ctx context
 	return out, nil
 }
 
+func (c *billServiceClient) PredictBillMonth(ctx context.Context, in *PredictBillMonthRequest, opts ...grpc.CallOption) (*PredictBillMonthResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PredictBillMonthResponse)
+	err := c.cc.Invoke(ctx, BillService_PredictBillMonth_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // BillServiceServer is the server API for BillService service.
 // All implementations must embed UnimplementedBillServiceServer
 // for forward compatibility.
@@ -216,6 +229,8 @@ type BillServiceServer interface {
 	CountBillInstancesByTransactionId(context.Context, *CountBillInstancesByTransactionIdRequest) (*CountBillInstancesByTransactionIdResponse, error)
 	// Clears transaction_id and sets status back to PENDING for PAID instances tied to this transaction (e.g. finance delete).
 	RevertBillInstancesForDeletedTransaction(context.Context, *RevertBillInstancesForDeletedTransactionRequest) (*RevertBillInstancesForDeletedTransactionResponse, error)
+	// Predicts expected spend for a calendar month (FIXED, MANUAL_BREAKDOWN avg of last 3 PAID, or INTEGRATION adapters).
+	PredictBillMonth(context.Context, *PredictBillMonthRequest) (*PredictBillMonthResponse, error)
 	mustEmbedUnimplementedBillServiceServer()
 }
 
@@ -264,6 +279,9 @@ func (UnimplementedBillServiceServer) CountBillInstancesByTransactionId(context.
 }
 func (UnimplementedBillServiceServer) RevertBillInstancesForDeletedTransaction(context.Context, *RevertBillInstancesForDeletedTransactionRequest) (*RevertBillInstancesForDeletedTransactionResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method RevertBillInstancesForDeletedTransaction not implemented")
+}
+func (UnimplementedBillServiceServer) PredictBillMonth(context.Context, *PredictBillMonthRequest) (*PredictBillMonthResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method PredictBillMonth not implemented")
 }
 func (UnimplementedBillServiceServer) mustEmbedUnimplementedBillServiceServer() {}
 func (UnimplementedBillServiceServer) testEmbeddedByValue()                     {}
@@ -520,6 +538,24 @@ func _BillService_RevertBillInstancesForDeletedTransaction_Handler(srv interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BillService_PredictBillMonth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PredictBillMonthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BillServiceServer).PredictBillMonth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BillService_PredictBillMonth_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BillServiceServer).PredictBillMonth(ctx, req.(*PredictBillMonthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // BillService_ServiceDesc is the grpc.ServiceDesc for BillService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -578,6 +614,10 @@ var BillService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RevertBillInstancesForDeletedTransaction",
 			Handler:    _BillService_RevertBillInstancesForDeletedTransaction_Handler,
+		},
+		{
+			MethodName: "PredictBillMonth",
+			Handler:    _BillService_PredictBillMonth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
