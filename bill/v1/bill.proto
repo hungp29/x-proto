@@ -21,6 +21,8 @@ service BillService {
   rpc CountBillInstancesByTransactionId(CountBillInstancesByTransactionIdRequest) returns (CountBillInstancesByTransactionIdResponse);
   // Clears transaction_id and sets status back to PENDING for PAID instances tied to this transaction (e.g. finance delete).
   rpc RevertBillInstancesForDeletedTransaction(RevertBillInstancesForDeletedTransactionRequest) returns (RevertBillInstancesForDeletedTransactionResponse);
+  // Predicts expected spend for a calendar month (FIXED, MANUAL_BREAKDOWN avg of last 3 PAID, or INTEGRATION adapters).
+  rpc PredictBillMonth(PredictBillMonthRequest) returns (PredictBillMonthResponse);
 }
 
 message BillItemTemplateInput {
@@ -54,6 +56,8 @@ message CreateBillRequest {
   int32 due_in_days = 13; // days from issue_date to due_date when instance is generated (default 0)
   string currency = 14; // ISO 4217 (e.g. VND, USD)
   string integration_payload_id = 15; // user_integration_payloads.id when type = integration
+  // Optional finance_categories.id (expense); when empty, Pay uses the system "Bills & Utilities" category.
+  string category_id = 16;
 }
 
 message CreateBillResponse {
@@ -85,6 +89,7 @@ message UpdateBillRequest {
   int32 due_in_days = 14;
   string currency = 15;
   string integration_payload_id = 16; // when type = integration
+  string category_id = 17; // optional expense category; empty clears stored value
 }
 
 message UpdateBillResponse {
@@ -118,6 +123,7 @@ message Bill {
   int32 due_in_days = 18;
   string currency = 19; // ISO 4217
   string integration_payload_id = 20;
+  string category_id = 21; // optional expense category for Pay
 }
 
 message ListBillsRequest {
@@ -224,4 +230,23 @@ message RevertBillInstancesForDeletedTransactionRequest {
 
 message RevertBillInstancesForDeletedTransactionResponse {
   int32 reverted_count = 1;
+}
+
+message PredictBillMonthRequest {
+  string bill_id = 1;
+  // Optional; defaults to current calendar month (UTC). Month is 1–12.
+  int32 year = 2;
+  int32 month = 3;
+}
+
+message PredictBillMonthResponse {
+  string bill_id = 1;
+  string bill_name = 2;
+  string bill_type = 3;
+  string currency = 4;
+  string predicted_total_amount = 5;
+  // fixed | manual_avg_3_paid | integration_evncpc | integration_nozza | ...
+  string method = 6;
+  // JSON object for UI (e.g. EVN CPC chart data).
+  string detail_json = 7;
 }
