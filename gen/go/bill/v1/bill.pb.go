@@ -187,8 +187,10 @@ type CreateBillRequest struct {
 	DueInDays            int32                    `protobuf:"varint,13,opt,name=due_in_days,json=dueInDays,proto3" json:"due_in_days,omitempty"`                                 // days from issue_date to due_date when instance is generated (default 0)
 	Currency             string                   `protobuf:"bytes,14,opt,name=currency,proto3" json:"currency,omitempty"`                                                       // ISO 4217 (e.g. VND, USD)
 	IntegrationPayloadId string                   `protobuf:"bytes,15,opt,name=integration_payload_id,json=integrationPayloadId,proto3" json:"integration_payload_id,omitempty"` // user_integration_payloads.id when type = integration
-	unknownFields        protoimpl.UnknownFields
-	sizeCache            protoimpl.SizeCache
+	// Optional finance_categories.id (expense); when empty, Pay uses the system "Bills & Utilities" category.
+	CategoryId    string `protobuf:"bytes,16,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
 }
 
 func (x *CreateBillRequest) Reset() {
@@ -301,6 +303,13 @@ func (x *CreateBillRequest) GetCurrency() string {
 func (x *CreateBillRequest) GetIntegrationPayloadId() string {
 	if x != nil {
 		return x.IntegrationPayloadId
+	}
+	return ""
+}
+
+func (x *CreateBillRequest) GetCategoryId() string {
+	if x != nil {
+		return x.CategoryId
 	}
 	return ""
 }
@@ -460,6 +469,7 @@ type UpdateBillRequest struct {
 	DueInDays            int32                    `protobuf:"varint,14,opt,name=due_in_days,json=dueInDays,proto3" json:"due_in_days,omitempty"`
 	Currency             string                   `protobuf:"bytes,15,opt,name=currency,proto3" json:"currency,omitempty"`
 	IntegrationPayloadId string                   `protobuf:"bytes,16,opt,name=integration_payload_id,json=integrationPayloadId,proto3" json:"integration_payload_id,omitempty"` // when type = integration
+	CategoryId           string                   `protobuf:"bytes,17,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`                                 // optional expense category; empty clears stored value
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -581,6 +591,13 @@ func (x *UpdateBillRequest) GetCurrency() string {
 func (x *UpdateBillRequest) GetIntegrationPayloadId() string {
 	if x != nil {
 		return x.IntegrationPayloadId
+	}
+	return ""
+}
+
+func (x *UpdateBillRequest) GetCategoryId() string {
+	if x != nil {
+		return x.CategoryId
 	}
 	return ""
 }
@@ -729,6 +746,7 @@ type Bill struct {
 	DueInDays            int32  `protobuf:"varint,18,opt,name=due_in_days,json=dueInDays,proto3" json:"due_in_days,omitempty"`
 	Currency             string `protobuf:"bytes,19,opt,name=currency,proto3" json:"currency,omitempty"` // ISO 4217
 	IntegrationPayloadId string `protobuf:"bytes,20,opt,name=integration_payload_id,json=integrationPayloadId,proto3" json:"integration_payload_id,omitempty"`
+	CategoryId           string `protobuf:"bytes,21,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"` // optional expense category for Pay
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -878,6 +896,13 @@ func (x *Bill) GetCurrency() string {
 func (x *Bill) GetIntegrationPayloadId() string {
 	if x != nil {
 		return x.IntegrationPayloadId
+	}
+	return ""
+}
+
+func (x *Bill) GetCategoryId() string {
+	if x != nil {
+		return x.CategoryId
 	}
 	return ""
 }
@@ -1992,6 +2017,161 @@ func (x *RevertBillInstancesForDeletedTransactionResponse) GetRevertedCount() in
 	return 0
 }
 
+type PredictBillMonthRequest struct {
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	BillId string                 `protobuf:"bytes,1,opt,name=bill_id,json=billId,proto3" json:"bill_id,omitempty"`
+	// Optional; defaults to current calendar month (UTC). Month is 1–12.
+	Year          int32 `protobuf:"varint,2,opt,name=year,proto3" json:"year,omitempty"`
+	Month         int32 `protobuf:"varint,3,opt,name=month,proto3" json:"month,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PredictBillMonthRequest) Reset() {
+	*x = PredictBillMonthRequest{}
+	mi := &file_bill_v1_bill_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PredictBillMonthRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PredictBillMonthRequest) ProtoMessage() {}
+
+func (x *PredictBillMonthRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_bill_v1_bill_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PredictBillMonthRequest.ProtoReflect.Descriptor instead.
+func (*PredictBillMonthRequest) Descriptor() ([]byte, []int) {
+	return file_bill_v1_bill_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *PredictBillMonthRequest) GetBillId() string {
+	if x != nil {
+		return x.BillId
+	}
+	return ""
+}
+
+func (x *PredictBillMonthRequest) GetYear() int32 {
+	if x != nil {
+		return x.Year
+	}
+	return 0
+}
+
+func (x *PredictBillMonthRequest) GetMonth() int32 {
+	if x != nil {
+		return x.Month
+	}
+	return 0
+}
+
+type PredictBillMonthResponse struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	BillId               string                 `protobuf:"bytes,1,opt,name=bill_id,json=billId,proto3" json:"bill_id,omitempty"`
+	BillName             string                 `protobuf:"bytes,2,opt,name=bill_name,json=billName,proto3" json:"bill_name,omitempty"`
+	BillType             string                 `protobuf:"bytes,3,opt,name=bill_type,json=billType,proto3" json:"bill_type,omitempty"`
+	Currency             string                 `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
+	PredictedTotalAmount string                 `protobuf:"bytes,5,opt,name=predicted_total_amount,json=predictedTotalAmount,proto3" json:"predicted_total_amount,omitempty"`
+	// fixed | manual_avg_3_paid | integration_evncpc | integration_nozza | ...
+	Method string `protobuf:"bytes,6,opt,name=method,proto3" json:"method,omitempty"`
+	// JSON object for UI (e.g. EVN CPC chart data).
+	DetailJson    string `protobuf:"bytes,7,opt,name=detail_json,json=detailJson,proto3" json:"detail_json,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PredictBillMonthResponse) Reset() {
+	*x = PredictBillMonthResponse{}
+	mi := &file_bill_v1_bill_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PredictBillMonthResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PredictBillMonthResponse) ProtoMessage() {}
+
+func (x *PredictBillMonthResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_bill_v1_bill_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PredictBillMonthResponse.ProtoReflect.Descriptor instead.
+func (*PredictBillMonthResponse) Descriptor() ([]byte, []int) {
+	return file_bill_v1_bill_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *PredictBillMonthResponse) GetBillId() string {
+	if x != nil {
+		return x.BillId
+	}
+	return ""
+}
+
+func (x *PredictBillMonthResponse) GetBillName() string {
+	if x != nil {
+		return x.BillName
+	}
+	return ""
+}
+
+func (x *PredictBillMonthResponse) GetBillType() string {
+	if x != nil {
+		return x.BillType
+	}
+	return ""
+}
+
+func (x *PredictBillMonthResponse) GetCurrency() string {
+	if x != nil {
+		return x.Currency
+	}
+	return ""
+}
+
+func (x *PredictBillMonthResponse) GetPredictedTotalAmount() string {
+	if x != nil {
+		return x.PredictedTotalAmount
+	}
+	return ""
+}
+
+func (x *PredictBillMonthResponse) GetMethod() string {
+	if x != nil {
+		return x.Method
+	}
+	return ""
+}
+
+func (x *PredictBillMonthResponse) GetDetailJson() string {
+	if x != nil {
+		return x.DetailJson
+	}
+	return ""
+}
+
 var File_bill_v1_bill_proto protoreflect.FileDescriptor
 
 const file_bill_v1_bill_proto_rawDesc = "" +
@@ -2010,7 +2190,7 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\x12default_unit_price\x18\x03 \x01(\tR\x10defaultUnitPrice\x12\x1f\n" +
 	"\vis_required\x18\x04 \x01(\bR\n" +
 	"isRequired\x12)\n" +
-	"\x10default_quantity\x18\x05 \x01(\tR\x0fdefaultQuantity\"\xbe\x03\n" +
+	"\x10default_quantity\x18\x05 \x01(\tR\x0fdefaultQuantity\"\xdf\x03\n" +
 	"\x11CreateBillRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
 	"\x04type\x18\x02 \x01(\tR\x04type\x12\x1b\n" +
@@ -2025,14 +2205,16 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\aicon_id\x18\f \x01(\tR\x06iconId\x12\x1e\n" +
 	"\vdue_in_days\x18\r \x01(\x05R\tdueInDays\x12\x1a\n" +
 	"\bcurrency\x18\x0e \x01(\tR\bcurrency\x124\n" +
-	"\x16integration_payload_id\x18\x0f \x01(\tR\x14integrationPayloadIdJ\x04\b\x03\x10\x04J\x04\b\x06\x10\aJ\x04\b\a\x10\b\"7\n" +
+	"\x16integration_payload_id\x18\x0f \x01(\tR\x14integrationPayloadId\x12\x1f\n" +
+	"\vcategory_id\x18\x10 \x01(\tR\n" +
+	"categoryIdJ\x04\b\x03\x10\x04J\x04\b\x06\x10\aJ\x04\b\a\x10\b\"7\n" +
 	"\x12CreateBillResponse\x12!\n" +
 	"\x04bill\x18\x01 \x01(\v2\r.bill.v1.BillR\x04bill\")\n" +
 	"\x0eGetBillRequest\x12\x17\n" +
 	"\abill_id\x18\x01 \x01(\tR\x06billId\"|\n" +
 	"\x0fGetBillResponse\x12!\n" +
 	"\x04bill\x18\x01 \x01(\v2\r.bill.v1.BillR\x04bill\x12F\n" +
-	"\x0eitem_templates\x18\x02 \x03(\v2\x1f.bill.v1.BillItemTemplateDetailR\ritemTemplates\"\xd7\x03\n" +
+	"\x0eitem_templates\x18\x02 \x03(\v2\x1f.bill.v1.BillItemTemplateDetailR\ritemTemplates\"\xf8\x03\n" +
 	"\x11UpdateBillRequest\x12\x17\n" +
 	"\abill_id\x18\x01 \x01(\tR\x06billId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
@@ -2048,12 +2230,14 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\aicon_id\x18\r \x01(\tR\x06iconId\x12\x1e\n" +
 	"\vdue_in_days\x18\x0e \x01(\x05R\tdueInDays\x12\x1a\n" +
 	"\bcurrency\x18\x0f \x01(\tR\bcurrency\x124\n" +
-	"\x16integration_payload_id\x18\x10 \x01(\tR\x14integrationPayloadIdJ\x04\b\x04\x10\x05J\x04\b\a\x10\bJ\x04\b\b\x10\t\"7\n" +
+	"\x16integration_payload_id\x18\x10 \x01(\tR\x14integrationPayloadId\x12\x1f\n" +
+	"\vcategory_id\x18\x11 \x01(\tR\n" +
+	"categoryIdJ\x04\b\x04\x10\x05J\x04\b\a\x10\bJ\x04\b\b\x10\t\"7\n" +
 	"\x12UpdateBillResponse\x12!\n" +
 	"\x04bill\x18\x01 \x01(\v2\r.bill.v1.BillR\x04bill\",\n" +
 	"\x11DeleteBillRequest\x12\x17\n" +
 	"\abill_id\x18\x01 \x01(\tR\x06billId\"\x14\n" +
-	"\x12DeleteBillResponse\"\xa4\x04\n" +
+	"\x12DeleteBillResponse\"\xc5\x04\n" +
 	"\x04Bill\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
@@ -2075,7 +2259,9 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\x16has_blueprint_instance\x18\x11 \x01(\bR\x14hasBlueprintInstance\x12\x1e\n" +
 	"\vdue_in_days\x18\x12 \x01(\x05R\tdueInDays\x12\x1a\n" +
 	"\bcurrency\x18\x13 \x01(\tR\bcurrency\x124\n" +
-	"\x16integration_payload_id\x18\x14 \x01(\tR\x14integrationPayloadIdJ\x04\b\x05\x10\x06J\x04\b\b\x10\tJ\x04\b\t\x10\n" +
+	"\x16integration_payload_id\x18\x14 \x01(\tR\x14integrationPayloadId\x12\x1f\n" +
+	"\vcategory_id\x18\x15 \x01(\tR\n" +
+	"categoryIdJ\x04\b\x05\x10\x06J\x04\b\b\x10\tJ\x04\b\t\x10\n" +
 	"\"3\n" +
 	"\x10ListBillsRequest\x12\x1f\n" +
 	"\vactive_only\x18\x01 \x01(\bR\n" +
@@ -2150,7 +2336,20 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"/RevertBillInstancesForDeletedTransactionRequest\x12%\n" +
 	"\x0etransaction_id\x18\x01 \x01(\tR\rtransactionId\"Y\n" +
 	"0RevertBillInstancesForDeletedTransactionResponse\x12%\n" +
-	"\x0ereverted_count\x18\x01 \x01(\x05R\rrevertedCount2\x8b\t\n" +
+	"\x0ereverted_count\x18\x01 \x01(\x05R\rrevertedCount\"\\\n" +
+	"\x17PredictBillMonthRequest\x12\x17\n" +
+	"\abill_id\x18\x01 \x01(\tR\x06billId\x12\x12\n" +
+	"\x04year\x18\x02 \x01(\x05R\x04year\x12\x14\n" +
+	"\x05month\x18\x03 \x01(\x05R\x05month\"\xf8\x01\n" +
+	"\x18PredictBillMonthResponse\x12\x17\n" +
+	"\abill_id\x18\x01 \x01(\tR\x06billId\x12\x1b\n" +
+	"\tbill_name\x18\x02 \x01(\tR\bbillName\x12\x1b\n" +
+	"\tbill_type\x18\x03 \x01(\tR\bbillType\x12\x1a\n" +
+	"\bcurrency\x18\x04 \x01(\tR\bcurrency\x124\n" +
+	"\x16predicted_total_amount\x18\x05 \x01(\tR\x14predictedTotalAmount\x12\x16\n" +
+	"\x06method\x18\x06 \x01(\tR\x06method\x12\x1f\n" +
+	"\vdetail_json\x18\a \x01(\tR\n" +
+	"detailJson2\xe4\t\n" +
 	"\vBillService\x12E\n" +
 	"\n" +
 	"CreateBill\x12\x1a.bill.v1.CreateBillRequest\x1a\x1b.bill.v1.CreateBillResponse\x12<\n" +
@@ -2167,7 +2366,8 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\x12DeleteBillInstance\x12\".bill.v1.DeleteBillInstanceRequest\x1a#.bill.v1.DeleteBillInstanceResponse\x12W\n" +
 	"\x10SkipBillInstance\x12 .bill.v1.SkipBillInstanceRequest\x1a!.bill.v1.SkipBillInstanceResponse\x12\x8a\x01\n" +
 	"!CountBillInstancesByTransactionId\x121.bill.v1.CountBillInstancesByTransactionIdRequest\x1a2.bill.v1.CountBillInstancesByTransactionIdResponse\x12\x9f\x01\n" +
-	"(RevertBillInstancesForDeletedTransaction\x128.bill.v1.RevertBillInstancesForDeletedTransactionRequest\x1a9.bill.v1.RevertBillInstancesForDeletedTransactionResponseB\x87\x01\n" +
+	"(RevertBillInstancesForDeletedTransaction\x128.bill.v1.RevertBillInstancesForDeletedTransactionRequest\x1a9.bill.v1.RevertBillInstancesForDeletedTransactionResponse\x12W\n" +
+	"\x10PredictBillMonth\x12 .bill.v1.PredictBillMonthRequest\x1a!.bill.v1.PredictBillMonthResponseB\x87\x01\n" +
 	"\vcom.bill.v1B\tBillProtoP\x01Z0github.com/hungp29/x-proto/gen/go/bill/v1;billv1\xa2\x02\x03BXX\xaa\x02\aBill.V1\xca\x02\aBill\\V1\xe2\x02\x13Bill\\V1\\GPBMetadata\xea\x02\bBill::V1b\x06proto3"
 
 var (
@@ -2182,7 +2382,7 @@ func file_bill_v1_bill_proto_rawDescGZIP() []byte {
 	return file_bill_v1_bill_proto_rawDescData
 }
 
-var file_bill_v1_bill_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
+var file_bill_v1_bill_proto_msgTypes = make([]protoimpl.MessageInfo, 34)
 var file_bill_v1_bill_proto_goTypes = []any{
 	(*BillItemTemplateInput)(nil),                            // 0: bill.v1.BillItemTemplateInput
 	(*BillItemTemplateDetail)(nil),                           // 1: bill.v1.BillItemTemplateDetail
@@ -2216,6 +2416,8 @@ var file_bill_v1_bill_proto_goTypes = []any{
 	(*CountBillInstancesByTransactionIdResponse)(nil),        // 29: bill.v1.CountBillInstancesByTransactionIdResponse
 	(*RevertBillInstancesForDeletedTransactionRequest)(nil),  // 30: bill.v1.RevertBillInstancesForDeletedTransactionRequest
 	(*RevertBillInstancesForDeletedTransactionResponse)(nil), // 31: bill.v1.RevertBillInstancesForDeletedTransactionResponse
+	(*PredictBillMonthRequest)(nil),                          // 32: bill.v1.PredictBillMonthRequest
+	(*PredictBillMonthResponse)(nil),                         // 33: bill.v1.PredictBillMonthResponse
 }
 var file_bill_v1_bill_proto_depIdxs = []int32{
 	0,  // 0: bill.v1.CreateBillRequest.item_templates:type_name -> bill.v1.BillItemTemplateInput
@@ -2242,21 +2444,23 @@ var file_bill_v1_bill_proto_depIdxs = []int32{
 	26, // 21: bill.v1.BillService.SkipBillInstance:input_type -> bill.v1.SkipBillInstanceRequest
 	28, // 22: bill.v1.BillService.CountBillInstancesByTransactionId:input_type -> bill.v1.CountBillInstancesByTransactionIdRequest
 	30, // 23: bill.v1.BillService.RevertBillInstancesForDeletedTransaction:input_type -> bill.v1.RevertBillInstancesForDeletedTransactionRequest
-	3,  // 24: bill.v1.BillService.CreateBill:output_type -> bill.v1.CreateBillResponse
-	5,  // 25: bill.v1.BillService.GetBill:output_type -> bill.v1.GetBillResponse
-	7,  // 26: bill.v1.BillService.UpdateBill:output_type -> bill.v1.UpdateBillResponse
-	9,  // 27: bill.v1.BillService.DeleteBill:output_type -> bill.v1.DeleteBillResponse
-	12, // 28: bill.v1.BillService.ListBills:output_type -> bill.v1.ListBillsResponse
-	16, // 29: bill.v1.BillService.ListBillInstances:output_type -> bill.v1.ListBillInstancesResponse
-	19, // 30: bill.v1.BillService.AddManualItems:output_type -> bill.v1.AddManualItemsResponse
-	21, // 31: bill.v1.BillService.PayBill:output_type -> bill.v1.PayBillResponse
-	23, // 32: bill.v1.BillService.UpdateBillItem:output_type -> bill.v1.UpdateBillItemResponse
-	25, // 33: bill.v1.BillService.DeleteBillInstance:output_type -> bill.v1.DeleteBillInstanceResponse
-	27, // 34: bill.v1.BillService.SkipBillInstance:output_type -> bill.v1.SkipBillInstanceResponse
-	29, // 35: bill.v1.BillService.CountBillInstancesByTransactionId:output_type -> bill.v1.CountBillInstancesByTransactionIdResponse
-	31, // 36: bill.v1.BillService.RevertBillInstancesForDeletedTransaction:output_type -> bill.v1.RevertBillInstancesForDeletedTransactionResponse
-	24, // [24:37] is the sub-list for method output_type
-	11, // [11:24] is the sub-list for method input_type
+	32, // 24: bill.v1.BillService.PredictBillMonth:input_type -> bill.v1.PredictBillMonthRequest
+	3,  // 25: bill.v1.BillService.CreateBill:output_type -> bill.v1.CreateBillResponse
+	5,  // 26: bill.v1.BillService.GetBill:output_type -> bill.v1.GetBillResponse
+	7,  // 27: bill.v1.BillService.UpdateBill:output_type -> bill.v1.UpdateBillResponse
+	9,  // 28: bill.v1.BillService.DeleteBill:output_type -> bill.v1.DeleteBillResponse
+	12, // 29: bill.v1.BillService.ListBills:output_type -> bill.v1.ListBillsResponse
+	16, // 30: bill.v1.BillService.ListBillInstances:output_type -> bill.v1.ListBillInstancesResponse
+	19, // 31: bill.v1.BillService.AddManualItems:output_type -> bill.v1.AddManualItemsResponse
+	21, // 32: bill.v1.BillService.PayBill:output_type -> bill.v1.PayBillResponse
+	23, // 33: bill.v1.BillService.UpdateBillItem:output_type -> bill.v1.UpdateBillItemResponse
+	25, // 34: bill.v1.BillService.DeleteBillInstance:output_type -> bill.v1.DeleteBillInstanceResponse
+	27, // 35: bill.v1.BillService.SkipBillInstance:output_type -> bill.v1.SkipBillInstanceResponse
+	29, // 36: bill.v1.BillService.CountBillInstancesByTransactionId:output_type -> bill.v1.CountBillInstancesByTransactionIdResponse
+	31, // 37: bill.v1.BillService.RevertBillInstancesForDeletedTransaction:output_type -> bill.v1.RevertBillInstancesForDeletedTransactionResponse
+	33, // 38: bill.v1.BillService.PredictBillMonth:output_type -> bill.v1.PredictBillMonthResponse
+	25, // [25:39] is the sub-list for method output_type
+	11, // [11:25] is the sub-list for method input_type
 	11, // [11:11] is the sub-list for extension type_name
 	11, // [11:11] is the sub-list for extension extendee
 	0,  // [0:11] is the sub-list for field type_name
@@ -2273,7 +2477,7 @@ func file_bill_v1_bill_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_bill_v1_bill_proto_rawDesc), len(file_bill_v1_bill_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   32,
+			NumMessages:   34,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
