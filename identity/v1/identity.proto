@@ -106,6 +106,10 @@ message CompleteEmailChangeResponse {
   common.v1.User user = 1;
 }
 
+message CancelEmailChangeRequest {}
+
+message CancelEmailChangeResponse {}
+
 message ChangeMyPasswordRequest {
   string current_password = 1;
   string new_password     = 2;
@@ -127,6 +131,16 @@ message SetMyAvatarResponse {
 message GetMyAvatarRequest {}
 
 message GetMyAvatarResponse {
+  bytes content = 1;
+  string content_type = 2;
+}
+
+// Avatar bytes for another user (same storage rules as GetMyAvatar). Caller must be authenticated.
+message GetUserAvatarRequest {
+  string user_id = 1;
+}
+
+message GetUserAvatarResponse {
   bytes content = 1;
   string content_type = 2;
 }
@@ -613,9 +627,11 @@ service AuthService {
   rpc UpdateMyName            (UpdateMyNameRequest)            returns (UpdateMyNameResponse);
   rpc StartEmailChange        (StartEmailChangeRequest)        returns (StartEmailChangeResponse);
   rpc CompleteEmailChange     (CompleteEmailChangeRequest)     returns (CompleteEmailChangeResponse);
+  rpc CancelEmailChange       (CancelEmailChangeRequest)       returns (CancelEmailChangeResponse);
   rpc ChangeMyPassword        (ChangeMyPasswordRequest)        returns (ChangeMyPasswordResponse);
   rpc SetMyAvatar             (SetMyAvatarRequest)             returns (SetMyAvatarResponse);
   rpc GetMyAvatar             (GetMyAvatarRequest)             returns (GetMyAvatarResponse);
+  rpc GetUserAvatar           (GetUserAvatarRequest)           returns (GetUserAvatarResponse);
 }
 
 // AuthzService handles authorization: permission checks and role management.

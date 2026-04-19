@@ -161,6 +161,8 @@ message FamilyMember {
   // Denormalized
   string user_name  = 5;
   string user_email = 6;
+  // From users.avatar_filename; empty = no custom avatar (use default in UI).
+  optional string user_avatar_filename = 7;
 }
 
 message CategoryBreakdown {
