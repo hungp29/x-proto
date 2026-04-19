@@ -1206,10 +1206,12 @@ type FamilyMember struct {
 	Role     string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"` // owner | member
 	JoinedAt string                 `protobuf:"bytes,4,opt,name=joined_at,json=joinedAt,proto3" json:"joined_at,omitempty"`
 	// Denormalized
-	UserName      string `protobuf:"bytes,5,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
-	UserEmail     string `protobuf:"bytes,6,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	UserName  string `protobuf:"bytes,5,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	UserEmail string `protobuf:"bytes,6,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
+	// From users.avatar_filename; empty = no custom avatar (use default in UI).
+	UserAvatarFilename *string `protobuf:"bytes,7,opt,name=user_avatar_filename,json=userAvatarFilename,proto3,oneof" json:"user_avatar_filename,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *FamilyMember) Reset() {
@@ -1280,6 +1282,13 @@ func (x *FamilyMember) GetUserName() string {
 func (x *FamilyMember) GetUserEmail() string {
 	if x != nil {
 		return x.UserEmail
+	}
+	return ""
+}
+
+func (x *FamilyMember) GetUserAvatarFilename() string {
+	if x != nil && x.UserAvatarFilename != nil {
+		return *x.UserAvatarFilename
 	}
 	return ""
 }
@@ -7968,7 +7977,7 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"created_at\x18\x03 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
 	"updated_at\x18\x04 \x01(\tR\tupdatedAt\x122\n" +
-	"\amembers\x18\x05 \x03(\v2\x18.finance.v1.FamilyMemberR\amembers\"\xb1\x01\n" +
+	"\amembers\x18\x05 \x03(\v2\x18.finance.v1.FamilyMemberR\amembers\"\x81\x02\n" +
 	"\fFamilyMember\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tfamily_id\x18\x02 \x01(\tR\bfamilyId\x12\x12\n" +
@@ -7976,7 +7985,9 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\tjoined_at\x18\x04 \x01(\tR\bjoinedAt\x12\x1b\n" +
 	"\tuser_name\x18\x05 \x01(\tR\buserName\x12\x1d\n" +
 	"\n" +
-	"user_email\x18\x06 \x01(\tR\tuserEmail\"\xf8\x01\n" +
+	"user_email\x18\x06 \x01(\tR\tuserEmail\x125\n" +
+	"\x14user_avatar_filename\x18\a \x01(\tH\x00R\x12userAvatarFilename\x88\x01\x01B\x17\n" +
+	"\x15_user_avatar_filename\"\xf8\x01\n" +
 	"\x11CategoryBreakdown\x12\x1f\n" +
 	"\vcategory_id\x18\x01 \x01(\tR\n" +
 	"categoryId\x12#\n" +
@@ -8849,6 +8860,7 @@ func file_finance_v1_finance_proto_init() {
 	file_finance_v1_finance_proto_msgTypes[0].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[2].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[3].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[9].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[15].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[17].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[29].OneofWrappers = []any{}
