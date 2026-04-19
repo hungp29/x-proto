@@ -2295,11 +2295,13 @@ var AnalyticsService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	FamilyService_CreateFamily_FullMethodName       = "/finance.v1.FamilyService/CreateFamily"
-	FamilyService_GetFamily_FullMethodName          = "/finance.v1.FamilyService/GetFamily"
-	FamilyService_AddFamilyMember_FullMethodName    = "/finance.v1.FamilyService/AddFamilyMember"
-	FamilyService_RemoveFamilyMember_FullMethodName = "/finance.v1.FamilyService/RemoveFamilyMember"
-	FamilyService_LeaveFamily_FullMethodName        = "/finance.v1.FamilyService/LeaveFamily"
+	FamilyService_CreateFamily_FullMethodName            = "/finance.v1.FamilyService/CreateFamily"
+	FamilyService_GetFamily_FullMethodName               = "/finance.v1.FamilyService/GetFamily"
+	FamilyService_AddFamilyMember_FullMethodName         = "/finance.v1.FamilyService/AddFamilyMember"
+	FamilyService_GetFamilyInvitation_FullMethodName     = "/finance.v1.FamilyService/GetFamilyInvitation"
+	FamilyService_RespondFamilyInvitation_FullMethodName = "/finance.v1.FamilyService/RespondFamilyInvitation"
+	FamilyService_RemoveFamilyMember_FullMethodName      = "/finance.v1.FamilyService/RemoveFamilyMember"
+	FamilyService_LeaveFamily_FullMethodName             = "/finance.v1.FamilyService/LeaveFamily"
 )
 
 // FamilyServiceClient is the client API for FamilyService service.
@@ -2309,6 +2311,8 @@ type FamilyServiceClient interface {
 	CreateFamily(ctx context.Context, in *CreateFamilyRequest, opts ...grpc.CallOption) (*CreateFamilyResponse, error)
 	GetFamily(ctx context.Context, in *GetFamilyRequest, opts ...grpc.CallOption) (*GetFamilyResponse, error)
 	AddFamilyMember(ctx context.Context, in *AddFamilyMemberRequest, opts ...grpc.CallOption) (*AddFamilyMemberResponse, error)
+	GetFamilyInvitation(ctx context.Context, in *GetFamilyInvitationRequest, opts ...grpc.CallOption) (*GetFamilyInvitationResponse, error)
+	RespondFamilyInvitation(ctx context.Context, in *RespondFamilyInvitationRequest, opts ...grpc.CallOption) (*RespondFamilyInvitationResponse, error)
 	RemoveFamilyMember(ctx context.Context, in *RemoveFamilyMemberRequest, opts ...grpc.CallOption) (*RemoveFamilyMemberResponse, error)
 	LeaveFamily(ctx context.Context, in *LeaveFamilyRequest, opts ...grpc.CallOption) (*LeaveFamilyResponse, error)
 }
@@ -2351,6 +2355,26 @@ func (c *familyServiceClient) AddFamilyMember(ctx context.Context, in *AddFamily
 	return out, nil
 }
 
+func (c *familyServiceClient) GetFamilyInvitation(ctx context.Context, in *GetFamilyInvitationRequest, opts ...grpc.CallOption) (*GetFamilyInvitationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetFamilyInvitationResponse)
+	err := c.cc.Invoke(ctx, FamilyService_GetFamilyInvitation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *familyServiceClient) RespondFamilyInvitation(ctx context.Context, in *RespondFamilyInvitationRequest, opts ...grpc.CallOption) (*RespondFamilyInvitationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RespondFamilyInvitationResponse)
+	err := c.cc.Invoke(ctx, FamilyService_RespondFamilyInvitation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *familyServiceClient) RemoveFamilyMember(ctx context.Context, in *RemoveFamilyMemberRequest, opts ...grpc.CallOption) (*RemoveFamilyMemberResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RemoveFamilyMemberResponse)
@@ -2378,6 +2402,8 @@ type FamilyServiceServer interface {
 	CreateFamily(context.Context, *CreateFamilyRequest) (*CreateFamilyResponse, error)
 	GetFamily(context.Context, *GetFamilyRequest) (*GetFamilyResponse, error)
 	AddFamilyMember(context.Context, *AddFamilyMemberRequest) (*AddFamilyMemberResponse, error)
+	GetFamilyInvitation(context.Context, *GetFamilyInvitationRequest) (*GetFamilyInvitationResponse, error)
+	RespondFamilyInvitation(context.Context, *RespondFamilyInvitationRequest) (*RespondFamilyInvitationResponse, error)
 	RemoveFamilyMember(context.Context, *RemoveFamilyMemberRequest) (*RemoveFamilyMemberResponse, error)
 	LeaveFamily(context.Context, *LeaveFamilyRequest) (*LeaveFamilyResponse, error)
 	mustEmbedUnimplementedFamilyServiceServer()
@@ -2398,6 +2424,12 @@ func (UnimplementedFamilyServiceServer) GetFamily(context.Context, *GetFamilyReq
 }
 func (UnimplementedFamilyServiceServer) AddFamilyMember(context.Context, *AddFamilyMemberRequest) (*AddFamilyMemberResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method AddFamilyMember not implemented")
+}
+func (UnimplementedFamilyServiceServer) GetFamilyInvitation(context.Context, *GetFamilyInvitationRequest) (*GetFamilyInvitationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetFamilyInvitation not implemented")
+}
+func (UnimplementedFamilyServiceServer) RespondFamilyInvitation(context.Context, *RespondFamilyInvitationRequest) (*RespondFamilyInvitationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method RespondFamilyInvitation not implemented")
 }
 func (UnimplementedFamilyServiceServer) RemoveFamilyMember(context.Context, *RemoveFamilyMemberRequest) (*RemoveFamilyMemberResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method RemoveFamilyMember not implemented")
@@ -2480,6 +2512,42 @@ func _FamilyService_AddFamilyMember_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FamilyService_GetFamilyInvitation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetFamilyInvitationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).GetFamilyInvitation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_GetFamilyInvitation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).GetFamilyInvitation(ctx, req.(*GetFamilyInvitationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _FamilyService_RespondFamilyInvitation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RespondFamilyInvitationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).RespondFamilyInvitation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_RespondFamilyInvitation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).RespondFamilyInvitation(ctx, req.(*RespondFamilyInvitationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _FamilyService_RemoveFamilyMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RemoveFamilyMemberRequest)
 	if err := dec(in); err != nil {
@@ -2534,6 +2602,14 @@ var FamilyService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddFamilyMember",
 			Handler:    _FamilyService_AddFamilyMember_Handler,
+		},
+		{
+			MethodName: "GetFamilyInvitation",
+			Handler:    _FamilyService_GetFamilyInvitation_Handler,
+		},
+		{
+			MethodName: "RespondFamilyInvitation",
+			Handler:    _FamilyService_RespondFamilyInvitation_Handler,
 		},
 		{
 			MethodName: "RemoveFamilyMember",
