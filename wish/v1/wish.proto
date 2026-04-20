@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+package wish.v1;
+
+import "common/v1/common.proto";
+
+option go_package = "github.com/hungp29/x-proto/gen/go/wish/v1;wishv1";
+
+// ProductLink is one storefront URL for a wish product.
+message ProductLink {
+  string id = 1;
+  string platform_key = 2;
+  string url = 3;
+  string current_name = 4;
+  // Integer minor units (e.g. cents); 0 if unknown until first scan.
+  int64 current_price_minor = 5;
+  string currency = 6;
+  string unit = 7;
+  int64 lowest_price_minor = 8;
+  string last_scanned_at = 9; // RFC3339 or empty
+  string last_error = 10;
+  // Product image URL from the storefront PDP (e.g. og:image), when available.
+  string image_url = 11;
+}
+
+// WishProduct is a logical product shared with all members of the family.
+message WishProduct {
+  string id = 1;
+  string family_id = 2;
+  string created_by = 3;
+  string title = 4;
+  repeated ProductLink links = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+// PriceSnapshotSummary is optional history point (list API may omit deep history).
+message PriceSnapshotSummary {
+  string observed_at = 1;
+  int64 price_minor = 2;
+  string currency = 3;
+  bool is_lowest_so_far = 4;
+}
+
+message CreateProductRequest {
+  // Optional explicit title; if empty, filled after first scan from link metadata.
+  string title = 1;
+  // At least one URL to create links; platform is resolved from URL/registry.
+  repeated string urls = 2;
+}
+
+message CreateProductResponse {
+  WishProduct product = 1;
+}
+
+message GetProductRequest {
+  string product_id = 1;
+}
+
+message GetProductResponse {
+  WishProduct product = 1;
+}
+
+message ListProductsRequest {
+  common.v1.Pagination pagination = 1;
+}
+
+message ListProductsResponse {
+  repeated WishProduct products = 1;
+  string next_page_token = 2;
+  int32 total_count = 3;
+}
+
+// LinkToAdd adds or replaces the link for a platform (one link per platform per product).
+message LinkToAdd {
+  string url = 1;
+}
+
+message UpdateProductLinksRequest {
+  string product_id = 1;
+  repeated LinkToAdd add_links = 2;
+  repeated string remove_link_ids = 3;
+}
+
+message UpdateProductLinksResponse {
+  WishProduct product = 1;
+}
+
+message RemoveLinkRequest {
+  string product_id = 1;
+  string link_id = 2;
+}
+
+message RemoveLinkResponse {
+  WishProduct product = 1;
+}
+
+message DeleteProductRequest {
+  string product_id = 1;
+}
+
+message DeleteProductResponse {}
+
+message ListPriceHistoryRequest {
+  string link_id = 1;
+  common.v1.Pagination pagination = 2;
+}
+
+message ListPriceHistoryResponse {
+  repeated PriceSnapshotSummary snapshots = 1;
+  string next_page_token = 2;
+}
+
+// WishService is scoped to the caller's finance family (from identity context).
+// DeleteProduct: only product creator or family owner (see service docs).
+service WishService {
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+  rpc UpdateProductLinks(UpdateProductLinksRequest) returns (UpdateProductLinksResponse);
+  rpc RemoveLink(RemoveLinkRequest) returns (RemoveLinkResponse);
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);
+  rpc ListPriceHistory(ListPriceHistoryRequest) returns (ListPriceHistoryResponse);
+}
