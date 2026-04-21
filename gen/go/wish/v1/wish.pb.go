@@ -601,7 +601,104 @@ func (x *ListProductsResponse) GetTotalCount() int32 {
 	return 0
 }
 
-// LinkToAdd adds or replaces the link for a platform (one link per platform per product).
+type UpdateProductRequest struct {
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	ProductId string                 `protobuf:"bytes,1,opt,name=product_id,json=productId,proto3" json:"product_id,omitempty"`
+	// Display name for the wish product (trimmed server-side; empty clears to untitled).
+	Title         string `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateProductRequest) Reset() {
+	*x = UpdateProductRequest{}
+	mi := &file_wish_v1_wish_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProductRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProductRequest) ProtoMessage() {}
+
+func (x *UpdateProductRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_wish_v1_wish_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProductRequest.ProtoReflect.Descriptor instead.
+func (*UpdateProductRequest) Descriptor() ([]byte, []int) {
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UpdateProductRequest) GetProductId() string {
+	if x != nil {
+		return x.ProductId
+	}
+	return ""
+}
+
+func (x *UpdateProductRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+type UpdateProductResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Product       *WishProduct           `protobuf:"bytes,1,opt,name=product,proto3" json:"product,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateProductResponse) Reset() {
+	*x = UpdateProductResponse{}
+	mi := &file_wish_v1_wish_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProductResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProductResponse) ProtoMessage() {}
+
+func (x *UpdateProductResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_wish_v1_wish_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProductResponse.ProtoReflect.Descriptor instead.
+func (*UpdateProductResponse) Descriptor() ([]byte, []int) {
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *UpdateProductResponse) GetProduct() *WishProduct {
+	if x != nil {
+		return x.Product
+	}
+	return nil
+}
+
+// LinkToAdd registers a new storefront URL for the product.
 type LinkToAdd struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Url           string                 `protobuf:"bytes,1,opt,name=url,proto3" json:"url,omitempty"`
@@ -611,7 +708,7 @@ type LinkToAdd struct {
 
 func (x *LinkToAdd) Reset() {
 	*x = LinkToAdd{}
-	mi := &file_wish_v1_wish_proto_msgTypes[9]
+	mi := &file_wish_v1_wish_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -623,7 +720,7 @@ func (x *LinkToAdd) String() string {
 func (*LinkToAdd) ProtoMessage() {}
 
 func (x *LinkToAdd) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[9]
+	mi := &file_wish_v1_wish_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -636,7 +733,7 @@ func (x *LinkToAdd) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LinkToAdd.ProtoReflect.Descriptor instead.
 func (*LinkToAdd) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{9}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *LinkToAdd) GetUrl() string {
@@ -657,7 +754,7 @@ type UpdateProductLinksRequest struct {
 
 func (x *UpdateProductLinksRequest) Reset() {
 	*x = UpdateProductLinksRequest{}
-	mi := &file_wish_v1_wish_proto_msgTypes[10]
+	mi := &file_wish_v1_wish_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -669,7 +766,7 @@ func (x *UpdateProductLinksRequest) String() string {
 func (*UpdateProductLinksRequest) ProtoMessage() {}
 
 func (x *UpdateProductLinksRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[10]
+	mi := &file_wish_v1_wish_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -682,7 +779,7 @@ func (x *UpdateProductLinksRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateProductLinksRequest.ProtoReflect.Descriptor instead.
 func (*UpdateProductLinksRequest) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{10}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *UpdateProductLinksRequest) GetProductId() string {
@@ -715,7 +812,7 @@ type UpdateProductLinksResponse struct {
 
 func (x *UpdateProductLinksResponse) Reset() {
 	*x = UpdateProductLinksResponse{}
-	mi := &file_wish_v1_wish_proto_msgTypes[11]
+	mi := &file_wish_v1_wish_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -727,7 +824,7 @@ func (x *UpdateProductLinksResponse) String() string {
 func (*UpdateProductLinksResponse) ProtoMessage() {}
 
 func (x *UpdateProductLinksResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[11]
+	mi := &file_wish_v1_wish_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -740,7 +837,7 @@ func (x *UpdateProductLinksResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateProductLinksResponse.ProtoReflect.Descriptor instead.
 func (*UpdateProductLinksResponse) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{11}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *UpdateProductLinksResponse) GetProduct() *WishProduct {
@@ -760,7 +857,7 @@ type RemoveLinkRequest struct {
 
 func (x *RemoveLinkRequest) Reset() {
 	*x = RemoveLinkRequest{}
-	mi := &file_wish_v1_wish_proto_msgTypes[12]
+	mi := &file_wish_v1_wish_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -772,7 +869,7 @@ func (x *RemoveLinkRequest) String() string {
 func (*RemoveLinkRequest) ProtoMessage() {}
 
 func (x *RemoveLinkRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[12]
+	mi := &file_wish_v1_wish_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -785,7 +882,7 @@ func (x *RemoveLinkRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveLinkRequest.ProtoReflect.Descriptor instead.
 func (*RemoveLinkRequest) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{12}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *RemoveLinkRequest) GetProductId() string {
@@ -811,7 +908,7 @@ type RemoveLinkResponse struct {
 
 func (x *RemoveLinkResponse) Reset() {
 	*x = RemoveLinkResponse{}
-	mi := &file_wish_v1_wish_proto_msgTypes[13]
+	mi := &file_wish_v1_wish_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -823,7 +920,7 @@ func (x *RemoveLinkResponse) String() string {
 func (*RemoveLinkResponse) ProtoMessage() {}
 
 func (x *RemoveLinkResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[13]
+	mi := &file_wish_v1_wish_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -836,7 +933,7 @@ func (x *RemoveLinkResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RemoveLinkResponse.ProtoReflect.Descriptor instead.
 func (*RemoveLinkResponse) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{13}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *RemoveLinkResponse) GetProduct() *WishProduct {
@@ -855,7 +952,7 @@ type DeleteProductRequest struct {
 
 func (x *DeleteProductRequest) Reset() {
 	*x = DeleteProductRequest{}
-	mi := &file_wish_v1_wish_proto_msgTypes[14]
+	mi := &file_wish_v1_wish_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -867,7 +964,7 @@ func (x *DeleteProductRequest) String() string {
 func (*DeleteProductRequest) ProtoMessage() {}
 
 func (x *DeleteProductRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[14]
+	mi := &file_wish_v1_wish_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -880,7 +977,7 @@ func (x *DeleteProductRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteProductRequest.ProtoReflect.Descriptor instead.
 func (*DeleteProductRequest) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{14}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *DeleteProductRequest) GetProductId() string {
@@ -898,7 +995,7 @@ type DeleteProductResponse struct {
 
 func (x *DeleteProductResponse) Reset() {
 	*x = DeleteProductResponse{}
-	mi := &file_wish_v1_wish_proto_msgTypes[15]
+	mi := &file_wish_v1_wish_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -910,7 +1007,7 @@ func (x *DeleteProductResponse) String() string {
 func (*DeleteProductResponse) ProtoMessage() {}
 
 func (x *DeleteProductResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[15]
+	mi := &file_wish_v1_wish_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -923,7 +1020,7 @@ func (x *DeleteProductResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteProductResponse.ProtoReflect.Descriptor instead.
 func (*DeleteProductResponse) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{15}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{17}
 }
 
 type ListPriceHistoryRequest struct {
@@ -936,7 +1033,7 @@ type ListPriceHistoryRequest struct {
 
 func (x *ListPriceHistoryRequest) Reset() {
 	*x = ListPriceHistoryRequest{}
-	mi := &file_wish_v1_wish_proto_msgTypes[16]
+	mi := &file_wish_v1_wish_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -948,7 +1045,7 @@ func (x *ListPriceHistoryRequest) String() string {
 func (*ListPriceHistoryRequest) ProtoMessage() {}
 
 func (x *ListPriceHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[16]
+	mi := &file_wish_v1_wish_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -961,7 +1058,7 @@ func (x *ListPriceHistoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPriceHistoryRequest.ProtoReflect.Descriptor instead.
 func (*ListPriceHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{16}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *ListPriceHistoryRequest) GetLinkId() string {
@@ -988,7 +1085,7 @@ type ListPriceHistoryResponse struct {
 
 func (x *ListPriceHistoryResponse) Reset() {
 	*x = ListPriceHistoryResponse{}
-	mi := &file_wish_v1_wish_proto_msgTypes[17]
+	mi := &file_wish_v1_wish_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1000,7 +1097,7 @@ func (x *ListPriceHistoryResponse) String() string {
 func (*ListPriceHistoryResponse) ProtoMessage() {}
 
 func (x *ListPriceHistoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_wish_v1_wish_proto_msgTypes[17]
+	mi := &file_wish_v1_wish_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1013,7 +1110,7 @@ func (x *ListPriceHistoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListPriceHistoryResponse.ProtoReflect.Descriptor instead.
 func (*ListPriceHistoryResponse) Descriptor() ([]byte, []int) {
-	return file_wish_v1_wish_proto_rawDescGZIP(), []int{17}
+	return file_wish_v1_wish_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *ListPriceHistoryResponse) GetSnapshots() []*PriceSnapshotSummary {
@@ -1085,7 +1182,13 @@ const file_wish_v1_wish_proto_rawDesc = "" +
 	"\bproducts\x18\x01 \x03(\v2\x14.wish.v1.WishProductR\bproducts\x12&\n" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\x12\x1f\n" +
 	"\vtotal_count\x18\x03 \x01(\x05R\n" +
-	"totalCount\"\x1d\n" +
+	"totalCount\"K\n" +
+	"\x14UpdateProductRequest\x12\x1d\n" +
+	"\n" +
+	"product_id\x18\x01 \x01(\tR\tproductId\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\"G\n" +
+	"\x15UpdateProductResponse\x12.\n" +
+	"\aproduct\x18\x01 \x01(\v2\x14.wish.v1.WishProductR\aproduct\"\x1d\n" +
 	"\tLinkToAdd\x12\x10\n" +
 	"\x03url\x18\x01 \x01(\tR\x03url\"\x93\x01\n" +
 	"\x19UpdateProductLinksRequest\x12\x1d\n" +
@@ -1112,12 +1215,13 @@ const file_wish_v1_wish_proto_rawDesc = "" +
 	"pagination\"\x7f\n" +
 	"\x18ListPriceHistoryResponse\x12;\n" +
 	"\tsnapshots\x18\x01 \x03(\v2\x1d.wish.v1.PriceSnapshotSummaryR\tsnapshots\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\xc0\x04\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken2\x90\x05\n" +
 	"\vWishService\x12N\n" +
 	"\rCreateProduct\x12\x1d.wish.v1.CreateProductRequest\x1a\x1e.wish.v1.CreateProductResponse\x12E\n" +
 	"\n" +
 	"GetProduct\x12\x1a.wish.v1.GetProductRequest\x1a\x1b.wish.v1.GetProductResponse\x12K\n" +
-	"\fListProducts\x12\x1c.wish.v1.ListProductsRequest\x1a\x1d.wish.v1.ListProductsResponse\x12]\n" +
+	"\fListProducts\x12\x1c.wish.v1.ListProductsRequest\x1a\x1d.wish.v1.ListProductsResponse\x12N\n" +
+	"\rUpdateProduct\x12\x1d.wish.v1.UpdateProductRequest\x1a\x1e.wish.v1.UpdateProductResponse\x12]\n" +
 	"\x12UpdateProductLinks\x12\".wish.v1.UpdateProductLinksRequest\x1a#.wish.v1.UpdateProductLinksResponse\x12E\n" +
 	"\n" +
 	"RemoveLink\x12\x1a.wish.v1.RemoveLinkRequest\x1a\x1b.wish.v1.RemoveLinkResponse\x12N\n" +
@@ -1137,7 +1241,7 @@ func file_wish_v1_wish_proto_rawDescGZIP() []byte {
 	return file_wish_v1_wish_proto_rawDescData
 }
 
-var file_wish_v1_wish_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_wish_v1_wish_proto_msgTypes = make([]protoimpl.MessageInfo, 20)
 var file_wish_v1_wish_proto_goTypes = []any{
 	(*ProductLink)(nil),                // 0: wish.v1.ProductLink
 	(*WishProduct)(nil),                // 1: wish.v1.WishProduct
@@ -1148,47 +1252,52 @@ var file_wish_v1_wish_proto_goTypes = []any{
 	(*GetProductResponse)(nil),         // 6: wish.v1.GetProductResponse
 	(*ListProductsRequest)(nil),        // 7: wish.v1.ListProductsRequest
 	(*ListProductsResponse)(nil),       // 8: wish.v1.ListProductsResponse
-	(*LinkToAdd)(nil),                  // 9: wish.v1.LinkToAdd
-	(*UpdateProductLinksRequest)(nil),  // 10: wish.v1.UpdateProductLinksRequest
-	(*UpdateProductLinksResponse)(nil), // 11: wish.v1.UpdateProductLinksResponse
-	(*RemoveLinkRequest)(nil),          // 12: wish.v1.RemoveLinkRequest
-	(*RemoveLinkResponse)(nil),         // 13: wish.v1.RemoveLinkResponse
-	(*DeleteProductRequest)(nil),       // 14: wish.v1.DeleteProductRequest
-	(*DeleteProductResponse)(nil),      // 15: wish.v1.DeleteProductResponse
-	(*ListPriceHistoryRequest)(nil),    // 16: wish.v1.ListPriceHistoryRequest
-	(*ListPriceHistoryResponse)(nil),   // 17: wish.v1.ListPriceHistoryResponse
-	(*v1.Pagination)(nil),              // 18: common.v1.Pagination
+	(*UpdateProductRequest)(nil),       // 9: wish.v1.UpdateProductRequest
+	(*UpdateProductResponse)(nil),      // 10: wish.v1.UpdateProductResponse
+	(*LinkToAdd)(nil),                  // 11: wish.v1.LinkToAdd
+	(*UpdateProductLinksRequest)(nil),  // 12: wish.v1.UpdateProductLinksRequest
+	(*UpdateProductLinksResponse)(nil), // 13: wish.v1.UpdateProductLinksResponse
+	(*RemoveLinkRequest)(nil),          // 14: wish.v1.RemoveLinkRequest
+	(*RemoveLinkResponse)(nil),         // 15: wish.v1.RemoveLinkResponse
+	(*DeleteProductRequest)(nil),       // 16: wish.v1.DeleteProductRequest
+	(*DeleteProductResponse)(nil),      // 17: wish.v1.DeleteProductResponse
+	(*ListPriceHistoryRequest)(nil),    // 18: wish.v1.ListPriceHistoryRequest
+	(*ListPriceHistoryResponse)(nil),   // 19: wish.v1.ListPriceHistoryResponse
+	(*v1.Pagination)(nil),              // 20: common.v1.Pagination
 }
 var file_wish_v1_wish_proto_depIdxs = []int32{
 	0,  // 0: wish.v1.WishProduct.links:type_name -> wish.v1.ProductLink
 	1,  // 1: wish.v1.CreateProductResponse.product:type_name -> wish.v1.WishProduct
 	1,  // 2: wish.v1.GetProductResponse.product:type_name -> wish.v1.WishProduct
-	18, // 3: wish.v1.ListProductsRequest.pagination:type_name -> common.v1.Pagination
+	20, // 3: wish.v1.ListProductsRequest.pagination:type_name -> common.v1.Pagination
 	1,  // 4: wish.v1.ListProductsResponse.products:type_name -> wish.v1.WishProduct
-	9,  // 5: wish.v1.UpdateProductLinksRequest.add_links:type_name -> wish.v1.LinkToAdd
-	1,  // 6: wish.v1.UpdateProductLinksResponse.product:type_name -> wish.v1.WishProduct
-	1,  // 7: wish.v1.RemoveLinkResponse.product:type_name -> wish.v1.WishProduct
-	18, // 8: wish.v1.ListPriceHistoryRequest.pagination:type_name -> common.v1.Pagination
-	2,  // 9: wish.v1.ListPriceHistoryResponse.snapshots:type_name -> wish.v1.PriceSnapshotSummary
-	3,  // 10: wish.v1.WishService.CreateProduct:input_type -> wish.v1.CreateProductRequest
-	5,  // 11: wish.v1.WishService.GetProduct:input_type -> wish.v1.GetProductRequest
-	7,  // 12: wish.v1.WishService.ListProducts:input_type -> wish.v1.ListProductsRequest
-	10, // 13: wish.v1.WishService.UpdateProductLinks:input_type -> wish.v1.UpdateProductLinksRequest
-	12, // 14: wish.v1.WishService.RemoveLink:input_type -> wish.v1.RemoveLinkRequest
-	14, // 15: wish.v1.WishService.DeleteProduct:input_type -> wish.v1.DeleteProductRequest
-	16, // 16: wish.v1.WishService.ListPriceHistory:input_type -> wish.v1.ListPriceHistoryRequest
-	4,  // 17: wish.v1.WishService.CreateProduct:output_type -> wish.v1.CreateProductResponse
-	6,  // 18: wish.v1.WishService.GetProduct:output_type -> wish.v1.GetProductResponse
-	8,  // 19: wish.v1.WishService.ListProducts:output_type -> wish.v1.ListProductsResponse
-	11, // 20: wish.v1.WishService.UpdateProductLinks:output_type -> wish.v1.UpdateProductLinksResponse
-	13, // 21: wish.v1.WishService.RemoveLink:output_type -> wish.v1.RemoveLinkResponse
-	15, // 22: wish.v1.WishService.DeleteProduct:output_type -> wish.v1.DeleteProductResponse
-	17, // 23: wish.v1.WishService.ListPriceHistory:output_type -> wish.v1.ListPriceHistoryResponse
-	17, // [17:24] is the sub-list for method output_type
-	10, // [10:17] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	1,  // 5: wish.v1.UpdateProductResponse.product:type_name -> wish.v1.WishProduct
+	11, // 6: wish.v1.UpdateProductLinksRequest.add_links:type_name -> wish.v1.LinkToAdd
+	1,  // 7: wish.v1.UpdateProductLinksResponse.product:type_name -> wish.v1.WishProduct
+	1,  // 8: wish.v1.RemoveLinkResponse.product:type_name -> wish.v1.WishProduct
+	20, // 9: wish.v1.ListPriceHistoryRequest.pagination:type_name -> common.v1.Pagination
+	2,  // 10: wish.v1.ListPriceHistoryResponse.snapshots:type_name -> wish.v1.PriceSnapshotSummary
+	3,  // 11: wish.v1.WishService.CreateProduct:input_type -> wish.v1.CreateProductRequest
+	5,  // 12: wish.v1.WishService.GetProduct:input_type -> wish.v1.GetProductRequest
+	7,  // 13: wish.v1.WishService.ListProducts:input_type -> wish.v1.ListProductsRequest
+	9,  // 14: wish.v1.WishService.UpdateProduct:input_type -> wish.v1.UpdateProductRequest
+	12, // 15: wish.v1.WishService.UpdateProductLinks:input_type -> wish.v1.UpdateProductLinksRequest
+	14, // 16: wish.v1.WishService.RemoveLink:input_type -> wish.v1.RemoveLinkRequest
+	16, // 17: wish.v1.WishService.DeleteProduct:input_type -> wish.v1.DeleteProductRequest
+	18, // 18: wish.v1.WishService.ListPriceHistory:input_type -> wish.v1.ListPriceHistoryRequest
+	4,  // 19: wish.v1.WishService.CreateProduct:output_type -> wish.v1.CreateProductResponse
+	6,  // 20: wish.v1.WishService.GetProduct:output_type -> wish.v1.GetProductResponse
+	8,  // 21: wish.v1.WishService.ListProducts:output_type -> wish.v1.ListProductsResponse
+	10, // 22: wish.v1.WishService.UpdateProduct:output_type -> wish.v1.UpdateProductResponse
+	13, // 23: wish.v1.WishService.UpdateProductLinks:output_type -> wish.v1.UpdateProductLinksResponse
+	15, // 24: wish.v1.WishService.RemoveLink:output_type -> wish.v1.RemoveLinkResponse
+	17, // 25: wish.v1.WishService.DeleteProduct:output_type -> wish.v1.DeleteProductResponse
+	19, // 26: wish.v1.WishService.ListPriceHistory:output_type -> wish.v1.ListPriceHistoryResponse
+	19, // [19:27] is the sub-list for method output_type
+	11, // [11:19] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_wish_v1_wish_proto_init() }
@@ -1202,7 +1311,7 @@ func file_wish_v1_wish_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_wish_v1_wish_proto_rawDesc), len(file_wish_v1_wish_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   20,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

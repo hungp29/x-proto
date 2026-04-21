@@ -1124,12 +1124,17 @@ func (x *Goal) GetUpdatedAt() string {
 }
 
 type Family struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	CreatedAt     string                 `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     string                 `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	Members       []*FamilyMember        `protobuf:"bytes,5,rep,name=members,proto3" json:"members,omitempty"`
+	state     protoimpl.MessageState `protogen:"open.v1"`
+	Id        string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name      string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	CreatedAt string                 `protobuf:"bytes,3,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt string                 `protobuf:"bytes,4,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	Members   []*FamilyMember        `protobuf:"bytes,5,rep,name=members,proto3" json:"members,omitempty"`
+	// Telegram destination for family notifications. Only the family owner receives
+	// this field in GetFamily; other members never see it. Empty means not configured.
+	TelegramChatId *string `protobuf:"bytes,6,opt,name=telegram_chat_id,json=telegramChatId,proto3,oneof" json:"telegram_chat_id,omitempty"`
+	// IETF language tag for family-scoped content (e.g. en, vi). Visible to all members.
+	Language      string `protobuf:"bytes,7,opt,name=language,proto3" json:"language,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1197,6 +1202,20 @@ func (x *Family) GetMembers() []*FamilyMember {
 		return x.Members
 	}
 	return nil
+}
+
+func (x *Family) GetTelegramChatId() string {
+	if x != nil && x.TelegramChatId != nil {
+		return *x.TelegramChatId
+	}
+	return ""
+}
+
+func (x *Family) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
 }
 
 type FamilyMember struct {
@@ -7833,6 +7852,104 @@ func (*LeaveFamilyResponse) Descriptor() ([]byte, []int) {
 	return file_finance_v1_finance_proto_rawDescGZIP(), []int{128}
 }
 
+type UpdateFamilyTelegramRequest struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Empty string clears the stored chat id. Only the family owner may call this RPC.
+	TelegramChatId string `protobuf:"bytes,1,opt,name=telegram_chat_id,json=telegramChatId,proto3" json:"telegram_chat_id,omitempty"`
+	// Supported values: en, vi (must match finance_families.language constraint in app).
+	Language      string `protobuf:"bytes,2,opt,name=language,proto3" json:"language,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateFamilyTelegramRequest) Reset() {
+	*x = UpdateFamilyTelegramRequest{}
+	mi := &file_finance_v1_finance_proto_msgTypes[129]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateFamilyTelegramRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateFamilyTelegramRequest) ProtoMessage() {}
+
+func (x *UpdateFamilyTelegramRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[129]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateFamilyTelegramRequest.ProtoReflect.Descriptor instead.
+func (*UpdateFamilyTelegramRequest) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{129}
+}
+
+func (x *UpdateFamilyTelegramRequest) GetTelegramChatId() string {
+	if x != nil {
+		return x.TelegramChatId
+	}
+	return ""
+}
+
+func (x *UpdateFamilyTelegramRequest) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
+}
+
+type UpdateFamilyTelegramResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Family        *Family                `protobuf:"bytes,1,opt,name=family,proto3" json:"family,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateFamilyTelegramResponse) Reset() {
+	*x = UpdateFamilyTelegramResponse{}
+	mi := &file_finance_v1_finance_proto_msgTypes[130]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateFamilyTelegramResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateFamilyTelegramResponse) ProtoMessage() {}
+
+func (x *UpdateFamilyTelegramResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_finance_v1_finance_proto_msgTypes[130]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateFamilyTelegramResponse.ProtoReflect.Descriptor instead.
+func (*UpdateFamilyTelegramResponse) Descriptor() ([]byte, []int) {
+	return file_finance_v1_finance_proto_rawDescGZIP(), []int{130}
+}
+
+func (x *UpdateFamilyTelegramResponse) GetFamily() *Family {
+	if x != nil {
+		return x.Family
+	}
+	return nil
+}
+
 var File_finance_v1_finance_proto protoreflect.FileDescriptor
 
 const file_finance_v1_finance_proto_rawDesc = "" +
@@ -7969,7 +8086,7 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"created_at\x18\n" +
 	" \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\v \x01(\tR\tupdatedAt\"\x9e\x01\n" +
+	"updated_at\x18\v \x01(\tR\tupdatedAt\"\xfe\x01\n" +
 	"\x06Family\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
@@ -7977,7 +8094,10 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"created_at\x18\x03 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
 	"updated_at\x18\x04 \x01(\tR\tupdatedAt\x122\n" +
-	"\amembers\x18\x05 \x03(\v2\x18.finance.v1.FamilyMemberR\amembers\"\x81\x02\n" +
+	"\amembers\x18\x05 \x03(\v2\x18.finance.v1.FamilyMemberR\amembers\x12-\n" +
+	"\x10telegram_chat_id\x18\x06 \x01(\tH\x00R\x0etelegramChatId\x88\x01\x01\x12\x1a\n" +
+	"\blanguage\x18\a \x01(\tR\blanguageB\x13\n" +
+	"\x11_telegram_chat_id\"\x81\x02\n" +
 	"\fFamilyMember\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
 	"\tfamily_id\x18\x02 \x01(\tR\bfamilyId\x12\x12\n" +
@@ -8454,7 +8574,12 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\"\x1c\n" +
 	"\x1aRemoveFamilyMemberResponse\"\x14\n" +
 	"\x12LeaveFamilyRequest\"\x15\n" +
-	"\x13LeaveFamilyResponse*x\n" +
+	"\x13LeaveFamilyResponse\"c\n" +
+	"\x1bUpdateFamilyTelegramRequest\x12(\n" +
+	"\x10telegram_chat_id\x18\x01 \x01(\tR\x0etelegramChatId\x12\x1a\n" +
+	"\blanguage\x18\x02 \x01(\tR\blanguage\"J\n" +
+	"\x1cUpdateFamilyTelegramResponse\x12*\n" +
+	"\x06family\x18\x01 \x01(\v2\x12.finance.v1.FamilyR\x06family*x\n" +
 	"\x11TransactionStatus\x12\"\n" +
 	"\x1eTRANSACTION_STATUS_UNSPECIFIED\x10\x00\x12\x1d\n" +
 	"\x19TRANSACTION_STATUS_POSTED\x10\x01\x12 \n" +
@@ -8519,7 +8644,7 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x11DeleteDebtPayment\x12$.finance.v1.DeleteDebtPaymentRequest\x1a%.finance.v1.DeleteDebtPaymentResponse2\xd0\x01\n" +
 	"\x10AnalyticsService\x12`\n" +
 	"\x11GetMonthlySummary\x12$.finance.v1.GetMonthlySummaryRequest\x1a%.finance.v1.GetMonthlySummaryResponse\x12Z\n" +
-	"\x0fGetMonthlyTrend\x12\".finance.v1.GetMonthlyTrendRequest\x1a#.finance.v1.GetMonthlyTrendResponse2\x99\x05\n" +
+	"\x0fGetMonthlyTrend\x12\".finance.v1.GetMonthlyTrendRequest\x1a#.finance.v1.GetMonthlyTrendResponse2\x84\x06\n" +
 	"\rFamilyService\x12Q\n" +
 	"\fCreateFamily\x12\x1f.finance.v1.CreateFamilyRequest\x1a .finance.v1.CreateFamilyResponse\x12H\n" +
 	"\tGetFamily\x12\x1c.finance.v1.GetFamilyRequest\x1a\x1d.finance.v1.GetFamilyResponse\x12Z\n" +
@@ -8527,7 +8652,8 @@ const file_finance_v1_finance_proto_rawDesc = "" +
 	"\x13GetFamilyInvitation\x12&.finance.v1.GetFamilyInvitationRequest\x1a'.finance.v1.GetFamilyInvitationResponse\x12r\n" +
 	"\x17RespondFamilyInvitation\x12*.finance.v1.RespondFamilyInvitationRequest\x1a+.finance.v1.RespondFamilyInvitationResponse\x12c\n" +
 	"\x12RemoveFamilyMember\x12%.finance.v1.RemoveFamilyMemberRequest\x1a&.finance.v1.RemoveFamilyMemberResponse\x12N\n" +
-	"\vLeaveFamily\x12\x1e.finance.v1.LeaveFamilyRequest\x1a\x1f.finance.v1.LeaveFamilyResponseB\x9f\x01\n" +
+	"\vLeaveFamily\x12\x1e.finance.v1.LeaveFamilyRequest\x1a\x1f.finance.v1.LeaveFamilyResponse\x12i\n" +
+	"\x14UpdateFamilyTelegram\x12'.finance.v1.UpdateFamilyTelegramRequest\x1a(.finance.v1.UpdateFamilyTelegramResponseB\x9f\x01\n" +
 	"\x0ecom.finance.v1B\fFinanceProtoP\x01Z6github.com/hungp29/x-proto/gen/go/finance/v1;financev1\xa2\x02\x03FXX\xaa\x02\n" +
 	"Finance.V1\xca\x02\n" +
 	"Finance\\V1\xe2\x02\x16Finance\\V1\\GPBMetadata\xea\x02\vFinance::V1b\x06proto3"
@@ -8545,7 +8671,7 @@ func file_finance_v1_finance_proto_rawDescGZIP() []byte {
 }
 
 var file_finance_v1_finance_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_finance_v1_finance_proto_msgTypes = make([]protoimpl.MessageInfo, 129)
+var file_finance_v1_finance_proto_msgTypes = make([]protoimpl.MessageInfo, 131)
 var file_finance_v1_finance_proto_goTypes = []any{
 	(TransactionStatus)(0),                       // 0: finance.v1.TransactionStatus
 	(*Wallet)(nil),                               // 1: finance.v1.Wallet
@@ -8677,6 +8803,8 @@ var file_finance_v1_finance_proto_goTypes = []any{
 	(*RemoveFamilyMemberResponse)(nil),           // 127: finance.v1.RemoveFamilyMemberResponse
 	(*LeaveFamilyRequest)(nil),                   // 128: finance.v1.LeaveFamilyRequest
 	(*LeaveFamilyResponse)(nil),                  // 129: finance.v1.LeaveFamilyResponse
+	(*UpdateFamilyTelegramRequest)(nil),          // 130: finance.v1.UpdateFamilyTelegramRequest
+	(*UpdateFamilyTelegramResponse)(nil),         // 131: finance.v1.UpdateFamilyTelegramResponse
 }
 var file_finance_v1_finance_proto_depIdxs = []int32{
 	2,   // 0: finance.v1.Wallet.icon_info:type_name -> finance.v1.Icon
@@ -8735,121 +8863,124 @@ var file_finance_v1_finance_proto_depIdxs = []int32{
 	10,  // 53: finance.v1.AddFamilyMemberResponse.member:type_name -> finance.v1.FamilyMember
 	122, // 54: finance.v1.GetFamilyInvitationResponse.invitation:type_name -> finance.v1.FamilyInvitationPreview
 	10,  // 55: finance.v1.RespondFamilyInvitationResponse.member:type_name -> finance.v1.FamilyMember
-	14,  // 56: finance.v1.WalletService.ListWallets:input_type -> finance.v1.ListWalletsRequest
-	16,  // 57: finance.v1.WalletService.CreateWallet:input_type -> finance.v1.CreateWalletRequest
-	18,  // 58: finance.v1.WalletService.UpdateWallet:input_type -> finance.v1.UpdateWalletRequest
-	20,  // 59: finance.v1.WalletService.DeleteWallet:input_type -> finance.v1.DeleteWalletRequest
-	78,  // 60: finance.v1.WalletService.ListCreditStatements:input_type -> finance.v1.ListCreditStatementsRequest
-	80,  // 61: finance.v1.WalletService.MarkStatementPaid:input_type -> finance.v1.MarkStatementPaidRequest
-	22,  // 62: finance.v1.IconService.ListIcons:input_type -> finance.v1.ListIconsRequest
-	24,  // 63: finance.v1.IconService.CreateIcon:input_type -> finance.v1.CreateIconRequest
-	26,  // 64: finance.v1.IconService.UpdateIcon:input_type -> finance.v1.UpdateIconRequest
-	28,  // 65: finance.v1.IconService.DeleteIcon:input_type -> finance.v1.DeleteIconRequest
-	30,  // 66: finance.v1.CategoryService.ListCategories:input_type -> finance.v1.ListCategoriesRequest
-	32,  // 67: finance.v1.CategoryService.CreateCategory:input_type -> finance.v1.CreateCategoryRequest
-	34,  // 68: finance.v1.CategoryService.UpdateCategory:input_type -> finance.v1.UpdateCategoryRequest
-	36,  // 69: finance.v1.CategoryService.DeleteCategory:input_type -> finance.v1.DeleteCategoryRequest
-	38,  // 70: finance.v1.CategoryService.ListSystemCategories:input_type -> finance.v1.ListSystemCategoriesRequest
-	40,  // 71: finance.v1.CategoryService.CreateSystemCategory:input_type -> finance.v1.CreateSystemCategoryRequest
-	42,  // 72: finance.v1.CategoryService.UpdateSystemCategory:input_type -> finance.v1.UpdateSystemCategoryRequest
-	44,  // 73: finance.v1.CategoryService.DeleteSystemCategory:input_type -> finance.v1.DeleteSystemCategoryRequest
-	46,  // 74: finance.v1.TransactionService.ListTransactions:input_type -> finance.v1.ListTransactionsRequest
-	48,  // 75: finance.v1.TransactionService.CreateTransaction:input_type -> finance.v1.CreateTransactionRequest
-	52,  // 76: finance.v1.TransactionService.UpdateTransaction:input_type -> finance.v1.UpdateTransactionRequest
-	54,  // 77: finance.v1.TransactionService.DeleteTransaction:input_type -> finance.v1.DeleteTransactionRequest
-	56,  // 78: finance.v1.TransactionService.GetTransaction:input_type -> finance.v1.GetTransactionRequest
-	68,  // 79: finance.v1.TransactionService.GetTransactionPermissions:input_type -> finance.v1.GetTransactionPermissionsRequest
-	58,  // 80: finance.v1.TransactionService.GetLatestTransaction:input_type -> finance.v1.GetLatestTransactionRequest
-	60,  // 81: finance.v1.TransactionService.GetFirstTransaction:input_type -> finance.v1.GetFirstTransactionRequest
-	62,  // 82: finance.v1.TransactionService.TransferFunds:input_type -> finance.v1.TransferFundsRequest
-	50,  // 83: finance.v1.TransactionService.GetRefundStatus:input_type -> finance.v1.GetRefundStatusRequest
-	64,  // 84: finance.v1.TransactionService.ConvertPurchaseToInstallment:input_type -> finance.v1.ConvertPurchaseToInstallmentRequest
-	66,  // 85: finance.v1.TransactionService.ListCreditInstallments:input_type -> finance.v1.ListCreditInstallmentsRequest
-	73,  // 86: finance.v1.TransactionService.UpdateCreditInstallment:input_type -> finance.v1.UpdateCreditInstallmentRequest
-	75,  // 87: finance.v1.TransactionService.DeleteCreditInstallment:input_type -> finance.v1.DeleteCreditInstallmentRequest
-	70,  // 88: finance.v1.TransactionService.RecommendCategories:input_type -> finance.v1.RecommendCategoriesRequest
-	82,  // 89: finance.v1.BudgetService.SetBudget:input_type -> finance.v1.SetBudgetRequest
-	84,  // 90: finance.v1.BudgetService.DeleteBudget:input_type -> finance.v1.DeleteBudgetRequest
-	86,  // 91: finance.v1.BudgetService.ListBudgets:input_type -> finance.v1.ListBudgetsRequest
-	89,  // 92: finance.v1.GoalService.ListGoals:input_type -> finance.v1.ListGoalsRequest
-	91,  // 93: finance.v1.GoalService.CreateGoal:input_type -> finance.v1.CreateGoalRequest
-	93,  // 94: finance.v1.GoalService.UpdateGoal:input_type -> finance.v1.UpdateGoalRequest
-	95,  // 95: finance.v1.GoalService.DeleteGoal:input_type -> finance.v1.DeleteGoalRequest
-	97,  // 96: finance.v1.GoalService.AllocateToGoal:input_type -> finance.v1.AllocateToGoalRequest
-	99,  // 97: finance.v1.GoalService.GetGoalAllocations:input_type -> finance.v1.GetGoalAllocationsRequest
-	102, // 98: finance.v1.GoalService.DeleteGoalAllocation:input_type -> finance.v1.DeleteGoalAllocationRequest
-	105, // 99: finance.v1.GoalService.PayDebt:input_type -> finance.v1.PayDebtRequest
-	107, // 100: finance.v1.GoalService.GetDebtPayments:input_type -> finance.v1.GetDebtPaymentsRequest
-	109, // 101: finance.v1.GoalService.DeleteDebtPayment:input_type -> finance.v1.DeleteDebtPaymentRequest
-	111, // 102: finance.v1.AnalyticsService.GetMonthlySummary:input_type -> finance.v1.GetMonthlySummaryRequest
-	113, // 103: finance.v1.AnalyticsService.GetMonthlyTrend:input_type -> finance.v1.GetMonthlyTrendRequest
-	115, // 104: finance.v1.FamilyService.CreateFamily:input_type -> finance.v1.CreateFamilyRequest
-	117, // 105: finance.v1.FamilyService.GetFamily:input_type -> finance.v1.GetFamilyRequest
-	119, // 106: finance.v1.FamilyService.AddFamilyMember:input_type -> finance.v1.AddFamilyMemberRequest
-	121, // 107: finance.v1.FamilyService.GetFamilyInvitation:input_type -> finance.v1.GetFamilyInvitationRequest
-	124, // 108: finance.v1.FamilyService.RespondFamilyInvitation:input_type -> finance.v1.RespondFamilyInvitationRequest
-	126, // 109: finance.v1.FamilyService.RemoveFamilyMember:input_type -> finance.v1.RemoveFamilyMemberRequest
-	128, // 110: finance.v1.FamilyService.LeaveFamily:input_type -> finance.v1.LeaveFamilyRequest
-	15,  // 111: finance.v1.WalletService.ListWallets:output_type -> finance.v1.ListWalletsResponse
-	17,  // 112: finance.v1.WalletService.CreateWallet:output_type -> finance.v1.CreateWalletResponse
-	19,  // 113: finance.v1.WalletService.UpdateWallet:output_type -> finance.v1.UpdateWalletResponse
-	21,  // 114: finance.v1.WalletService.DeleteWallet:output_type -> finance.v1.DeleteWalletResponse
-	79,  // 115: finance.v1.WalletService.ListCreditStatements:output_type -> finance.v1.ListCreditStatementsResponse
-	81,  // 116: finance.v1.WalletService.MarkStatementPaid:output_type -> finance.v1.MarkStatementPaidResponse
-	23,  // 117: finance.v1.IconService.ListIcons:output_type -> finance.v1.ListIconsResponse
-	25,  // 118: finance.v1.IconService.CreateIcon:output_type -> finance.v1.CreateIconResponse
-	27,  // 119: finance.v1.IconService.UpdateIcon:output_type -> finance.v1.UpdateIconResponse
-	29,  // 120: finance.v1.IconService.DeleteIcon:output_type -> finance.v1.DeleteIconResponse
-	31,  // 121: finance.v1.CategoryService.ListCategories:output_type -> finance.v1.ListCategoriesResponse
-	33,  // 122: finance.v1.CategoryService.CreateCategory:output_type -> finance.v1.CreateCategoryResponse
-	35,  // 123: finance.v1.CategoryService.UpdateCategory:output_type -> finance.v1.UpdateCategoryResponse
-	37,  // 124: finance.v1.CategoryService.DeleteCategory:output_type -> finance.v1.DeleteCategoryResponse
-	39,  // 125: finance.v1.CategoryService.ListSystemCategories:output_type -> finance.v1.ListSystemCategoriesResponse
-	41,  // 126: finance.v1.CategoryService.CreateSystemCategory:output_type -> finance.v1.CreateSystemCategoryResponse
-	43,  // 127: finance.v1.CategoryService.UpdateSystemCategory:output_type -> finance.v1.UpdateSystemCategoryResponse
-	45,  // 128: finance.v1.CategoryService.DeleteSystemCategory:output_type -> finance.v1.DeleteSystemCategoryResponse
-	47,  // 129: finance.v1.TransactionService.ListTransactions:output_type -> finance.v1.ListTransactionsResponse
-	49,  // 130: finance.v1.TransactionService.CreateTransaction:output_type -> finance.v1.CreateTransactionResponse
-	53,  // 131: finance.v1.TransactionService.UpdateTransaction:output_type -> finance.v1.UpdateTransactionResponse
-	55,  // 132: finance.v1.TransactionService.DeleteTransaction:output_type -> finance.v1.DeleteTransactionResponse
-	57,  // 133: finance.v1.TransactionService.GetTransaction:output_type -> finance.v1.GetTransactionResponse
-	69,  // 134: finance.v1.TransactionService.GetTransactionPermissions:output_type -> finance.v1.GetTransactionPermissionsResponse
-	59,  // 135: finance.v1.TransactionService.GetLatestTransaction:output_type -> finance.v1.GetLatestTransactionResponse
-	61,  // 136: finance.v1.TransactionService.GetFirstTransaction:output_type -> finance.v1.GetFirstTransactionResponse
-	63,  // 137: finance.v1.TransactionService.TransferFunds:output_type -> finance.v1.TransferFundsResponse
-	51,  // 138: finance.v1.TransactionService.GetRefundStatus:output_type -> finance.v1.GetRefundStatusResponse
-	65,  // 139: finance.v1.TransactionService.ConvertPurchaseToInstallment:output_type -> finance.v1.ConvertPurchaseToInstallmentResponse
-	67,  // 140: finance.v1.TransactionService.ListCreditInstallments:output_type -> finance.v1.ListCreditInstallmentsResponse
-	74,  // 141: finance.v1.TransactionService.UpdateCreditInstallment:output_type -> finance.v1.UpdateCreditInstallmentResponse
-	76,  // 142: finance.v1.TransactionService.DeleteCreditInstallment:output_type -> finance.v1.DeleteCreditInstallmentResponse
-	72,  // 143: finance.v1.TransactionService.RecommendCategories:output_type -> finance.v1.RecommendCategoriesResponse
-	83,  // 144: finance.v1.BudgetService.SetBudget:output_type -> finance.v1.SetBudgetResponse
-	85,  // 145: finance.v1.BudgetService.DeleteBudget:output_type -> finance.v1.DeleteBudgetResponse
-	87,  // 146: finance.v1.BudgetService.ListBudgets:output_type -> finance.v1.ListBudgetsResponse
-	90,  // 147: finance.v1.GoalService.ListGoals:output_type -> finance.v1.ListGoalsResponse
-	92,  // 148: finance.v1.GoalService.CreateGoal:output_type -> finance.v1.CreateGoalResponse
-	94,  // 149: finance.v1.GoalService.UpdateGoal:output_type -> finance.v1.UpdateGoalResponse
-	96,  // 150: finance.v1.GoalService.DeleteGoal:output_type -> finance.v1.DeleteGoalResponse
-	98,  // 151: finance.v1.GoalService.AllocateToGoal:output_type -> finance.v1.AllocateToGoalResponse
-	101, // 152: finance.v1.GoalService.GetGoalAllocations:output_type -> finance.v1.GetGoalAllocationsResponse
-	103, // 153: finance.v1.GoalService.DeleteGoalAllocation:output_type -> finance.v1.DeleteGoalAllocationResponse
-	106, // 154: finance.v1.GoalService.PayDebt:output_type -> finance.v1.PayDebtResponse
-	108, // 155: finance.v1.GoalService.GetDebtPayments:output_type -> finance.v1.GetDebtPaymentsResponse
-	110, // 156: finance.v1.GoalService.DeleteDebtPayment:output_type -> finance.v1.DeleteDebtPaymentResponse
-	112, // 157: finance.v1.AnalyticsService.GetMonthlySummary:output_type -> finance.v1.GetMonthlySummaryResponse
-	114, // 158: finance.v1.AnalyticsService.GetMonthlyTrend:output_type -> finance.v1.GetMonthlyTrendResponse
-	116, // 159: finance.v1.FamilyService.CreateFamily:output_type -> finance.v1.CreateFamilyResponse
-	118, // 160: finance.v1.FamilyService.GetFamily:output_type -> finance.v1.GetFamilyResponse
-	120, // 161: finance.v1.FamilyService.AddFamilyMember:output_type -> finance.v1.AddFamilyMemberResponse
-	123, // 162: finance.v1.FamilyService.GetFamilyInvitation:output_type -> finance.v1.GetFamilyInvitationResponse
-	125, // 163: finance.v1.FamilyService.RespondFamilyInvitation:output_type -> finance.v1.RespondFamilyInvitationResponse
-	127, // 164: finance.v1.FamilyService.RemoveFamilyMember:output_type -> finance.v1.RemoveFamilyMemberResponse
-	129, // 165: finance.v1.FamilyService.LeaveFamily:output_type -> finance.v1.LeaveFamilyResponse
-	111, // [111:166] is the sub-list for method output_type
-	56,  // [56:111] is the sub-list for method input_type
-	56,  // [56:56] is the sub-list for extension type_name
-	56,  // [56:56] is the sub-list for extension extendee
-	0,   // [0:56] is the sub-list for field type_name
+	9,   // 56: finance.v1.UpdateFamilyTelegramResponse.family:type_name -> finance.v1.Family
+	14,  // 57: finance.v1.WalletService.ListWallets:input_type -> finance.v1.ListWalletsRequest
+	16,  // 58: finance.v1.WalletService.CreateWallet:input_type -> finance.v1.CreateWalletRequest
+	18,  // 59: finance.v1.WalletService.UpdateWallet:input_type -> finance.v1.UpdateWalletRequest
+	20,  // 60: finance.v1.WalletService.DeleteWallet:input_type -> finance.v1.DeleteWalletRequest
+	78,  // 61: finance.v1.WalletService.ListCreditStatements:input_type -> finance.v1.ListCreditStatementsRequest
+	80,  // 62: finance.v1.WalletService.MarkStatementPaid:input_type -> finance.v1.MarkStatementPaidRequest
+	22,  // 63: finance.v1.IconService.ListIcons:input_type -> finance.v1.ListIconsRequest
+	24,  // 64: finance.v1.IconService.CreateIcon:input_type -> finance.v1.CreateIconRequest
+	26,  // 65: finance.v1.IconService.UpdateIcon:input_type -> finance.v1.UpdateIconRequest
+	28,  // 66: finance.v1.IconService.DeleteIcon:input_type -> finance.v1.DeleteIconRequest
+	30,  // 67: finance.v1.CategoryService.ListCategories:input_type -> finance.v1.ListCategoriesRequest
+	32,  // 68: finance.v1.CategoryService.CreateCategory:input_type -> finance.v1.CreateCategoryRequest
+	34,  // 69: finance.v1.CategoryService.UpdateCategory:input_type -> finance.v1.UpdateCategoryRequest
+	36,  // 70: finance.v1.CategoryService.DeleteCategory:input_type -> finance.v1.DeleteCategoryRequest
+	38,  // 71: finance.v1.CategoryService.ListSystemCategories:input_type -> finance.v1.ListSystemCategoriesRequest
+	40,  // 72: finance.v1.CategoryService.CreateSystemCategory:input_type -> finance.v1.CreateSystemCategoryRequest
+	42,  // 73: finance.v1.CategoryService.UpdateSystemCategory:input_type -> finance.v1.UpdateSystemCategoryRequest
+	44,  // 74: finance.v1.CategoryService.DeleteSystemCategory:input_type -> finance.v1.DeleteSystemCategoryRequest
+	46,  // 75: finance.v1.TransactionService.ListTransactions:input_type -> finance.v1.ListTransactionsRequest
+	48,  // 76: finance.v1.TransactionService.CreateTransaction:input_type -> finance.v1.CreateTransactionRequest
+	52,  // 77: finance.v1.TransactionService.UpdateTransaction:input_type -> finance.v1.UpdateTransactionRequest
+	54,  // 78: finance.v1.TransactionService.DeleteTransaction:input_type -> finance.v1.DeleteTransactionRequest
+	56,  // 79: finance.v1.TransactionService.GetTransaction:input_type -> finance.v1.GetTransactionRequest
+	68,  // 80: finance.v1.TransactionService.GetTransactionPermissions:input_type -> finance.v1.GetTransactionPermissionsRequest
+	58,  // 81: finance.v1.TransactionService.GetLatestTransaction:input_type -> finance.v1.GetLatestTransactionRequest
+	60,  // 82: finance.v1.TransactionService.GetFirstTransaction:input_type -> finance.v1.GetFirstTransactionRequest
+	62,  // 83: finance.v1.TransactionService.TransferFunds:input_type -> finance.v1.TransferFundsRequest
+	50,  // 84: finance.v1.TransactionService.GetRefundStatus:input_type -> finance.v1.GetRefundStatusRequest
+	64,  // 85: finance.v1.TransactionService.ConvertPurchaseToInstallment:input_type -> finance.v1.ConvertPurchaseToInstallmentRequest
+	66,  // 86: finance.v1.TransactionService.ListCreditInstallments:input_type -> finance.v1.ListCreditInstallmentsRequest
+	73,  // 87: finance.v1.TransactionService.UpdateCreditInstallment:input_type -> finance.v1.UpdateCreditInstallmentRequest
+	75,  // 88: finance.v1.TransactionService.DeleteCreditInstallment:input_type -> finance.v1.DeleteCreditInstallmentRequest
+	70,  // 89: finance.v1.TransactionService.RecommendCategories:input_type -> finance.v1.RecommendCategoriesRequest
+	82,  // 90: finance.v1.BudgetService.SetBudget:input_type -> finance.v1.SetBudgetRequest
+	84,  // 91: finance.v1.BudgetService.DeleteBudget:input_type -> finance.v1.DeleteBudgetRequest
+	86,  // 92: finance.v1.BudgetService.ListBudgets:input_type -> finance.v1.ListBudgetsRequest
+	89,  // 93: finance.v1.GoalService.ListGoals:input_type -> finance.v1.ListGoalsRequest
+	91,  // 94: finance.v1.GoalService.CreateGoal:input_type -> finance.v1.CreateGoalRequest
+	93,  // 95: finance.v1.GoalService.UpdateGoal:input_type -> finance.v1.UpdateGoalRequest
+	95,  // 96: finance.v1.GoalService.DeleteGoal:input_type -> finance.v1.DeleteGoalRequest
+	97,  // 97: finance.v1.GoalService.AllocateToGoal:input_type -> finance.v1.AllocateToGoalRequest
+	99,  // 98: finance.v1.GoalService.GetGoalAllocations:input_type -> finance.v1.GetGoalAllocationsRequest
+	102, // 99: finance.v1.GoalService.DeleteGoalAllocation:input_type -> finance.v1.DeleteGoalAllocationRequest
+	105, // 100: finance.v1.GoalService.PayDebt:input_type -> finance.v1.PayDebtRequest
+	107, // 101: finance.v1.GoalService.GetDebtPayments:input_type -> finance.v1.GetDebtPaymentsRequest
+	109, // 102: finance.v1.GoalService.DeleteDebtPayment:input_type -> finance.v1.DeleteDebtPaymentRequest
+	111, // 103: finance.v1.AnalyticsService.GetMonthlySummary:input_type -> finance.v1.GetMonthlySummaryRequest
+	113, // 104: finance.v1.AnalyticsService.GetMonthlyTrend:input_type -> finance.v1.GetMonthlyTrendRequest
+	115, // 105: finance.v1.FamilyService.CreateFamily:input_type -> finance.v1.CreateFamilyRequest
+	117, // 106: finance.v1.FamilyService.GetFamily:input_type -> finance.v1.GetFamilyRequest
+	119, // 107: finance.v1.FamilyService.AddFamilyMember:input_type -> finance.v1.AddFamilyMemberRequest
+	121, // 108: finance.v1.FamilyService.GetFamilyInvitation:input_type -> finance.v1.GetFamilyInvitationRequest
+	124, // 109: finance.v1.FamilyService.RespondFamilyInvitation:input_type -> finance.v1.RespondFamilyInvitationRequest
+	126, // 110: finance.v1.FamilyService.RemoveFamilyMember:input_type -> finance.v1.RemoveFamilyMemberRequest
+	128, // 111: finance.v1.FamilyService.LeaveFamily:input_type -> finance.v1.LeaveFamilyRequest
+	130, // 112: finance.v1.FamilyService.UpdateFamilyTelegram:input_type -> finance.v1.UpdateFamilyTelegramRequest
+	15,  // 113: finance.v1.WalletService.ListWallets:output_type -> finance.v1.ListWalletsResponse
+	17,  // 114: finance.v1.WalletService.CreateWallet:output_type -> finance.v1.CreateWalletResponse
+	19,  // 115: finance.v1.WalletService.UpdateWallet:output_type -> finance.v1.UpdateWalletResponse
+	21,  // 116: finance.v1.WalletService.DeleteWallet:output_type -> finance.v1.DeleteWalletResponse
+	79,  // 117: finance.v1.WalletService.ListCreditStatements:output_type -> finance.v1.ListCreditStatementsResponse
+	81,  // 118: finance.v1.WalletService.MarkStatementPaid:output_type -> finance.v1.MarkStatementPaidResponse
+	23,  // 119: finance.v1.IconService.ListIcons:output_type -> finance.v1.ListIconsResponse
+	25,  // 120: finance.v1.IconService.CreateIcon:output_type -> finance.v1.CreateIconResponse
+	27,  // 121: finance.v1.IconService.UpdateIcon:output_type -> finance.v1.UpdateIconResponse
+	29,  // 122: finance.v1.IconService.DeleteIcon:output_type -> finance.v1.DeleteIconResponse
+	31,  // 123: finance.v1.CategoryService.ListCategories:output_type -> finance.v1.ListCategoriesResponse
+	33,  // 124: finance.v1.CategoryService.CreateCategory:output_type -> finance.v1.CreateCategoryResponse
+	35,  // 125: finance.v1.CategoryService.UpdateCategory:output_type -> finance.v1.UpdateCategoryResponse
+	37,  // 126: finance.v1.CategoryService.DeleteCategory:output_type -> finance.v1.DeleteCategoryResponse
+	39,  // 127: finance.v1.CategoryService.ListSystemCategories:output_type -> finance.v1.ListSystemCategoriesResponse
+	41,  // 128: finance.v1.CategoryService.CreateSystemCategory:output_type -> finance.v1.CreateSystemCategoryResponse
+	43,  // 129: finance.v1.CategoryService.UpdateSystemCategory:output_type -> finance.v1.UpdateSystemCategoryResponse
+	45,  // 130: finance.v1.CategoryService.DeleteSystemCategory:output_type -> finance.v1.DeleteSystemCategoryResponse
+	47,  // 131: finance.v1.TransactionService.ListTransactions:output_type -> finance.v1.ListTransactionsResponse
+	49,  // 132: finance.v1.TransactionService.CreateTransaction:output_type -> finance.v1.CreateTransactionResponse
+	53,  // 133: finance.v1.TransactionService.UpdateTransaction:output_type -> finance.v1.UpdateTransactionResponse
+	55,  // 134: finance.v1.TransactionService.DeleteTransaction:output_type -> finance.v1.DeleteTransactionResponse
+	57,  // 135: finance.v1.TransactionService.GetTransaction:output_type -> finance.v1.GetTransactionResponse
+	69,  // 136: finance.v1.TransactionService.GetTransactionPermissions:output_type -> finance.v1.GetTransactionPermissionsResponse
+	59,  // 137: finance.v1.TransactionService.GetLatestTransaction:output_type -> finance.v1.GetLatestTransactionResponse
+	61,  // 138: finance.v1.TransactionService.GetFirstTransaction:output_type -> finance.v1.GetFirstTransactionResponse
+	63,  // 139: finance.v1.TransactionService.TransferFunds:output_type -> finance.v1.TransferFundsResponse
+	51,  // 140: finance.v1.TransactionService.GetRefundStatus:output_type -> finance.v1.GetRefundStatusResponse
+	65,  // 141: finance.v1.TransactionService.ConvertPurchaseToInstallment:output_type -> finance.v1.ConvertPurchaseToInstallmentResponse
+	67,  // 142: finance.v1.TransactionService.ListCreditInstallments:output_type -> finance.v1.ListCreditInstallmentsResponse
+	74,  // 143: finance.v1.TransactionService.UpdateCreditInstallment:output_type -> finance.v1.UpdateCreditInstallmentResponse
+	76,  // 144: finance.v1.TransactionService.DeleteCreditInstallment:output_type -> finance.v1.DeleteCreditInstallmentResponse
+	72,  // 145: finance.v1.TransactionService.RecommendCategories:output_type -> finance.v1.RecommendCategoriesResponse
+	83,  // 146: finance.v1.BudgetService.SetBudget:output_type -> finance.v1.SetBudgetResponse
+	85,  // 147: finance.v1.BudgetService.DeleteBudget:output_type -> finance.v1.DeleteBudgetResponse
+	87,  // 148: finance.v1.BudgetService.ListBudgets:output_type -> finance.v1.ListBudgetsResponse
+	90,  // 149: finance.v1.GoalService.ListGoals:output_type -> finance.v1.ListGoalsResponse
+	92,  // 150: finance.v1.GoalService.CreateGoal:output_type -> finance.v1.CreateGoalResponse
+	94,  // 151: finance.v1.GoalService.UpdateGoal:output_type -> finance.v1.UpdateGoalResponse
+	96,  // 152: finance.v1.GoalService.DeleteGoal:output_type -> finance.v1.DeleteGoalResponse
+	98,  // 153: finance.v1.GoalService.AllocateToGoal:output_type -> finance.v1.AllocateToGoalResponse
+	101, // 154: finance.v1.GoalService.GetGoalAllocations:output_type -> finance.v1.GetGoalAllocationsResponse
+	103, // 155: finance.v1.GoalService.DeleteGoalAllocation:output_type -> finance.v1.DeleteGoalAllocationResponse
+	106, // 156: finance.v1.GoalService.PayDebt:output_type -> finance.v1.PayDebtResponse
+	108, // 157: finance.v1.GoalService.GetDebtPayments:output_type -> finance.v1.GetDebtPaymentsResponse
+	110, // 158: finance.v1.GoalService.DeleteDebtPayment:output_type -> finance.v1.DeleteDebtPaymentResponse
+	112, // 159: finance.v1.AnalyticsService.GetMonthlySummary:output_type -> finance.v1.GetMonthlySummaryResponse
+	114, // 160: finance.v1.AnalyticsService.GetMonthlyTrend:output_type -> finance.v1.GetMonthlyTrendResponse
+	116, // 161: finance.v1.FamilyService.CreateFamily:output_type -> finance.v1.CreateFamilyResponse
+	118, // 162: finance.v1.FamilyService.GetFamily:output_type -> finance.v1.GetFamilyResponse
+	120, // 163: finance.v1.FamilyService.AddFamilyMember:output_type -> finance.v1.AddFamilyMemberResponse
+	123, // 164: finance.v1.FamilyService.GetFamilyInvitation:output_type -> finance.v1.GetFamilyInvitationResponse
+	125, // 165: finance.v1.FamilyService.RespondFamilyInvitation:output_type -> finance.v1.RespondFamilyInvitationResponse
+	127, // 166: finance.v1.FamilyService.RemoveFamilyMember:output_type -> finance.v1.RemoveFamilyMemberResponse
+	129, // 167: finance.v1.FamilyService.LeaveFamily:output_type -> finance.v1.LeaveFamilyResponse
+	131, // 168: finance.v1.FamilyService.UpdateFamilyTelegram:output_type -> finance.v1.UpdateFamilyTelegramResponse
+	113, // [113:169] is the sub-list for method output_type
+	57,  // [57:113] is the sub-list for method input_type
+	57,  // [57:57] is the sub-list for extension type_name
+	57,  // [57:57] is the sub-list for extension extendee
+	0,   // [0:57] is the sub-list for field type_name
 }
 
 func init() { file_finance_v1_finance_proto_init() }
@@ -8860,6 +8991,7 @@ func file_finance_v1_finance_proto_init() {
 	file_finance_v1_finance_proto_msgTypes[0].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[2].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[3].OneofWrappers = []any{}
+	file_finance_v1_finance_proto_msgTypes[8].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[9].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[15].OneofWrappers = []any{}
 	file_finance_v1_finance_proto_msgTypes[17].OneofWrappers = []any{}
@@ -8874,7 +9006,7 @@ func file_finance_v1_finance_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_finance_v1_finance_proto_rawDesc), len(file_finance_v1_finance_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   129,
+			NumMessages:   131,
 			NumExtensions: 0,
 			NumServices:   8,
 		},

@@ -2302,6 +2302,7 @@ const (
 	FamilyService_RespondFamilyInvitation_FullMethodName = "/finance.v1.FamilyService/RespondFamilyInvitation"
 	FamilyService_RemoveFamilyMember_FullMethodName      = "/finance.v1.FamilyService/RemoveFamilyMember"
 	FamilyService_LeaveFamily_FullMethodName             = "/finance.v1.FamilyService/LeaveFamily"
+	FamilyService_UpdateFamilyTelegram_FullMethodName    = "/finance.v1.FamilyService/UpdateFamilyTelegram"
 )
 
 // FamilyServiceClient is the client API for FamilyService service.
@@ -2315,6 +2316,7 @@ type FamilyServiceClient interface {
 	RespondFamilyInvitation(ctx context.Context, in *RespondFamilyInvitationRequest, opts ...grpc.CallOption) (*RespondFamilyInvitationResponse, error)
 	RemoveFamilyMember(ctx context.Context, in *RemoveFamilyMemberRequest, opts ...grpc.CallOption) (*RemoveFamilyMemberResponse, error)
 	LeaveFamily(ctx context.Context, in *LeaveFamilyRequest, opts ...grpc.CallOption) (*LeaveFamilyResponse, error)
+	UpdateFamilyTelegram(ctx context.Context, in *UpdateFamilyTelegramRequest, opts ...grpc.CallOption) (*UpdateFamilyTelegramResponse, error)
 }
 
 type familyServiceClient struct {
@@ -2395,6 +2397,16 @@ func (c *familyServiceClient) LeaveFamily(ctx context.Context, in *LeaveFamilyRe
 	return out, nil
 }
 
+func (c *familyServiceClient) UpdateFamilyTelegram(ctx context.Context, in *UpdateFamilyTelegramRequest, opts ...grpc.CallOption) (*UpdateFamilyTelegramResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateFamilyTelegramResponse)
+	err := c.cc.Invoke(ctx, FamilyService_UpdateFamilyTelegram_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FamilyServiceServer is the server API for FamilyService service.
 // All implementations must embed UnimplementedFamilyServiceServer
 // for forward compatibility.
@@ -2406,6 +2418,7 @@ type FamilyServiceServer interface {
 	RespondFamilyInvitation(context.Context, *RespondFamilyInvitationRequest) (*RespondFamilyInvitationResponse, error)
 	RemoveFamilyMember(context.Context, *RemoveFamilyMemberRequest) (*RemoveFamilyMemberResponse, error)
 	LeaveFamily(context.Context, *LeaveFamilyRequest) (*LeaveFamilyResponse, error)
+	UpdateFamilyTelegram(context.Context, *UpdateFamilyTelegramRequest) (*UpdateFamilyTelegramResponse, error)
 	mustEmbedUnimplementedFamilyServiceServer()
 }
 
@@ -2436,6 +2449,9 @@ func (UnimplementedFamilyServiceServer) RemoveFamilyMember(context.Context, *Rem
 }
 func (UnimplementedFamilyServiceServer) LeaveFamily(context.Context, *LeaveFamilyRequest) (*LeaveFamilyResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method LeaveFamily not implemented")
+}
+func (UnimplementedFamilyServiceServer) UpdateFamilyTelegram(context.Context, *UpdateFamilyTelegramRequest) (*UpdateFamilyTelegramResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateFamilyTelegram not implemented")
 }
 func (UnimplementedFamilyServiceServer) mustEmbedUnimplementedFamilyServiceServer() {}
 func (UnimplementedFamilyServiceServer) testEmbeddedByValue()                       {}
@@ -2584,6 +2600,24 @@ func _FamilyService_LeaveFamily_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FamilyService_UpdateFamilyTelegram_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateFamilyTelegramRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FamilyServiceServer).UpdateFamilyTelegram(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FamilyService_UpdateFamilyTelegram_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FamilyServiceServer).UpdateFamilyTelegram(ctx, req.(*UpdateFamilyTelegramRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FamilyService_ServiceDesc is the grpc.ServiceDesc for FamilyService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2618,6 +2652,10 @@ var FamilyService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LeaveFamily",
 			Handler:    _FamilyService_LeaveFamily_Handler,
+		},
+		{
+			MethodName: "UpdateFamilyTelegram",
+			Handler:    _FamilyService_UpdateFamilyTelegram_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

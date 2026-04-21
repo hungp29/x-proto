@@ -917,12 +917,13 @@ var AuthzService_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	UserService_ListUsers_FullMethodName          = "/identity.v1.UserService/ListUsers"
-	UserService_GetUserById_FullMethodName        = "/identity.v1.UserService/GetUserById"
-	UserService_GetUserByEmail_FullMethodName     = "/identity.v1.UserService/GetUserByEmail"
-	UserService_SearchUsersByEmail_FullMethodName = "/identity.v1.UserService/SearchUsersByEmail"
-	UserService_UpdateUser_FullMethodName         = "/identity.v1.UserService/UpdateUser"
-	UserService_DeleteUserById_FullMethodName     = "/identity.v1.UserService/DeleteUserById"
+	UserService_ListUsers_FullMethodName                = "/identity.v1.UserService/ListUsers"
+	UserService_GetUserById_FullMethodName              = "/identity.v1.UserService/GetUserById"
+	UserService_GetNotificationRecipient_FullMethodName = "/identity.v1.UserService/GetNotificationRecipient"
+	UserService_GetUserByEmail_FullMethodName           = "/identity.v1.UserService/GetUserByEmail"
+	UserService_SearchUsersByEmail_FullMethodName       = "/identity.v1.UserService/SearchUsersByEmail"
+	UserService_UpdateUser_FullMethodName               = "/identity.v1.UserService/UpdateUser"
+	UserService_DeleteUserById_FullMethodName           = "/identity.v1.UserService/DeleteUserById"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -933,6 +934,7 @@ const (
 type UserServiceClient interface {
 	ListUsers(ctx context.Context, in *ListUsersRequest, opts ...grpc.CallOption) (*ListUsersResponse, error)
 	GetUserById(ctx context.Context, in *GetUserByIdRequest, opts ...grpc.CallOption) (*GetUserByIdResponse, error)
+	GetNotificationRecipient(ctx context.Context, in *GetNotificationRecipientRequest, opts ...grpc.CallOption) (*GetNotificationRecipientResponse, error)
 	GetUserByEmail(ctx context.Context, in *GetUserByEmailRequest, opts ...grpc.CallOption) (*GetUserByEmailResponse, error)
 	SearchUsersByEmail(ctx context.Context, in *SearchUsersByEmailRequest, opts ...grpc.CallOption) (*SearchUsersByEmailResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
@@ -961,6 +963,16 @@ func (c *userServiceClient) GetUserById(ctx context.Context, in *GetUserByIdRequ
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetUserByIdResponse)
 	err := c.cc.Invoke(ctx, UserService_GetUserById_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetNotificationRecipient(ctx context.Context, in *GetNotificationRecipientRequest, opts ...grpc.CallOption) (*GetNotificationRecipientResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetNotificationRecipientResponse)
+	err := c.cc.Invoke(ctx, UserService_GetNotificationRecipient_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1015,6 +1027,7 @@ func (c *userServiceClient) DeleteUserById(ctx context.Context, in *DeleteUserBy
 type UserServiceServer interface {
 	ListUsers(context.Context, *ListUsersRequest) (*ListUsersResponse, error)
 	GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error)
+	GetNotificationRecipient(context.Context, *GetNotificationRecipientRequest) (*GetNotificationRecipientResponse, error)
 	GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error)
 	SearchUsersByEmail(context.Context, *SearchUsersByEmailRequest) (*SearchUsersByEmailResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
@@ -1034,6 +1047,9 @@ func (UnimplementedUserServiceServer) ListUsers(context.Context, *ListUsersReque
 }
 func (UnimplementedUserServiceServer) GetUserById(context.Context, *GetUserByIdRequest) (*GetUserByIdResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserById not implemented")
+}
+func (UnimplementedUserServiceServer) GetNotificationRecipient(context.Context, *GetNotificationRecipientRequest) (*GetNotificationRecipientResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method GetNotificationRecipient not implemented")
 }
 func (UnimplementedUserServiceServer) GetUserByEmail(context.Context, *GetUserByEmailRequest) (*GetUserByEmailResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method GetUserByEmail not implemented")
@@ -1100,6 +1116,24 @@ func _UserService_GetUserById_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServiceServer).GetUserById(ctx, req.(*GetUserByIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetNotificationRecipient_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetNotificationRecipientRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetNotificationRecipient(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetNotificationRecipient_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetNotificationRecipient(ctx, req.(*GetNotificationRecipientRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1190,6 +1224,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserById",
 			Handler:    _UserService_GetUserById_Handler,
+		},
+		{
+			MethodName: "GetNotificationRecipient",
+			Handler:    _UserService_GetNotificationRecipient_Handler,
 		},
 		{
 			MethodName: "GetUserByEmail",

@@ -226,6 +226,161 @@ func (x *TelegramNotification) GetDisableWebPagePreview() bool {
 	return false
 }
 
+// TemplatedEmailNotification is expanded by x-noti before enqueue: it loads the user's
+// primary email and general.language from x-identity, picks the vi/en template for
+// template_id, substitutes data, then queues a normal email job.
+type TemplatedEmailNotification struct {
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	UserId string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	// Stable id matching templates in the noti-template module (e.g. "password_invite").
+	TemplateId string `protobuf:"bytes,2,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	// Placeholder values for the chosen template (keys are per-template).
+	Data map[string]string `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	// When unset, the recipient is the user's primary email from x-identity.
+	// Set for flows like email-change OTP where delivery must go to a different address.
+	RecipientEmail *string `protobuf:"bytes,4,opt,name=recipient_email,json=recipientEmail,proto3,oneof" json:"recipient_email,omitempty"`
+	// When set, overrides identity user general.language for template rendering only (e.g. family locale).
+	TemplateLanguage *string `protobuf:"bytes,6,opt,name=template_language,json=templateLanguage,proto3,oneof" json:"template_language,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *TemplatedEmailNotification) Reset() {
+	*x = TemplatedEmailNotification{}
+	mi := &file_noti_v1_noti_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TemplatedEmailNotification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TemplatedEmailNotification) ProtoMessage() {}
+
+func (x *TemplatedEmailNotification) ProtoReflect() protoreflect.Message {
+	mi := &file_noti_v1_noti_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TemplatedEmailNotification.ProtoReflect.Descriptor instead.
+func (*TemplatedEmailNotification) Descriptor() ([]byte, []int) {
+	return file_noti_v1_noti_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *TemplatedEmailNotification) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *TemplatedEmailNotification) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *TemplatedEmailNotification) GetData() map[string]string {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
+func (x *TemplatedEmailNotification) GetRecipientEmail() string {
+	if x != nil && x.RecipientEmail != nil {
+		return *x.RecipientEmail
+	}
+	return ""
+}
+
+func (x *TemplatedEmailNotification) GetTemplateLanguage() string {
+	if x != nil && x.TemplateLanguage != nil {
+		return *x.TemplateLanguage
+	}
+	return ""
+}
+
+// TemplatedTelegramNotification is expanded by x-noti before enqueue using telegramtpl
+// (caller supplies language, e.g. from finance_families.language).
+type TemplatedTelegramNotification struct {
+	state  protoimpl.MessageState `protogen:"open.v1"`
+	ChatId string                 `protobuf:"bytes,1,opt,name=chat_id,json=chatId,proto3" json:"chat_id,omitempty"`
+	// Locale for template selection: "vi" or "en" (other values treated as "en").
+	Language      string            `protobuf:"bytes,2,opt,name=language,proto3" json:"language,omitempty"`
+	TemplateId    string            `protobuf:"bytes,3,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	Data          map[string]string `protobuf:"bytes,4,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TemplatedTelegramNotification) Reset() {
+	*x = TemplatedTelegramNotification{}
+	mi := &file_noti_v1_noti_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TemplatedTelegramNotification) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TemplatedTelegramNotification) ProtoMessage() {}
+
+func (x *TemplatedTelegramNotification) ProtoReflect() protoreflect.Message {
+	mi := &file_noti_v1_noti_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TemplatedTelegramNotification.ProtoReflect.Descriptor instead.
+func (*TemplatedTelegramNotification) Descriptor() ([]byte, []int) {
+	return file_noti_v1_noti_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TemplatedTelegramNotification) GetChatId() string {
+	if x != nil {
+		return x.ChatId
+	}
+	return ""
+}
+
+func (x *TemplatedTelegramNotification) GetLanguage() string {
+	if x != nil {
+		return x.Language
+	}
+	return ""
+}
+
+func (x *TemplatedTelegramNotification) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *TemplatedTelegramNotification) GetData() map[string]string {
+	if x != nil {
+		return x.Data
+	}
+	return nil
+}
+
 type SendNotificationRequest struct {
 	state   protoimpl.MessageState `protogen:"open.v1"`
 	Channel NotificationChannel    `protobuf:"varint,1,opt,name=channel,proto3,enum=noti.v1.NotificationChannel" json:"channel,omitempty"`
@@ -233,6 +388,8 @@ type SendNotificationRequest struct {
 	//
 	//	*SendNotificationRequest_Email
 	//	*SendNotificationRequest_Telegram
+	//	*SendNotificationRequest_TemplatedEmail
+	//	*SendNotificationRequest_TemplatedTelegram
 	Payload isSendNotificationRequest_Payload `protobuf_oneof:"payload"`
 	// Optional key/value pairs for tracing or future routing (e.g. tenant_id).
 	Metadata      map[string]string `protobuf:"bytes,4,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
@@ -242,7 +399,7 @@ type SendNotificationRequest struct {
 
 func (x *SendNotificationRequest) Reset() {
 	*x = SendNotificationRequest{}
-	mi := &file_noti_v1_noti_proto_msgTypes[2]
+	mi := &file_noti_v1_noti_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -254,7 +411,7 @@ func (x *SendNotificationRequest) String() string {
 func (*SendNotificationRequest) ProtoMessage() {}
 
 func (x *SendNotificationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_noti_v1_noti_proto_msgTypes[2]
+	mi := &file_noti_v1_noti_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -267,7 +424,7 @@ func (x *SendNotificationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendNotificationRequest.ProtoReflect.Descriptor instead.
 func (*SendNotificationRequest) Descriptor() ([]byte, []int) {
-	return file_noti_v1_noti_proto_rawDescGZIP(), []int{2}
+	return file_noti_v1_noti_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *SendNotificationRequest) GetChannel() NotificationChannel {
@@ -302,6 +459,24 @@ func (x *SendNotificationRequest) GetTelegram() *TelegramNotification {
 	return nil
 }
 
+func (x *SendNotificationRequest) GetTemplatedEmail() *TemplatedEmailNotification {
+	if x != nil {
+		if x, ok := x.Payload.(*SendNotificationRequest_TemplatedEmail); ok {
+			return x.TemplatedEmail
+		}
+	}
+	return nil
+}
+
+func (x *SendNotificationRequest) GetTemplatedTelegram() *TemplatedTelegramNotification {
+	if x != nil {
+		if x, ok := x.Payload.(*SendNotificationRequest_TemplatedTelegram); ok {
+			return x.TemplatedTelegram
+		}
+	}
+	return nil
+}
+
 func (x *SendNotificationRequest) GetMetadata() map[string]string {
 	if x != nil {
 		return x.Metadata
@@ -321,9 +496,21 @@ type SendNotificationRequest_Telegram struct {
 	Telegram *TelegramNotification `protobuf:"bytes,3,opt,name=telegram,proto3,oneof"`
 }
 
+type SendNotificationRequest_TemplatedEmail struct {
+	TemplatedEmail *TemplatedEmailNotification `protobuf:"bytes,5,opt,name=templated_email,json=templatedEmail,proto3,oneof"`
+}
+
+type SendNotificationRequest_TemplatedTelegram struct {
+	TemplatedTelegram *TemplatedTelegramNotification `protobuf:"bytes,6,opt,name=templated_telegram,json=templatedTelegram,proto3,oneof"`
+}
+
 func (*SendNotificationRequest_Email) isSendNotificationRequest_Payload() {}
 
 func (*SendNotificationRequest_Telegram) isSendNotificationRequest_Payload() {}
+
+func (*SendNotificationRequest_TemplatedEmail) isSendNotificationRequest_Payload() {}
+
+func (*SendNotificationRequest_TemplatedTelegram) isSendNotificationRequest_Payload() {}
 
 type SendNotificationResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -335,7 +522,7 @@ type SendNotificationResponse struct {
 
 func (x *SendNotificationResponse) Reset() {
 	*x = SendNotificationResponse{}
-	mi := &file_noti_v1_noti_proto_msgTypes[3]
+	mi := &file_noti_v1_noti_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -347,7 +534,7 @@ func (x *SendNotificationResponse) String() string {
 func (*SendNotificationResponse) ProtoMessage() {}
 
 func (x *SendNotificationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_noti_v1_noti_proto_msgTypes[3]
+	mi := &file_noti_v1_noti_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -360,7 +547,7 @@ func (x *SendNotificationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendNotificationResponse.ProtoReflect.Descriptor instead.
 func (*SendNotificationResponse) Descriptor() ([]byte, []int) {
-	return file_noti_v1_noti_proto_rawDescGZIP(), []int{3}
+	return file_noti_v1_noti_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SendNotificationResponse) GetNotificationId() string {
@@ -387,11 +574,34 @@ const file_noti_v1_noti_proto_rawDesc = "" +
 	"\x04text\x18\x02 \x01(\tR\x04text\x12\x1d\n" +
 	"\n" +
 	"parse_mode\x18\x03 \x01(\tR\tparseMode\x127\n" +
-	"\x18disable_web_page_preview\x18\x04 \x01(\bR\x15disableWebPagePreview\"\xd6\x02\n" +
+	"\x18disable_web_page_preview\x18\x04 \x01(\bR\x15disableWebPagePreview\"\xdc\x02\n" +
+	"\x1aTemplatedEmailNotification\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1f\n" +
+	"\vtemplate_id\x18\x02 \x01(\tR\n" +
+	"templateId\x12A\n" +
+	"\x04data\x18\x03 \x03(\v2-.noti.v1.TemplatedEmailNotification.DataEntryR\x04data\x12,\n" +
+	"\x0frecipient_email\x18\x04 \x01(\tH\x00R\x0erecipientEmail\x88\x01\x01\x120\n" +
+	"\x11template_language\x18\x06 \x01(\tH\x01R\x10templateLanguage\x88\x01\x01\x1a7\n" +
+	"\tDataEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\x12\n" +
+	"\x10_recipient_emailB\x14\n" +
+	"\x12_template_language\"\xf4\x01\n" +
+	"\x1dTemplatedTelegramNotification\x12\x17\n" +
+	"\achat_id\x18\x01 \x01(\tR\x06chatId\x12\x1a\n" +
+	"\blanguage\x18\x02 \x01(\tR\blanguage\x12\x1f\n" +
+	"\vtemplate_id\x18\x03 \x01(\tR\n" +
+	"templateId\x12D\n" +
+	"\x04data\x18\x04 \x03(\v20.noti.v1.TemplatedTelegramNotification.DataEntryR\x04data\x1a7\n" +
+	"\tDataEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\"\xff\x03\n" +
 	"\x17SendNotificationRequest\x126\n" +
 	"\achannel\x18\x01 \x01(\x0e2\x1c.noti.v1.NotificationChannelR\achannel\x122\n" +
 	"\x05email\x18\x02 \x01(\v2\x1a.noti.v1.EmailNotificationH\x00R\x05email\x12;\n" +
-	"\btelegram\x18\x03 \x01(\v2\x1d.noti.v1.TelegramNotificationH\x00R\btelegram\x12J\n" +
+	"\btelegram\x18\x03 \x01(\v2\x1d.noti.v1.TelegramNotificationH\x00R\btelegram\x12N\n" +
+	"\x0ftemplated_email\x18\x05 \x01(\v2#.noti.v1.TemplatedEmailNotificationH\x00R\x0etemplatedEmail\x12W\n" +
+	"\x12templated_telegram\x18\x06 \x01(\v2&.noti.v1.TemplatedTelegramNotificationH\x00R\x11templatedTelegram\x12J\n" +
 	"\bmetadata\x18\x04 \x03(\v2..noti.v1.SendNotificationRequest.MetadataEntryR\bmetadata\x1a;\n" +
 	"\rMetadataEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
@@ -420,27 +630,35 @@ func file_noti_v1_noti_proto_rawDescGZIP() []byte {
 }
 
 var file_noti_v1_noti_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_noti_v1_noti_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_noti_v1_noti_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_noti_v1_noti_proto_goTypes = []any{
-	(NotificationChannel)(0),         // 0: noti.v1.NotificationChannel
-	(*EmailNotification)(nil),        // 1: noti.v1.EmailNotification
-	(*TelegramNotification)(nil),     // 2: noti.v1.TelegramNotification
-	(*SendNotificationRequest)(nil),  // 3: noti.v1.SendNotificationRequest
-	(*SendNotificationResponse)(nil), // 4: noti.v1.SendNotificationResponse
-	nil,                              // 5: noti.v1.SendNotificationRequest.MetadataEntry
+	(NotificationChannel)(0),              // 0: noti.v1.NotificationChannel
+	(*EmailNotification)(nil),             // 1: noti.v1.EmailNotification
+	(*TelegramNotification)(nil),          // 2: noti.v1.TelegramNotification
+	(*TemplatedEmailNotification)(nil),    // 3: noti.v1.TemplatedEmailNotification
+	(*TemplatedTelegramNotification)(nil), // 4: noti.v1.TemplatedTelegramNotification
+	(*SendNotificationRequest)(nil),       // 5: noti.v1.SendNotificationRequest
+	(*SendNotificationResponse)(nil),      // 6: noti.v1.SendNotificationResponse
+	nil,                                   // 7: noti.v1.TemplatedEmailNotification.DataEntry
+	nil,                                   // 8: noti.v1.TemplatedTelegramNotification.DataEntry
+	nil,                                   // 9: noti.v1.SendNotificationRequest.MetadataEntry
 }
 var file_noti_v1_noti_proto_depIdxs = []int32{
-	0, // 0: noti.v1.SendNotificationRequest.channel:type_name -> noti.v1.NotificationChannel
-	1, // 1: noti.v1.SendNotificationRequest.email:type_name -> noti.v1.EmailNotification
-	2, // 2: noti.v1.SendNotificationRequest.telegram:type_name -> noti.v1.TelegramNotification
-	5, // 3: noti.v1.SendNotificationRequest.metadata:type_name -> noti.v1.SendNotificationRequest.MetadataEntry
-	3, // 4: noti.v1.NotificationService.SendNotification:input_type -> noti.v1.SendNotificationRequest
-	4, // 5: noti.v1.NotificationService.SendNotification:output_type -> noti.v1.SendNotificationResponse
-	5, // [5:6] is the sub-list for method output_type
-	4, // [4:5] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	7, // 0: noti.v1.TemplatedEmailNotification.data:type_name -> noti.v1.TemplatedEmailNotification.DataEntry
+	8, // 1: noti.v1.TemplatedTelegramNotification.data:type_name -> noti.v1.TemplatedTelegramNotification.DataEntry
+	0, // 2: noti.v1.SendNotificationRequest.channel:type_name -> noti.v1.NotificationChannel
+	1, // 3: noti.v1.SendNotificationRequest.email:type_name -> noti.v1.EmailNotification
+	2, // 4: noti.v1.SendNotificationRequest.telegram:type_name -> noti.v1.TelegramNotification
+	3, // 5: noti.v1.SendNotificationRequest.templated_email:type_name -> noti.v1.TemplatedEmailNotification
+	4, // 6: noti.v1.SendNotificationRequest.templated_telegram:type_name -> noti.v1.TemplatedTelegramNotification
+	9, // 7: noti.v1.SendNotificationRequest.metadata:type_name -> noti.v1.SendNotificationRequest.MetadataEntry
+	5, // 8: noti.v1.NotificationService.SendNotification:input_type -> noti.v1.SendNotificationRequest
+	6, // 9: noti.v1.NotificationService.SendNotification:output_type -> noti.v1.SendNotificationResponse
+	9, // [9:10] is the sub-list for method output_type
+	8, // [8:9] is the sub-list for method input_type
+	8, // [8:8] is the sub-list for extension type_name
+	8, // [8:8] is the sub-list for extension extendee
+	0, // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_noti_v1_noti_proto_init() }
@@ -448,9 +666,12 @@ func file_noti_v1_noti_proto_init() {
 	if File_noti_v1_noti_proto != nil {
 		return
 	}
-	file_noti_v1_noti_proto_msgTypes[2].OneofWrappers = []any{
+	file_noti_v1_noti_proto_msgTypes[2].OneofWrappers = []any{}
+	file_noti_v1_noti_proto_msgTypes[4].OneofWrappers = []any{
 		(*SendNotificationRequest_Email)(nil),
 		(*SendNotificationRequest_Telegram)(nil),
+		(*SendNotificationRequest_TemplatedEmail)(nil),
+		(*SendNotificationRequest_TemplatedTelegram)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -458,7 +679,7 @@ func file_noti_v1_noti_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_noti_v1_noti_proto_rawDesc), len(file_noti_v1_noti_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

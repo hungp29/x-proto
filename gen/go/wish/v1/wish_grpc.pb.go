@@ -22,6 +22,7 @@ const (
 	WishService_CreateProduct_FullMethodName      = "/wish.v1.WishService/CreateProduct"
 	WishService_GetProduct_FullMethodName         = "/wish.v1.WishService/GetProduct"
 	WishService_ListProducts_FullMethodName       = "/wish.v1.WishService/ListProducts"
+	WishService_UpdateProduct_FullMethodName      = "/wish.v1.WishService/UpdateProduct"
 	WishService_UpdateProductLinks_FullMethodName = "/wish.v1.WishService/UpdateProductLinks"
 	WishService_RemoveLink_FullMethodName         = "/wish.v1.WishService/RemoveLink"
 	WishService_DeleteProduct_FullMethodName      = "/wish.v1.WishService/DeleteProduct"
@@ -38,6 +39,7 @@ type WishServiceClient interface {
 	CreateProduct(ctx context.Context, in *CreateProductRequest, opts ...grpc.CallOption) (*CreateProductResponse, error)
 	GetProduct(ctx context.Context, in *GetProductRequest, opts ...grpc.CallOption) (*GetProductResponse, error)
 	ListProducts(ctx context.Context, in *ListProductsRequest, opts ...grpc.CallOption) (*ListProductsResponse, error)
+	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductResponse, error)
 	UpdateProductLinks(ctx context.Context, in *UpdateProductLinksRequest, opts ...grpc.CallOption) (*UpdateProductLinksResponse, error)
 	RemoveLink(ctx context.Context, in *RemoveLinkRequest, opts ...grpc.CallOption) (*RemoveLinkResponse, error)
 	DeleteProduct(ctx context.Context, in *DeleteProductRequest, opts ...grpc.CallOption) (*DeleteProductResponse, error)
@@ -76,6 +78,16 @@ func (c *wishServiceClient) ListProducts(ctx context.Context, in *ListProductsRe
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ListProductsResponse)
 	err := c.cc.Invoke(ctx, WishService_ListProducts_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *wishServiceClient) UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateProductResponse)
+	err := c.cc.Invoke(ctx, WishService_UpdateProduct_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -132,6 +144,7 @@ type WishServiceServer interface {
 	CreateProduct(context.Context, *CreateProductRequest) (*CreateProductResponse, error)
 	GetProduct(context.Context, *GetProductRequest) (*GetProductResponse, error)
 	ListProducts(context.Context, *ListProductsRequest) (*ListProductsResponse, error)
+	UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductResponse, error)
 	UpdateProductLinks(context.Context, *UpdateProductLinksRequest) (*UpdateProductLinksResponse, error)
 	RemoveLink(context.Context, *RemoveLinkRequest) (*RemoveLinkResponse, error)
 	DeleteProduct(context.Context, *DeleteProductRequest) (*DeleteProductResponse, error)
@@ -154,6 +167,9 @@ func (UnimplementedWishServiceServer) GetProduct(context.Context, *GetProductReq
 }
 func (UnimplementedWishServiceServer) ListProducts(context.Context, *ListProductsRequest) (*ListProductsResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method ListProducts not implemented")
+}
+func (UnimplementedWishServiceServer) UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method UpdateProduct not implemented")
 }
 func (UnimplementedWishServiceServer) UpdateProductLinks(context.Context, *UpdateProductLinksRequest) (*UpdateProductLinksResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateProductLinks not implemented")
@@ -238,6 +254,24 @@ func _WishService_ListProducts_Handler(srv interface{}, ctx context.Context, dec
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(WishServiceServer).ListProducts(ctx, req.(*ListProductsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _WishService_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(WishServiceServer).UpdateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: WishService_UpdateProduct_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(WishServiceServer).UpdateProduct(ctx, req.(*UpdateProductRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -332,6 +366,10 @@ var WishService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListProducts",
 			Handler:    _WishService_ListProducts_Handler,
+		},
+		{
+			MethodName: "UpdateProduct",
+			Handler:    _WishService_UpdateProduct_Handler,
 		},
 		{
 			MethodName: "UpdateProductLinks",
