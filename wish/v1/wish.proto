@@ -71,7 +71,17 @@ message ListProductsResponse {
   int32 total_count = 3;
 }
 
-// LinkToAdd adds or replaces the link for a platform (one link per platform per product).
+message UpdateProductRequest {
+  string product_id = 1;
+  // Display name for the wish product (trimmed server-side; empty clears to untitled).
+  string title = 2;
+}
+
+message UpdateProductResponse {
+  WishProduct product = 1;
+}
+
+// LinkToAdd registers a new storefront URL for the product.
 message LinkToAdd {
   string url = 1;
 }
@@ -117,6 +127,7 @@ service WishService {
   rpc CreateProduct(CreateProductRequest) returns (CreateProductResponse);
   rpc GetProduct(GetProductRequest) returns (GetProductResponse);
   rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductResponse);
   rpc UpdateProductLinks(UpdateProductLinksRequest) returns (UpdateProductLinksResponse);
   rpc RemoveLink(RemoveLinkRequest) returns (RemoveLinkResponse);
   rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductResponse);

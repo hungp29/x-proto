@@ -60,6 +60,8 @@ message ValidateTokenResponse {
 message InviteUserRequest {
   string email = 1;
   string name  = 2;
+  // Stored as user setting general.language ("vi" | "en") before the invite email is sent. Empty defaults to "vi".
+  optional string language = 3;
 }
 
 message InviteUserResponse {
@@ -204,6 +206,18 @@ message GetUserByIdRequest {
 
 message GetUserByIdResponse {
   common.v1.User user = 1;
+}
+
+// GetNotificationRecipientRequest resolves email + locale preferences for outbound mail.
+// Intended for service-to-service calls (e.g. x-noti); callers must run on a trusted network.
+message GetNotificationRecipientRequest {
+  string user_id = 10;
+}
+
+message GetNotificationRecipientResponse {
+  string email = 1;
+  // Value of user setting general.language when set ("vi" or "en"); empty if unset.
+  string language = 2;
 }
 
 message GetUserByEmailRequest {
@@ -646,6 +660,7 @@ service AuthzService {
 service UserService {
   rpc ListUsers          (ListUsersRequest)          returns (ListUsersResponse);
   rpc GetUserById        (GetUserByIdRequest)        returns (GetUserByIdResponse);
+  rpc GetNotificationRecipient (GetNotificationRecipientRequest) returns (GetNotificationRecipientResponse);
   rpc GetUserByEmail     (GetUserByEmailRequest)     returns (GetUserByEmailResponse);
   rpc SearchUsersByEmail (SearchUsersByEmailRequest) returns (SearchUsersByEmailResponse);
   rpc UpdateUser         (UpdateUserRequest)         returns (UpdateUserResponse);

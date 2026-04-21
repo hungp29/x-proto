@@ -151,6 +151,11 @@ message Family {
   string created_at = 3;
   string updated_at = 4;
   repeated FamilyMember members = 5;
+  // Telegram destination for family notifications. Only the family owner receives
+  // this field in GetFamily; other members never see it. Empty means not configured.
+  optional string telegram_chat_id = 6;
+  // IETF language tag for family-scoped content (e.g. en, vi). Visible to all members.
+  string language = 7;
 }
 
 message FamilyMember {
@@ -898,6 +903,17 @@ message LeaveFamilyRequest {}
 
 message LeaveFamilyResponse {}
 
+message UpdateFamilyTelegramRequest {
+  // Empty string clears the stored chat id. Only the family owner may call this RPC.
+  string telegram_chat_id = 1;
+  // Supported values: en, vi (must match finance_families.language constraint in app).
+  string language = 2;
+}
+
+message UpdateFamilyTelegramResponse {
+  Family family = 1;
+}
+
 service FamilyService {
   rpc CreateFamily            (CreateFamilyRequest)            returns (CreateFamilyResponse);
   rpc GetFamily               (GetFamilyRequest)               returns (GetFamilyResponse);
@@ -906,4 +922,5 @@ service FamilyService {
   rpc RespondFamilyInvitation (RespondFamilyInvitationRequest) returns (RespondFamilyInvitationResponse);
   rpc RemoveFamilyMember      (RemoveFamilyMemberRequest)      returns (RemoveFamilyMemberResponse);
   rpc LeaveFamily             (LeaveFamilyRequest)             returns (LeaveFamilyResponse);
+  rpc UpdateFamilyTelegram    (UpdateFamilyTelegramRequest)    returns (UpdateFamilyTelegramResponse);
 }

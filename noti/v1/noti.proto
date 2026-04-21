@@ -30,11 +30,39 @@ message TelegramNotification {
   bool disable_web_page_preview = 4;
 }
 
+// TemplatedEmailNotification is expanded by x-noti before enqueue: it loads the user's
+// primary email and general.language from x-identity, picks the vi/en template for
+// template_id, substitutes data, then queues a normal email job.
+message TemplatedEmailNotification {
+  string user_id = 1;
+  // Stable id matching templates in the noti-template module (e.g. "password_invite").
+  string template_id = 2;
+  // Placeholder values for the chosen template (keys are per-template).
+  map<string, string> data = 3;
+  // When unset, the recipient is the user's primary email from x-identity.
+  // Set for flows like email-change OTP where delivery must go to a different address.
+  optional string recipient_email = 4;
+  // When set, overrides identity user general.language for template rendering only (e.g. family locale).
+  optional string template_language = 6;
+}
+
+// TemplatedTelegramNotification is expanded by x-noti before enqueue using telegramtpl
+// (caller supplies language, e.g. from finance_families.language).
+message TemplatedTelegramNotification {
+  string chat_id = 1;
+  // Locale for template selection: "vi" or "en" (other values treated as "en").
+  string language = 2;
+  string template_id = 3;
+  map<string, string> data = 4;
+}
+
 message SendNotificationRequest {
   NotificationChannel channel = 1;
   oneof payload {
     EmailNotification email = 2;
     TelegramNotification telegram = 3;
+    TemplatedEmailNotification templated_email = 5;
+    TemplatedTelegramNotification templated_telegram = 6;
   }
   // Optional key/value pairs for tracing or future routing (e.g. tenant_id).
   map<string, string> metadata = 4;
