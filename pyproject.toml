@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "x-proto"
+version = "0.1.0"
+description = "Generated Protobuf and gRPC Python stubs for hungp29/x-proto (buf)"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "grpcio>=1.60,<2",
+  "protobuf>=6.31.1,<7",
+]
+
+[project.optional-dependencies]
+dev = ["grpcio-tools>=1.60,<2"]
+
+# Generated code lives under gen/python/ (spacy_nlp, word, wish, …).
+# Namespace discovery allows packages without __init__.py (pep 420).
+[tool.setuptools.packages.find]
+where = ["gen/python"]
+namespaces = true

@@ -10,3 +10,8 @@ plugins:
   - plugin: buf.build/grpc/go
     out: gen/go
     opt: paths=source_relative
+  # Pin versions so generated Python matches protobuf 6.x (grpcio-reflection requires protobuf<7).
+  - plugin: buf.build/protocolbuffers/python:v26.1
+    out: gen/python
+  - plugin: buf.build/grpc/python:v1.66.2
+    out: gen/python

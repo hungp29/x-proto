@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package spacy_nlp.v1;
+
+option go_package = "github.com/hungp29/x-proto/gen/go/spacy_nlp/v1;spacynlpv1";
+
+// Token is one word/punctuation piece with a universal POS (UPOS-style) label.
+message Token {
+  string text = 1;
+  string pos = 2;
+}
+
+// Tokenize request — natural language input.
+message TokenizeRequest {
+  string text = 1;
+}
+
+// Tokenize response — ordered token/POS stream.
+message TokenizeResponse {
+  repeated Token tokens = 1;
+}
+
+// SpacyService exposes spaCy tokenization and POS tagging over gRPC.
+service SpacyService {
+  // Tokenize runs the language pipeline and returns coarse surface POS per token.
+  rpc Tokenize(TokenizeRequest) returns (TokenizeResponse);
+}

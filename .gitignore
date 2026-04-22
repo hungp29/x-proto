@@ -2,3 +2,8 @@
 **/.DS_Store
 
 zippass.txt
+
+# Python packaging (x-proto)
+*.egg-info/
+dist/
+build/

@@ -38,3 +38,25 @@ docker run --rm -v $(pwd):/workspace -w /workspace/x-word golang:1.22-bookworm b
 ```
 
 **Option 3 – buf:** From `x-proto`, run `buf generate` with `out: gen` (or point `out` at x-word’s `internal/genpb` if desired).
+
+## Python (generated stubs)
+
+`gen/python/` is packaged as **`x-proto`** via [`pyproject.toml`](./pyproject.toml) (namespace packages; requires `buf generate` so `gen/python` exists).
+
+**Editable (monorepo local):**
+```bash
+pip install -e /path/to/pto
+# or: pip install -e ../pto
+```
+
+**From Git** (when this repo is the proto root):
+```bash
+pip install "x-proto @ git+https://github.com/hungp29/x-proto.git@v0.1.0"
+```
+
+**From Git in a monorepo** (proto lives under a subdirectory, e.g. `pto/`):
+```bash
+pip install "x-proto @ git+https://github.com/yourorg/your-monorepo.git@main#subdirectory=pto"
+```
+
+Then: `from spacy_nlp.v1 import spacy_pb2` (imports match `buf` output under `gen/python`).
