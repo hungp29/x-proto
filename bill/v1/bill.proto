@@ -124,6 +124,7 @@ message Bill {
   string currency = 19; // ISO 4217
   string integration_payload_id = 20;
   string category_id = 21; // optional expense category for Pay
+  string blueprint_total_amount = 22; // when this bill has at least one instance in BLUEPRINT
 }
 
 message ListBillsRequest {
@@ -249,4 +250,5 @@ message PredictBillMonthResponse {
   string method = 6;
   // JSON object for UI (e.g. EVN CPC chart data).
   string detail_json = 7;
+  string blueprint_total_amount = 8;
 }
