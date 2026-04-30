@@ -746,7 +746,8 @@ type Bill struct {
 	DueInDays            int32  `protobuf:"varint,18,opt,name=due_in_days,json=dueInDays,proto3" json:"due_in_days,omitempty"`
 	Currency             string `protobuf:"bytes,19,opt,name=currency,proto3" json:"currency,omitempty"` // ISO 4217
 	IntegrationPayloadId string `protobuf:"bytes,20,opt,name=integration_payload_id,json=integrationPayloadId,proto3" json:"integration_payload_id,omitempty"`
-	CategoryId           string `protobuf:"bytes,21,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"` // optional expense category for Pay
+	CategoryId           string `protobuf:"bytes,21,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`                                 // optional expense category for Pay
+	BlueprintTotalAmount string `protobuf:"bytes,22,opt,name=blueprint_total_amount,json=blueprintTotalAmount,proto3" json:"blueprint_total_amount,omitempty"` // when this bill has at least one instance in BLUEPRINT
 	unknownFields        protoimpl.UnknownFields
 	sizeCache            protoimpl.SizeCache
 }
@@ -903,6 +904,13 @@ func (x *Bill) GetIntegrationPayloadId() string {
 func (x *Bill) GetCategoryId() string {
 	if x != nil {
 		return x.CategoryId
+	}
+	return ""
+}
+
+func (x *Bill) GetBlueprintTotalAmount() string {
+	if x != nil {
+		return x.BlueprintTotalAmount
 	}
 	return ""
 }
@@ -2088,9 +2096,10 @@ type PredictBillMonthResponse struct {
 	// fixed | manual_avg_3_paid | integration_evncpc | integration_nozza | ...
 	Method string `protobuf:"bytes,6,opt,name=method,proto3" json:"method,omitempty"`
 	// JSON object for UI (e.g. EVN CPC chart data).
-	DetailJson    string `protobuf:"bytes,7,opt,name=detail_json,json=detailJson,proto3" json:"detail_json,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	DetailJson           string `protobuf:"bytes,7,opt,name=detail_json,json=detailJson,proto3" json:"detail_json,omitempty"`
+	BlueprintTotalAmount string `protobuf:"bytes,8,opt,name=blueprint_total_amount,json=blueprintTotalAmount,proto3" json:"blueprint_total_amount,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *PredictBillMonthResponse) Reset() {
@@ -2172,6 +2181,13 @@ func (x *PredictBillMonthResponse) GetDetailJson() string {
 	return ""
 }
 
+func (x *PredictBillMonthResponse) GetBlueprintTotalAmount() string {
+	if x != nil {
+		return x.BlueprintTotalAmount
+	}
+	return ""
+}
+
 var File_bill_v1_bill_proto protoreflect.FileDescriptor
 
 const file_bill_v1_bill_proto_rawDesc = "" +
@@ -2237,7 +2253,7 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\x04bill\x18\x01 \x01(\v2\r.bill.v1.BillR\x04bill\",\n" +
 	"\x11DeleteBillRequest\x12\x17\n" +
 	"\abill_id\x18\x01 \x01(\tR\x06billId\"\x14\n" +
-	"\x12DeleteBillResponse\"\xc5\x04\n" +
+	"\x12DeleteBillResponse\"\xfb\x04\n" +
 	"\x04Bill\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x12\n" +
@@ -2261,7 +2277,8 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\bcurrency\x18\x13 \x01(\tR\bcurrency\x124\n" +
 	"\x16integration_payload_id\x18\x14 \x01(\tR\x14integrationPayloadId\x12\x1f\n" +
 	"\vcategory_id\x18\x15 \x01(\tR\n" +
-	"categoryIdJ\x04\b\x05\x10\x06J\x04\b\b\x10\tJ\x04\b\t\x10\n" +
+	"categoryId\x124\n" +
+	"\x16blueprint_total_amount\x18\x16 \x01(\tR\x14blueprintTotalAmountJ\x04\b\x05\x10\x06J\x04\b\b\x10\tJ\x04\b\t\x10\n" +
 	"\"3\n" +
 	"\x10ListBillsRequest\x12\x1f\n" +
 	"\vactive_only\x18\x01 \x01(\bR\n" +
@@ -2340,7 +2357,7 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\x17PredictBillMonthRequest\x12\x17\n" +
 	"\abill_id\x18\x01 \x01(\tR\x06billId\x12\x12\n" +
 	"\x04year\x18\x02 \x01(\x05R\x04year\x12\x14\n" +
-	"\x05month\x18\x03 \x01(\x05R\x05month\"\xf8\x01\n" +
+	"\x05month\x18\x03 \x01(\x05R\x05month\"\xae\x02\n" +
 	"\x18PredictBillMonthResponse\x12\x17\n" +
 	"\abill_id\x18\x01 \x01(\tR\x06billId\x12\x1b\n" +
 	"\tbill_name\x18\x02 \x01(\tR\bbillName\x12\x1b\n" +
@@ -2349,7 +2366,8 @@ const file_bill_v1_bill_proto_rawDesc = "" +
 	"\x16predicted_total_amount\x18\x05 \x01(\tR\x14predictedTotalAmount\x12\x16\n" +
 	"\x06method\x18\x06 \x01(\tR\x06method\x12\x1f\n" +
 	"\vdetail_json\x18\a \x01(\tR\n" +
-	"detailJson2\xe4\t\n" +
+	"detailJson\x124\n" +
+	"\x16blueprint_total_amount\x18\b \x01(\tR\x14blueprintTotalAmount2\xe4\t\n" +
 	"\vBillService\x12E\n" +
 	"\n" +
 	"CreateBill\x12\x1a.bill.v1.CreateBillRequest\x1a\x1b.bill.v1.CreateBillResponse\x12<\n" +
