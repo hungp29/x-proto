@@ -118,13 +118,14 @@ message Bill {
   string created_at = 14;
   string updated_at = 15;
   string icon_id = 16;
-  // True when this bill has at least one instance in BLUEPRINT (worker-generated, not yet opened for pay/edit).
-  bool has_blueprint_instance = 17;
+  bool has_blueprint_instance = 17 [deprecated = true]; // deprecated field, use bill_instance_status instead
   int32 due_in_days = 18;
   string currency = 19; // ISO 4217
   string integration_payload_id = 20;
   string category_id = 21; // optional expense category for Pay
-  string blueprint_total_amount = 22; // when this bill has at least one instance in BLUEPRINT
+  string blueprint_total_amount = 22 [deprecated = true]; // deprecated field, use bill_instance_total_amount instead
+  string bill_instance_status = 23;
+  string bill_instance_total_amount = 24;
 }
 
 message ListBillsRequest {
@@ -250,5 +251,7 @@ message PredictBillMonthResponse {
   string method = 6;
   // JSON object for UI (e.g. EVN CPC chart data).
   string detail_json = 7;
-  string blueprint_total_amount = 8;
+  string blueprint_total_amount = 8 [deprecated = true]; // deprecated field, use bill_instance_total_amount instead
+  string bill_instance_status = 9;
+  string bill_instance_total_amount = 10;
 }
