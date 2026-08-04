@@ -52,10 +52,10 @@ message CreateBillRequest {
   repeated BillItemTemplateInput item_templates = 9;
   string start_date = 10; // YYYY-MM-DD
   string end_date = 11;   // YYYY-MM-DD, optional
-  string icon_id = 12;    // finance_icons.id (optional)
+  string icon_id = 12;    // common_icons.id (optional)
   int32 due_in_days = 13; // days from issue_date to due_date when instance is generated (default 0)
   string currency = 14; // ISO 4217 (e.g. VND, USD)
-  string integration_payload_id = 15; // user_integration_payloads.id when type = integration
+  string integration_payload_id = 15; // identity_user_integration_payloads.id when type = integration
   // Optional finance_categories.id (expense); when empty, Pay uses the system "Bills & Utilities" category.
   string category_id = 16;
 }

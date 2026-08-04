@@ -47,7 +47,7 @@ message TemplatedEmailNotification {
 }
 
 // TemplatedTelegramNotification is expanded by x-noti before enqueue using telegramtpl
-// (caller supplies language, e.g. from finance_families.language).
+// (caller supplies language, e.g. from family_families.language).
 message TemplatedTelegramNotification {
   string chat_id = 1;
   // Locale for template selection: "vi" or "en" (other values treated as "en").

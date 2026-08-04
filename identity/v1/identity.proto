@@ -605,9 +605,9 @@ message GetUserIntegrationPayloadProviderResponse {
   string integration_provider_id = 1;
   // Display name (admin "provider" field).
   string name = 2;
-  // Optional finance_icons id for UI; secrets are never returned.
+  // Optional common_icons id for UI; secrets are never returned.
   optional string icon_id = 3;
-  // Stable key for bill worker adapter routing (integration_providers.provider_key).
+  // Stable key for bill worker adapter routing (identity_integration_providers.provider_key).
   string provider_key = 4;
 }
 

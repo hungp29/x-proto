@@ -132,7 +132,7 @@ service AppService {
 service UserAppService {
   rpc GrantUserAppAccess  (GrantUserAppAccessRequest)  returns (GrantUserAppAccessResponse);
   rpc RevokeUserAppAccess (RevokeUserAppAccessRequest) returns (RevokeUserAppAccessResponse);
-  // Returns apps granted in user_apps plus apps assigned to any of the user's active roles (role_apps + user_roles).
+  // Returns apps granted in identity_user_apps plus apps assigned to any of the user's active roles (identity_role_apps + identity_user_roles).
   rpc GetAppsByUserId     (GetAppsByUserIdRequest)     returns (GetAppsByUserIdResponse);
   rpc ListUsersByAppId    (ListUsersByAppIdRequest)    returns (ListUsersByAppIdResponse);
 }
